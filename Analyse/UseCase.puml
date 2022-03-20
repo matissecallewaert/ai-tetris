@@ -1,0 +1,14 @@
+@startuml Teturisu
+left to right direction
+actor "User" as user
+actor "AI" as AI
+rectangle Website {
+    (Play game manually) as UC1
+    (Let AI play game) as UC2
+    (View statistics) as UC3
+}
+user --> UC1
+user --> UC3
+user --> AI: Let AI play game
+AI --> UC2
+@enduml

@@ -1,0 +1,31 @@
+@startuml Generation_Algo
+
+title ==GenerationAlgorithm==
+
+loop 50 times
+Gene->InitialGenomsPopulation: Create a random gene
+end
+
+activate InitialGenomsPopulation
+Actor Gene
+Actor Child
+
+loop Keep looping until all the genes have had a chance to make a move
+Gene --> Tetris: Makes a move
+Tetris --> Gene: Get stats
+Tetris --> Gene: Rate the move made by a gene
+end
+
+loop Loop over InitialGenomsPopulation and sort the array in descending order
+InitialGenomsPopulation --> Gene: Copy the best genes to new array
+InitialGenomsPopulation --> Gene: Remove the bad genes
+end
+
+create Child
+loop Select tuples from finest genes and create 50 children
+Gene -> Child: Child created from two best genes
+Child --> Mutation: Child can have some mutation
+Child --> Children: Store the child in an array of children
+end
+
+@enduml

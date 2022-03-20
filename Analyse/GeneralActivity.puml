@@ -1,0 +1,28 @@
+@startuml generalActivity
+
+(*) --> "Start Tetris"
+-->"User"
+if "Enable AI" then
+-down->[true] "AI"
+else
+-left->[false] "User plays"
+-->[User loses] "Game Over"
+partition AI {
+    "AI" --> CreateInitialPopulation
+    --> Play until loss or has done more than 500 moves
+    if "isGeneration25"
+    -left->[true] "Play until loss or has done more than 500 moves"
+    else
+    -down->[AI loses]"Game Over"
+    else
+    -left->[false] Evolve
+    -up-> Play until loss or has done more than 500 moves
+    endif
+}
+endif
+-up->[User asks to play] User
+
+
+"Game Over" --> (*)
+
+@enduml 

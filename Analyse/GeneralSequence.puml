@@ -1,0 +1,67 @@
+@startuml Teturisu
+
+title ==Tetris==
+
+actor User
+
+==Initiate objects==
+create GUI
+User -> GUI: User visits the website
+activate GUI
+create Tetris
+GUI -> Tetris: Create Tetris
+activate Tetris
+create AI
+GUI -> AI: Create AI
+
+
+==Game==
+User -> GUI: Start game
+GUI -> Tetris: Start game
+GUI -> User: Show game
+
+note left
+one of the two loops in the alt is always
+active until the user leaves the website
+end note
+
+alt User plays
+    loop User plays Tetris
+        User -> GUI: Keyhandler
+        GUI-> Tetris: Play game
+        else User loses
+            Tetris -> GUI: Game Over
+            GUI -->> User: Display message "Game Over"
+        else User starts AI
+            User -> GUI: Start AI (end this loop, start loop below)
+            GUI -> AI: EventHandler request AI
+            Activate AI
+            AI -->> GUI: EventHandler received. AI activated
+            GUI -->> User: Display message "AI activated"
+    end
+
+else AI plays
+    loop AI plays Tetris (500 moves per game)
+        AI -> Tetris: Play game
+        else AI loses
+            Tetris -> GUI: Game Over
+            GUI -->> User: Display message "Game Over"
+        else AI runs out of moves
+            AI -> Tetris: Out of moves
+            Tetris -> GUI: Game Over
+            GUI -->> User: Display message "Game Over"
+        else User stops AI
+            User -> GUI: Stop AI (end this loop, restart loop above)
+            GUI -> AI: EventHandler request stop AI
+            AI -->> GUI: EventHandler received. AI stops playing
+            deactivate AI
+    end
+end
+
+
+GUI <- User: User leaves website
+
+GUI -> Tetris: Stop Tetris
+deactivate Tetris
+deactivate GUI
+@enduml
