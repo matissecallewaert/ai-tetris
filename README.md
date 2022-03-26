@@ -1,3 +1,8 @@
 # team-4
 
-Dit project zal een Tetrisspel zijn, speelbaar door de gebruiker via het web. De gebruiker kan er ook voor kiezen om een AI te trainen in Tetris spelen. Deze AI gebruikt een genetisch algoritme dat in de gezondheidssector ook zijn toepassing kent. De gebruiker kan de AI zien verbeteren hoe langer die getraind wordt en op elk moment de controle terug overnemen.
+This project will be a Tetris game playable by an user or AI (Artificial Intelligence) via de web.
+
+The user can choose between playing the game himself/herself or letting the AI play for them. The AI uses Genetic Algorithm (which 
+is used in various medical sectors aswell) to teach itself to play the game. The longer it plays the game, the better it becomes.
+
+The user can anytime make the AI stop and continue playing the game themselves.
