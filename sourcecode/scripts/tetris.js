@@ -63,9 +63,10 @@ class Tetris{
     //het veranderen van de currentshape en upcomingshape.
     NextShape(){
         if(this.bagindex<=499){
-            this.currentShape = this.bag[this.bagindex];
-            this.upcommingShape = this.bag[this.bagindex+1];
+            this.currentShape = {x: 0, y: 0, shape: this.bag[this.bagindex]};
+            this.upcommingShape = {x: 0,y: 0, shape: this.bag[this.bagindex+1]};
             this.bagindex++;
+            this.ApplyShape();
         }else{
             console.error("out of index in bag!");
         }
@@ -73,12 +74,14 @@ class Tetris{
     ApplyShape(){//de shape in het grid steken op de juiste plaats.
         for(let y= this.currentShape.y; y<this.currentShape.y + Object.values(this.currentShape.shape)[0].length;y++){
             for(let x = this.currentShape.x; x<this.currentShape.x+Object.values(this.currentShape.shape)[0][0].length ;x++){
-                this.grid[y][x] = Object.values(this.currentShape.shape)[0][y-this.currentShape.y][x-this.currentShape.x];
+                if(Object.values(this.currentShape.shape)[0][y-this.currentShape.y][x-this.currentShape.x] !==0){
+                    this.grid[y][x] = Object.values(this.currentShape.shape)[0][y-this.currentShape.y][x-this.currentShape.x];
+                }
             }
         }
-        console.log(this.grid);
     }
     MoveDown(){
+        this.RemoveShape();
         this.currentShape.y++;
         if(!this.Collides()){
             this.ApplyShape();
@@ -90,6 +93,7 @@ class Tetris{
 
     }
     MoveLeft(){
+        this.RemoveShape();
         this.currentShape.x--;
         if (this.currentShape.x>=0){
             this.ApplyShape();
@@ -98,6 +102,7 @@ class Tetris{
         }
     }
     MoveRight(){
+        this.RemoveShape();
         this.currentShape.x++;
         if (this.currentShape.x<=9){
             this.ApplyShape();
@@ -113,5 +118,37 @@ class Tetris{
     UpdateScore() {
 
     }
+    RemoveShape(){
+        for(let y= this.currentShape.y; y<this.currentShape.y + Object.values(this.currentShape.shape)[0].length;y++){
+            for(let x = this.currentShape.x; x<this.currentShape.x+Object.values(this.currentShape.shape)[0][0].length ;x++){
+                if(Object.values(this.currentShape.shape)[0][y-this.currentShape.y][x-this.currentShape.x] !== 0){
+                    this.grid[y][x] = 0;
+                }
+            }
+        }
+    }
+
 }
 let tetris = new Tetris();
+let keyHandler = (e) =>{
+    if(e.key === "s"){
+        tetris.MoveDown();
+    }else if(e.key === "q"){
+        tetris.MoveLeft();
+    }else if(e.key === "d"){
+        tetris.MoveRight();
+    }else if(e.key === " "){
+        tetris.NextShape();
+    }
+}
+document.addEventListener("keydown", keyHandler);
+let id = setInterval(print, 1000, tetris);
+function print(tetris){
+    let grid = document.getElementById("tetris");
+    grid.textContent = "";
+    for(let y = 0;y<20; y++){
+        let tekst = tetris.grid[y] +"\n";
+        grid.textContent += tekst;
+    }
+
+}
