@@ -46,7 +46,7 @@ class Tetris{
         this.movesTaken = 0;
     }
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
-    GenerateBag(){//werkt volledig
+    GenerateBag(){
         let random;
         let y = 0;
         for(let i = 0;i<500;i++){
@@ -87,6 +87,7 @@ class Tetris{
             this.ApplyShape();
         }else{
             this.currentShape.y--;
+            this.ApplyShape();
             this.NextShape();
             this.UpdateScore();
         }
@@ -95,27 +96,39 @@ class Tetris{
     MoveLeft(){
         this.RemoveShape();
         this.currentShape.x--;
-        if (this.currentShape.x>=0){
+        if (!this.Collides()){
             this.ApplyShape();
         }else{
             this.currentShape.x++;
+            this.ApplyShape();
         }
     }
     MoveRight(){
         this.RemoveShape();
         this.currentShape.x++;
-        if (this.currentShape.x<=9){
+        if (!this.Collides()){
             this.ApplyShape();
         }else{
             this.currentShape.x--;
+            this.ApplyShape();
         }
     }
 
-    Collides() {
-        return false;
+    Collides() {//niet klaar
+        let overlap = false;
+        for(let y = 0;y<Object.values(this.currentShape.shape)[0].length;y++){
+            for(let x = 0; x<Object.values(this.currentShape.shape)[0][0].length;x++){
+                if(this.grid[y+this.currentShape.y][x+this.currentShape.x] !==0 &&  this.currentShape[y][x] !==0){
+                    overlap = true;
+                }else if(this.currentShape.x <0 || this.currentShape.x+Object.values(this.currentShape.shape)[0][0].length >10 || this.currentShape.y+Object.values(this.currentShape.shape)[0].length>20){
+                    overlap = true;
+                }
+            }
+        }
+        return overlap;
     }
 
-    UpdateScore() {
+    UpdateScore() {//niet klaar
 
     }
     RemoveShape(){
