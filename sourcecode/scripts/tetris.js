@@ -21,26 +21,26 @@ class Tetris{
                     [0,0,0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0,0,0]]
         this.shapes = {
-            "L":[[0,0,1,0],
-                [1,1,1,0]],
-            "J":[[2,0,0,0],
-                [2,2,2,0]],
-            "I":[[3,3,3,3],
-                [0,0,0,0]],
-            "O":[[0,4,4,0],
-                [0,4,4,0]],
-            "S":[[0,5,5,0],
-                [5,5,0,0]],
-            "T":[[0,6,0,0],
-                [6,6,6,0]],
-            "Z":[[7,7,0,0],
-                [0,7,7,0]]
+            "L":[[0,0,1],
+                [1,1,1]],
+            "J":[[2,0,0],
+                [2,2,2]],
+            "I":[[3,3,3,3]],
+            "O":[[4,4],
+                [4,4]],
+            "S":[[0,5,5],
+                [5,5,0]],
+            "T":[[0,6,0],
+                [6,6,6]],
+            "Z":[[7,7,0],
+                [0,7,7]]
         }
+        this.colors = ["#FFFFFF","#FF0000","#00FF00","#0000FF","#FFA500","#FFFF00","#FF007F","#6A0DAD"];
         this.bag = [];
         this.GenerateBag();
         this.score = 0;
-        this.currentShape = {x: 0, y: 0, shape: this.bag[0]};
-        this.upcommingShape = {x: 0, y: 0, shape: this.bag[1]};
+        this.currentShape = {x: 3, y: 0, shape: this.bag[0]};
+        this.upcommingShape = {x: 3, y: 0, shape: this.bag[1]};
         this.ai = false;
         this.bagindex = 2;
         this.movesTaken = 0;
@@ -63,9 +63,10 @@ class Tetris{
     //het veranderen van de currentshape en upcomingshape.
     NextShape(){
         if(this.bagindex<=499){
-            this.currentShape = {x: 0, y: 0, shape: this.bag[this.bagindex]};
-            this.upcommingShape = {x: 0,y: 0, shape: this.bag[this.bagindex+1]};
+            this.currentShape = {x: 3, y: 0, shape: this.bag[this.bagindex]};
+            this.upcommingShape = {x: 3,y: 0, shape: this.bag[this.bagindex+1]};
             this.bagindex++;
+            this.movesTaken++;
             this.ApplyShape();
         }else{
             console.error("out of index in bag!");
@@ -88,8 +89,8 @@ class Tetris{
         }else{
             this.currentShape.y--;
             this.ApplyShape();
-            this.NextShape();
             this.UpdateScore();
+            this.NextShape();
         }
 
     }
@@ -113,23 +114,51 @@ class Tetris{
             this.ApplyShape();
         }
     }
+    Rotate(){//niet klaar
+        this.RemoveShape();
+        this.Transpone();
+        this.ApplyShape();
+    }
+    RemoveRow(y){
+        this.grid[y] = [0,0,0,0,0,0,0,0,0,0];
+        let it = y;
+        it--;
+        while(this.grid[it] !== null && this.grid[it]!== undefined && this.grid[it] !== [0,0,0,0,0,0,0,0,0,0]){
+            for(let x = 0;x<10;x++){
+                this.grid[it+1][x] = this.grid[it][x];
+                this.grid[it][x] = 0;
+            }
+            it--;
+        }
+    }
 
-    Collides() {//niet klaar
+    Collides() {
         let overlap = false;
         for(let y = 0;y<Object.values(this.currentShape.shape)[0].length;y++){
             for(let x = 0; x<Object.values(this.currentShape.shape)[0][0].length;x++){
-                if(this.grid[y+this.currentShape.y][x+this.currentShape.x] !==0 &&  this.currentShape[y][x] !==0){
+                if(this.currentShape.x <0 || this.currentShape.x+Object.values(this.currentShape.shape)[0][0].length >10 || this.currentShape.y+Object.values(this.currentShape.shape)[0].length>20){
                     overlap = true;
-                }else if(this.currentShape.x <0 || this.currentShape.x+Object.values(this.currentShape.shape)[0][0].length >10 || this.currentShape.y+Object.values(this.currentShape.shape)[0].length>20){
-                    overlap = true;
+                    break;
                 }
+                if(this.grid[y+this.currentShape.y][x+this.currentShape.x] !==0 &&  Object.values(this.currentShape.shape)[0][y][x] !==0){
+                    overlap = true;
+                    break;
+                }
+            }
+            if(overlap){
+                break;
             }
         }
         return overlap;
     }
 
-    UpdateScore() {//niet klaar
-
+    UpdateScore() {
+        for(let y = 0; y<20;y++){
+            if(this.grid[y].every(item => item !==0)){
+                this.RemoveRow(y);
+                this.score += 100*(20-y);
+            }
+        }
     }
     RemoveShape(){
         for(let y= this.currentShape.y; y<this.currentShape.y + Object.values(this.currentShape.shape)[0].length;y++){
@@ -140,6 +169,16 @@ class Tetris{
             }
         }
     }
+    Transpone(){
+        let nieuw=[];
+        for(let i=0;i<Object.values(this.currentShape.shape)[0][0].length;i++){
+            nieuw.push([])
+            for(let j=0;j<Object.values(this.currentShape.shape)[0].length;j++){
+                nieuw[i].push(Object.values(this.currentShape.shape)[0][j][i]);
+            }
+        }
+        this.currentShape.shape[Object.keys(this.currentShape.shape)[0]] = nieuw;
+    }
 
 }
 let tetris = new Tetris();
@@ -148,20 +187,58 @@ let keyHandler = (e) =>{
         tetris.MoveDown();
     }else if(e.key === "q"){
         tetris.MoveLeft();
-    }else if(e.key === "d"){
+    }else if(e.key === "d") {
         tetris.MoveRight();
     }else if(e.key === " "){
-        tetris.NextShape();
+        tetris.Rotate();
     }
 }
 document.addEventListener("keydown", keyHandler);
-let id = setInterval(print, 1000, tetris);
+let id = setInterval(print, 100, tetris);
+let scorebord = document.getElementById("scorebord");
+let upcommingShape = document.getElementById("upcommingShape");
+tetris.ApplyShape();
 function print(tetris){
     let grid = document.getElementById("tetris");
-    grid.textContent = "";
-    for(let y = 0;y<20; y++){
-        let tekst = tetris.grid[y] +"\n";
-        grid.textContent += tekst;
+    let e = document.querySelector("div");
+    let child = e.lastElementChild;
+    while (child) {
+        e.removeChild(child);
+        child = e.lastElementChild;
     }
-
+    for(let y = 0;y<20; y++){
+        let zin = document.createElement("p");
+        for(let x = 0;x<10;x++){
+            let letter = document.createElement("span");
+            letter.style.color = tetris.colors[tetris.grid[y][x]];
+            letter.textContent += tetris.grid[y][x];
+            zin.appendChild(letter);
+        }
+        grid.appendChild(zin);
+    }
+    scorebord.style.color = "#FFFFFF";
+    scorebord.textContent = tetris.score;
+    let letter;
+    child = upcommingShape.lastElementChild;
+    while (child) {
+        upcommingShape.removeChild(child);
+        child = upcommingShape.lastElementChild;
+    }
+    for(let y =0;y < Object.values(tetris.upcommingShape.shape)[0].length;y++){
+        let zin = document.createElement("p");
+        for(let x = 0;x<Object.values(tetris.upcommingShape.shape)[0][0].length;x++){
+            letter = document.createElement("span");
+            let waarde = Object.values(tetris.upcommingShape.shape)[0][y][x];
+            if(waarde !==0){
+                letter.style.color = tetris.colors[waarde];
+                letter.textContent =waarde;
+                zin.appendChild(letter);
+            }else{
+                letter.textContent = waarde;
+                letter.style.visibility = "hidden";
+                zin.appendChild(letter);
+            }
+        }
+        upcommingShape.appendChild(zin);
+    }
 }
