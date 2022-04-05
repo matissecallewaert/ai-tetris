@@ -214,6 +214,10 @@ class Tetris{
         this.bagindex = 2;
         this.movesTaken = 0;
     }
+
+}
+function move(tetris){
+    tetris.MoveDown();
 }
 let tetris = new Tetris();
 let keyHandler = (e) =>{
@@ -225,6 +229,8 @@ let keyHandler = (e) =>{
         tetris.MoveRight();
     }else if(e.key === " "){
         tetris.Rotate();
+    }else if(e.key === "s"){
+        id2 = setInterval(move,500,tetris);
     }
 }
 document.addEventListener("keydown", keyHandler);
@@ -232,6 +238,8 @@ let id = setInterval(print, 100, tetris);
 let scorebord = document.getElementById("scorebord");
 let upcommingShape = document.getElementById("upcommingShape");
 tetris.ApplyShape();
+let id2 =
+
 function print(tetris){
     let grid = document.getElementById("tetris");
     let e = document.querySelector("div");
