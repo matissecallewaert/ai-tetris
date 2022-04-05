@@ -229,7 +229,7 @@ let keyHandler = (e) =>{
         tetris.MoveRight();
     }else if(e.key === " "){
         tetris.Rotate();
-    }else if(e.key === "p"){
+    }else if(e.key === "m"){
         id2 = setInterval(move,500,tetris);
     }
 }
@@ -238,7 +238,7 @@ let id = setInterval(print, 100, tetris);
 let scorebord = document.getElementById("scorebord");
 let upcommingShape = document.getElementById("upcommingShape");
 tetris.ApplyShape();
-let id2 =
+let id2;
 
 function print(tetris){
     let grid = document.getElementById("tetris");
