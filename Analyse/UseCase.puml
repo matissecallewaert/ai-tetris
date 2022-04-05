@@ -1,4 +1,7 @@
 @startuml Teturisu
+
+title ==Use Case Diagram==
+
 left to right direction
 actor "User" as user
 actor "AI" as AI

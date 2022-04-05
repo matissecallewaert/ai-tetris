@@ -1,4 +1,7 @@
 @startuml klassediagram tetrisAI
+
+title ==Class Diagram==
+
 skinparam ClassAttributeIconSize 0
 class Tetris{
     +shapes: {vormletter: int[][]}

@@ -1,5 +1,7 @@
 @startuml generalActivity
 
+title ==General Activity Diagram==
+
 (*) --> "Start Tetris"
 -->"User"
 if "Enable AI" then

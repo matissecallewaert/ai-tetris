@@ -1,6 +1,6 @@
 @startuml Teturisu
 
-title ==Tetris==
+title ==General Sequence Diagram==
 
 actor User
 
