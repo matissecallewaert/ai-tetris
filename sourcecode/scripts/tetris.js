@@ -67,6 +67,9 @@ class Tetris{
             this.upcommingShape = {x: 3,y: 0, shape: this.bag[this.bagindex+1]};
             this.bagindex++;
             this.movesTaken++;
+            if(this.Collides()){
+                this.Reset();
+            }
             this.ApplyShape();
         }else{
             console.error("out of index in bag!");
@@ -114,9 +117,12 @@ class Tetris{
             this.ApplyShape();
         }
     }
-    Rotate(){//niet klaar
+    Rotate(){
         this.RemoveShape();
         this.Transpone();
+        for(let y = 0;y<Object.values(this.currentShape.shape)[0].length;y++){
+            this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
+        }
         this.ApplyShape();
     }
     RemoveRow(y){
@@ -179,7 +185,35 @@ class Tetris{
         }
         this.currentShape.shape[Object.keys(this.currentShape.shape)[0]] = nieuw;
     }
-
+    Reset(){
+        this.grid = [[0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0]];
+        this.bag = [];
+        this.GenerateBag();
+        this.score = 0;
+        this.currentShape = {x: 3, y: 0, shape: this.bag[0]};
+        this.upcommingShape = {x: 3, y: 0, shape: this.bag[1]};
+        this.bagindex = 2;
+        this.movesTaken = 0;
+    }
 }
 let tetris = new Tetris();
 let keyHandler = (e) =>{
