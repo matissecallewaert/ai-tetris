@@ -242,7 +242,7 @@ let id2;
 
 function print(tetris){
     let grid = document.getElementById("tetris");
-    let e = document.querySelector("div");
+    let e = document.getElementById("tetris");
     let child = e.lastElementChild;
     while (child) {
         e.removeChild(child);
