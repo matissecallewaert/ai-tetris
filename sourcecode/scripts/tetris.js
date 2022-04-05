@@ -229,7 +229,7 @@ let keyHandler = (e) =>{
         tetris.MoveRight();
     }else if(e.key === " "){
         tetris.Rotate();
-    }else if(e.key === "s"){
+    }else if(e.key === "p"){
         id2 = setInterval(move,500,tetris);
     }
 }
