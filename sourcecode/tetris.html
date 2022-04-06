@@ -25,19 +25,37 @@
         </div>
     </div>
     <div class="row">
-        <div class="col">           <!--    TETRIS WINDOW   -->
+        <!--    TETRIS WINDOW   -->
+        <div class="col">
             <div class="container">
                 <div class="row">
                     <div class="col" id="tetris">
                         <p></p>
                     </div>
-                    <div class="col" id="infobord">
-                        <div id="scorebord"></div>
-                        <div id="upcommingShape"></div>
+                    <div class="col" id="infoboard">
+                        <div id="scoreboard"></div>
+                        <div id="upcomingShape"></div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col">
+            <div class="container">
+                <div class="row">
+                    <div class="col" id="startButton">
+                        <input type="button" onclick="startGame()" value="START" />
+                    </div>
+
+                    <div class="col" id="resetButton">
+                        <input type="button" onclick="resetGame()" value="RESET" />
+                    </div>
+                    <div class="col" id="pauseButton">
+                        <input type="button" onclick="pauseGame()" value="PAUSE" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col">
             <div class="container">
                 <div class="row m-1">
@@ -51,7 +69,7 @@
                     <div class="col">
                         <!-- SCOREBORD -->
                         <p>
-                        <h1>Hier komt het scorebord.</h1>
+                            <h1>Hier komt het scorebord.</h1>
                         </p>
                     </div>
                 </div>
