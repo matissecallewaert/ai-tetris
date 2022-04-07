@@ -51,6 +51,7 @@ export default class Tetris {
                 [0, 7, 7]
             ]
         }
+
         this.colors = ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFA500", "#FFFF00", "#FF007F", "#6A0DAD"];
         this.bag = [];
         this.GenerateBag();
@@ -69,6 +70,7 @@ export default class Tetris {
         this.bagindex = 2;
         this.movesTaken = 0;
     }
+
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
     GenerateBag() {
         let random;

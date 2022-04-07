@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link
+            href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+            rel="stylesheet"
+    />
     <link rel="stylesheet" href="tetris.css">
-
-    <title>Title</title>
+    <title>Tetrix Game</title>
     <script src="scripts/main.js" type="module"></script>
 </head>
 <body id="body">
@@ -24,53 +27,23 @@
             <h1>Project groep 4: Tetris AI</h1>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id = "bla">
         <!--    TETRIS WINDOW   -->
-        <div class="col">
-            <div class="container">
+        <div class="grid">
+            <canvas id="board" class="game-board"></canvas>
+            <div class="right-column">
+                <div>
+                    <h1>TETRIS</h1>
+                    <p>Score: <span id="score">0</span></p>
+                    <p>AI Level: <span id="lines">0</span></p>
+                    <p>Moves: <span id="level">0</span></p>
+                    <canvas id="next" class="next"></canvas>
+                </div>
                 <div class="row">
-                    <div class="col" id="tetris">
-                        <p></p>
-                    </div>
-                    <div class="col" id="infoboard">
-                        <div id="scoreboard"></div>
-                        <div id="upcomingShape"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="container">
-                <div class="row">
-                    <div class="col" id="startButton">
-                        <input type="button" value="START" />
-                    </div>
-
-                    <div class="col" id="resetButton">
-                        <input type="button" value="RESET" />
-                    </div>
-                    <div class="col" id="pauseButton">
-                        <input type="button" value="PAUSE" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="container">
-                <div class="row m-1">
                     <div class="col">
-                        <!-- UITLEG -->
-                        <h1>UITLEG</h1>
-                        <p id="uitleg-content"></p>
-                    </div>
-                </div>
-                <div class="row m-1">
-                    <div class="col">
-                        <!-- SCOREBORD -->
-                        <p>
-                            <h1>Hier komt het scorebord.</h1>
-                        </p>
+                        <button id="startButton">Play</button>
+                        <button id="pauseButton">Pause</button>
+                        <button id="stopButton">Pause</button>
                     </div>
                 </div>
             </div>

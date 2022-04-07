@@ -2,6 +2,18 @@ import Tetris from "./modules/tetris.js"
 
 //alert("Script detected")
 
+let canvas = document.getElementById("board")
+let ctx = canvas.getContext("2d")
+
+let COLS = 20
+let ROWS = 30
+let BLOCK_SIZE = 30
+
+ctx.canvas.width = COLS * BLOCK_SIZE;
+ctx.canvas.height = ROWS * BLOCK_SIZE;
+
+ctx.scale(BLOCK_SIZE, BLOCK_SIZE)
+
 let tetris = new Tetris();
 
 function move(tetris) {
@@ -56,8 +68,8 @@ tetris.ApplyShape();
 let id2;
 
 function print(tetris) {
-    let grid = document.getElementById("tetris");
-    let e = document.getElementById("tetris");
+    let grid = document.getElementById("board");
+    let e = document.getElementById("board");
     let child = e.lastElementChild;
     while (child) {
         e.removeChild(child);
