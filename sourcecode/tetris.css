@@ -6,14 +6,55 @@
     font-size: 50px;
 }
  */
-p{
+p {
     margin: 0;
     padding: 0;
 }
 body{
-    background-color: #0a1c20;
+    background-color: #0F1123;
     color: white;
 }
+
 span{
     padding: 0 2px;
+}
+
+* {
+    font-family: 'Press Start 2P', cursive;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 620px 500px;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.game-board {
+    border: solid 2px;
+}
+
+#startButton {
+    background-color: #4caf50;
+    font-size: 16px;
+    padding: 15px 30px;
+    cursor: pointer;
+}
+
+#pauseButton {
+    background-color: #4caf50;
+    font-size: 16px;
+    padding: 15px 30px;
+    cursor: pointer;
+}
+
+#stopButton {
+    background-color: #4caf50;
+    font-size: 16px;
+    padding: 15px 30px;
+    cursor: pointer;
 }
