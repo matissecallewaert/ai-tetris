@@ -44,3 +44,11 @@ span{
     padding: 15px 30px;
     cursor: pointer;
 }
+
+#sound-speaker{
+    font-size:30px;
+}
+
+.sound-item{
+    cursor:pointer;
+}
