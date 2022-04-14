@@ -5,9 +5,9 @@ import Tetris from "./modules/tetris.js"
 let canvas = document.getElementById("board")
 let ctx = canvas.getContext("2d")
 
-let COLS = 20
-let ROWS = 30
-let BLOCK_SIZE = 30
+let COLS = 10
+let ROWS = 20
+let BLOCK_SIZE = 45
 
 ctx.canvas.width = COLS * BLOCK_SIZE;
 ctx.canvas.height = ROWS * BLOCK_SIZE;
@@ -68,27 +68,26 @@ tetris.ApplyShape();
 let id2;
 
 function print(tetris) {
+
     let grid = document.getElementById("board");
     let e = document.getElementById("board");
-    let child = e.lastElementChild;
-    while (child) {
-        e.removeChild(child);
-        child = e.lastElementChild;
-    }
+
+    ctx.clearRect(0, 0, COLS, ROWS)
+
     for (let y = 0; y < 20; y++) {
-        let zin = document.createElement("p");
         for (let x = 0; x < 10; x++) {
-            let letter = document.createElement("span");
-            letter.style.color = tetris.colors[tetris.grid[y][x]];
-            letter.textContent += tetris.grid[y][x];
-            zin.appendChild(letter);
+            let value = tetris.grid[y][x];
+            if (value > 0){
+                ctx.fillStyle = tetris.colors[value];
+                ctx.fillRect(x, y, 1, 1);
+            }
         }
-        grid.appendChild(zin);
     }
+
     scorebord.style.color = "#FFFFFF";
     scorebord.textContent = tetris.score;
     let letter;
-    child = upcomingShape.lastElementChild;
+    let child = upcomingShape.lastElementChild;
     while (child) {
         upcomingShape.removeChild(child);
         child = upcomingShape.lastElementChild;

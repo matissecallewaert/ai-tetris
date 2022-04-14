@@ -34,16 +34,17 @@
             <div class="right-column">
                 <div>
                     <h1>TETRIS</h1>
-                    <p>Score: <span id="score">0</span></p>
+                    <p>Score: <span id="scoreboard">0</span></p>
                     <p>AI Level: <span id="lines">0</span></p>
                     <p>Moves: <span id="level">0</span></p>
+                    <p id="upcomingShape"></p>
                     <canvas id="next" class="next"></canvas>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <button id="startButton">Play</button>
-                        <button id="pauseButton">Pause</button>
-                        <button id="stopButton">Pause</button>
+                        <button id="startButton" class="myButton">Play</button>
+                        <button id="pauseButton" class="myButton">Pause</button>
+                        <button id="resetButton" class="myButton">Reset</button>
                     </div>
                 </div>
             </div>
