@@ -131,7 +131,6 @@ export default class Tetris {
             this.UpdateScore();
             this.NextShape();
         }
-
     }
     MoveLeft() {
         this.RemoveShape();
@@ -152,6 +151,16 @@ export default class Tetris {
             this.currentShape.x--;
             this.ApplyShape();
         }
+    }
+    Drop(){
+        this.RemoveShape();
+        while(!this.Collides()){
+            this.currentShape.y++;
+        }
+        this.currentShape.y--;
+        this.ApplyShape();
+        this.UpdateScore();
+        this.NextShape();
     }
     Rotate() {
         this.RemoveShape();
@@ -265,6 +274,7 @@ export default class Tetris {
             y: 0,
             shape: this.bag[1]
         };
+        this.ApplyShape();
         this.bagindex = 2;
         this.movesTaken = 0;
     }

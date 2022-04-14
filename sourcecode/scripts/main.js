@@ -21,38 +21,45 @@ function move(tetris) {
 }
 
 let speed = 500;
+let play = false;
 
 let keyHandler = (k) => {
-    if (k.keyCode === 40) {
-        tetris.MoveDown();
-    } else if (k.keyCode === 37) {
-        tetris.MoveLeft();
-    } else if (k.keyCode === 39) {
-        tetris.MoveRight();
-    } else if (k.keyCode === 38) {
-        tetris.Rotate();
-    } else if (k.key === "s") {
-        clearInterval(id2)
-        speed -= 50;
-        id2 = setInterval(move, speed, tetris);
+    if(play){
+        if (k.keyCode === 40) {
+            tetris.MoveDown();
+        } else if (k.keyCode === 37) {
+            tetris.MoveLeft();
+        } else if (k.keyCode === 39) {
+            tetris.MoveRight();
+        } else if (k.keyCode === 38) {
+            tetris.Rotate();
+        } else if (k.key === "s") {
+            clearInterval(id2)
+            speed -= 50;
+            id2 = setInterval(move, speed, tetris);
+        }else if(k.key === " "){
+            tetris.Drop();
+        }
     }
 }
 
 function startGame() {
-    clearInterval(id2)
+    clearInterval(id2);
     id2 = setInterval(move, 500, tetris);
-    //console.log(id2)
+    play = true;
 }
 
 function resetGame() {
-    clearInterval(id2)
+    clearInterval(id2);
     speed = 500;
     tetris.Reset();
+    play = false;
 }
 
 function pauseGame() {
     clearInterval(id2);
     //console.log(id2)
+    play = false;
 }
 
 document.getElementById("startButton").addEventListener("click", startGame)
@@ -61,7 +68,7 @@ document.getElementById("resetButton").addEventListener("click", resetGame)
 
 document.addEventListener("keydown", keyHandler);
 
-setInterval(print, 100, tetris);
+let printinterval = setInterval(print, 100, tetris);
 let scorebord = document.getElementById("scoreboard");
 let upcomingShape = document.getElementById("upcomingShape");
 tetris.ApplyShape();
