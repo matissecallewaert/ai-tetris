@@ -159,7 +159,15 @@ export default class Tetris {
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
         }
-        this.ApplyShape();
+        if(!this.Collides()){
+            this.ApplyShape();
+        }
+        else{
+            while(this.Collides()){
+                this.currentShape.x--;
+            }
+            this.ApplyShape();
+        }
     }
     RemoveRow(y) {
         this.grid[y] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
