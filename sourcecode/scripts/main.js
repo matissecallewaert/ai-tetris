@@ -52,6 +52,7 @@ let keyHandler = (k) => {
             id2 = setInterval(move, speed, tetris);
         }else if(k.key === " "){
             tetris.Drop();
+            buttonSound.play();
         }
     }
 }
@@ -64,7 +65,6 @@ function startGame() {
     id2 = setInterval(move, 500, tetris);
     play = true;
     buttonSound.play();
-    backgroundMusic.play();
 }
 
 function resetGame() {
