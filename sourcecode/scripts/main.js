@@ -89,7 +89,7 @@ document.getElementById("resetButton").addEventListener("click", resetGame)
 // Create a new Tetris game
 let tetris = new Tetris();
 
-let printinterval = setInterval(print, 100, tetris);
+setInterval(print, 100, tetris);
 
 let scorebord = document.getElementById("scoreboard");
 let upcomingShape = document.getElementById("upcomingShape");
@@ -101,9 +101,6 @@ function move(tetris) {
 }
 
 function print(tetris) {
-
-    let grid = document.getElementById("board");
-    let e = document.getElementById("board");
 
     ctx.clearRect(0, 0, COLS, ROWS)
 
