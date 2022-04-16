@@ -64,7 +64,11 @@ let keyHandler = (k) => {
 
 document.addEventListener("keydown", keyHandler);
 
-// Function to handle touch on screen
+/** Function to handle touchscreen swipe controls:
+    - Swipe left to move the block to left
+    - Swipe right to move the block to right
+    - Long press for Hard-Drop
+**/
 
 let x = null;
 let y = null;
@@ -96,6 +100,38 @@ let mobileControl = (event) => {
 
 document.addEventListener('touchcoordinates', getTouchCoordinates, false);
 document.addEventListener('touchcontrols', mobileControl, false);
+
+// Functions for Hard-Dropping the tetris block when long pressing the screen
+
+let timer;
+
+// Length of time we want the user to touch before we do something
+let touchduration = 800;
+
+function touchstart(e) {
+    e.preventDefault();
+    if (!timer) {
+        timer = setTimeout(onlongtouch, touchduration);
+    }
+}
+
+function touchend() {
+    //stops short touches from firing the event
+    if (timer) {
+        clearTimeout(timer);
+        timer = null;
+    }
+}
+
+function onlongtouch() {
+    timer = null;
+    tetris.Drop();
+}
+
+document.addEventListener("longpressevent", function(event) {
+    window.addEventListener("touchstart", touchstart, false);
+    window.addEventListener("touchend", touchend, false);
+});
 
 // Various functions to Star, Pause and Reset the game
 function startGame() {
