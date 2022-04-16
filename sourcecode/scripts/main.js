@@ -3,7 +3,7 @@ import Sound from "./modules/sound.js"
 
 //alert("Script detected")
 
-// Create canvas
+// Canvas where the game will be played
 let COLS = 10
 let ROWS = 20
 let BLOCK_SIZE = 45
@@ -15,6 +15,11 @@ ctx.canvas.width = COLS * BLOCK_SIZE;
 ctx.canvas.height = ROWS * BLOCK_SIZE;
 
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE)
+
+// Canvas to show the upcoming tetrix blocks
+let block_canvas = document.getElementById("upcomingShape");
+let blockctx = block_canvas.getContext("2d");
+blockctx.scale(40, 40);
 
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
@@ -92,7 +97,6 @@ let tetris = new Tetris();
 setInterval(print, 100, tetris);
 
 let scorebord = document.getElementById("scoreboard");
-let upcomingShape = document.getElementById("upcomingShape");
 
 tetris.ApplyShape();
 
@@ -100,6 +104,7 @@ function move(tetris) {
     tetris.MoveDown();
 }
 
+// Function to show the blocks on the canvas
 function print(tetris) {
 
     ctx.clearRect(0, 0, COLS, ROWS)
@@ -116,27 +121,15 @@ function print(tetris) {
 
     scorebord.style.color = "#FFFFFF";
     scorebord.textContent = tetris.score;
-    let letter;
-    let child = upcomingShape.lastElementChild;
-    while (child) {
-        upcomingShape.removeChild(child);
-        child = upcomingShape.lastElementChild;
-    }
+
+    blockctx.clearRect(0, 0, COLS, ROWS)
     for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
-        let zin = document.createElement("p");
         for (let x = 0; x < Object.values(tetris.upcomingShape.shape)[0][0].length; x++) {
-            letter = document.createElement("span");
             let waarde = Object.values(tetris.upcomingShape.shape)[0][y][x];
             if (waarde !== 0) {
-                letter.style.color = tetris.colors[waarde];
-                letter.textContent = waarde;
-                zin.appendChild(letter);
-            } else {
-                letter.textContent = waarde;
-                letter.style.visibility = "hidden";
-                zin.appendChild(letter);
+                blockctx.fillStyle = tetris.colors[waarde];
+                blockctx.fillRect(x, y, 1, 1);
             }
         }
-        upcomingShape.appendChild(zin);
     }
 }

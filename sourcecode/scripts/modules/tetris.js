@@ -32,6 +32,7 @@ export default class Tetris {
                 [2, 2, 2]
             ],
             "I": [
+                [0, 0, 0, 0],
                 [3, 3, 3, 3]
             ],
             "O": [
