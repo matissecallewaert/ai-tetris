@@ -34,7 +34,7 @@ sound.MuteToggle();
 sound.SoundSettings();
 
 // Functions to handle various keypresses from keyboard
-let speed = 500;
+let speed = 700;
 let play = false;
 let id2;
 
@@ -67,14 +67,14 @@ document.addEventListener("keydown", keyHandler);
 // Various functions to Star, Pause and Reset the game
 function startGame() {
     clearInterval(id2);
-    id2 = setInterval(move, 500, tetris);
+    id2 = setInterval(move, 700, tetris);
     play = true;
     buttonSound.play();
 }
 
 function resetGame() {
     clearInterval(id2);
-    speed = 500;
+    speed = 700;
     tetris.Reset();
     play = false;
     buttonSound.play();
@@ -82,7 +82,6 @@ function resetGame() {
 
 function pauseGame() {
     clearInterval(id2);
-    //console.log(id2)
     play = false;
     buttonSound.play();
 }
