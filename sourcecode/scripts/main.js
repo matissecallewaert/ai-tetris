@@ -34,7 +34,7 @@ let play = false;
 let id2;
 
 let keyHandler = (k) => {
-    if(play){
+    if (play) {
         if (k.keyCode === 40) {
             tetris.MoveDown();
         } else if (k.keyCode === 37) {
@@ -50,7 +50,7 @@ let keyHandler = (k) => {
             clearInterval(id2)
             speed -= 50;
             id2 = setInterval(move, speed, tetris);
-        }else if(k.key === " "){
+        } else if (k.key === " ") {
             tetris.Drop();
             buttonSound.play();
         }
@@ -107,7 +107,7 @@ function print(tetris) {
     for (let y = 0; y < 20; y++) {
         for (let x = 0; x < 10; x++) {
             let value = tetris.grid[y][x];
-            if (value > 0){
+            if (value > 0) {
                 ctx.fillStyle = tetris.colors[value];
                 ctx.fillRect(x, y, 1, 1);
             }

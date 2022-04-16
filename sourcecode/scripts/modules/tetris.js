@@ -73,22 +73,22 @@ export default class Tetris {
 
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
     GenerateBag() {
-        let random;
-        let y = 0;
-        for (let i = 0; i < 500; i++) {
-            random = Math.floor(Math.random() * 7);
-            y = 0;
-            for (const [key, value] of Object.entries(this.shapes)) {
-                if (y === random) {
-                    this.bag.push({
+            let random;
+            let y = 0;
+            for (let i = 0; i < 500; i++) {
+                random = Math.floor(Math.random() * 7);
+                y = 0;
+                for (const [key, value] of Object.entries(this.shapes)) {
+                    if (y === random) {
+                        this.bag.push({
                         [key]: value
-                    });
+                        });
+                    }
+                    y++;
                 }
-                y++;
             }
         }
-    }
-    //het veranderen van de currentshape en upcomingshape.
+        //het veranderen van de currentshape en upcomingshape.
     NextShape() {
         if (this.bagindex <= 499) {
             this.currentShape = {
@@ -152,9 +152,9 @@ export default class Tetris {
             this.ApplyShape();
         }
     }
-    Drop(){
+    Drop() {
         this.RemoveShape();
-        while(!this.Collides()){
+        while (!this.Collides()) {
             this.currentShape.y++;
         }
         this.currentShape.y--;
@@ -168,11 +168,10 @@ export default class Tetris {
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
         }
-        if(!this.Collides()){
+        if (!this.Collides()) {
             this.ApplyShape();
-        }
-        else{
-            while(this.Collides()){
+        } else {
+            while (this.Collides()) {
                 this.currentShape.x--;
             }
             this.ApplyShape();
