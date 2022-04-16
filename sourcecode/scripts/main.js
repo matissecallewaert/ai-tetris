@@ -64,6 +64,39 @@ let keyHandler = (k) => {
 
 document.addEventListener("keydown", keyHandler);
 
+// Function to handle touch on screen
+
+let x = null;
+let y = null;
+
+let getTouchCoordinates = (event) => {
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+}
+
+let mobileControl = (event) => {
+    let difX = event.changedTouches[0].clientX - x;
+    let difY = event.changedTouches[0].clientY - y;
+    if ( Math.abs( difX ) > Math.abs( difY ) ) {
+        if (difX > 0) {
+            tetris.MoveRight();
+        } else {
+            tetris.MoveLeft();
+        }
+    } else {
+        if (difY > 0) {
+            tetris.MoveDown();
+        } else {
+            tetris.Rotate();
+        }
+    }
+    x = null;
+    y = null;
+}
+
+document.addEventListener('touchcoordinates', getTouchCoordinates, false);
+document.addEventListener('touchcontrols', mobileControl, false);
+
 // Various functions to Star, Pause and Reset the game
 function startGame() {
     clearInterval(id2);
