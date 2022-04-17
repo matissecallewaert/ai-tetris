@@ -3,23 +3,33 @@ import Sound from "./modules/sound.js"
 
 //alert("Script detected")
 
-// Canvas where the game will be played
-let COLS = 10
-let ROWS = 20
-let BLOCK_SIZE = 45
+//Definitions of variables and constants
+let COLS = 10;
+let ROWS = 20;
+let BLOCK_SIZE = 45;
 
-let canvas = document.getElementById("board")
-let ctx = canvas.getContext("2d")
+let canvas;
+let ctx;
 
-ctx.canvas.width = COLS * BLOCK_SIZE;
-ctx.canvas.height = ROWS * BLOCK_SIZE;
+let block_canvas;
+let blockctx;
 
-ctx.scale(BLOCK_SIZE, BLOCK_SIZE)
+let grid_canvas;
+let gridctx;
 
-// Canvas to show the upcoming tetrix blocks
-let block_canvas = document.getElementById("upcomingShape");
-let blockctx = block_canvas.getContext("2d");
-blockctx.scale(40, 40);
+let speed = 700;
+let play = false;
+let id2;
+
+let x;
+let y;
+
+// Length of time we want the user to touch before we do something
+let touchduration;
+let timer;
+
+let tetris;
+let scorebord;
 
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
@@ -30,14 +40,8 @@ let sound = new Sound(document.getElementById("sound-div")),
     gameOverSound = sound.create("assets/sounds/gameover.mp3", "gameOver_sound"),
     backgroundMusic = sound.create("assets/sounds/pause.mp3", "backgroundMusic");
 
-sound.MuteToggle();
-sound.SoundSettings();
 
-// Functions to handle various keypresses from keyboard
-let speed = 700;
-let play = false;
-let id2;
-
+// Function to handle various keypresses from keyboard
 let keyHandler = (k) => {
     if (play) {
         if (k.keyCode === 40) {
@@ -62,16 +66,11 @@ let keyHandler = (k) => {
     }
 }
 
-document.addEventListener("keydown", keyHandler);
-
 /** Function to handle touchscreen swipe controls:
     - Swipe left to move the block to left
     - Swipe right to move the block to right
     - Long press for Hard-Drop
 **/
-
-let x = null;
-let y = null;
 
 let getTouchCoordinates = (event) => {
     x = event.touches[0].clientX;
@@ -98,16 +97,7 @@ let mobileControl = (event) => {
     y = null;
 }
 
-document.addEventListener('touchcoordinates', getTouchCoordinates, false);
-document.addEventListener('touchcontrols', mobileControl, false);
-
 // Functions for Hard-Dropping the tetris block when long pressing the screen
-
-let timer;
-
-// Length of time we want the user to touch before we do something
-let touchduration = 800;
-
 function touchstart(e) {
     e.preventDefault();
     if (!timer) {
@@ -128,12 +118,7 @@ function onlongtouch() {
     tetris.Drop();
 }
 
-document.addEventListener("longpressevent", function(event) {
-    window.addEventListener("touchstart", touchstart, false);
-    window.addEventListener("touchend", touchend, false);
-});
-
-// Various functions to Star, Pause and Reset the game
+// Various functions to Start, Pause and Reset the game
 function startGame() {
     clearInterval(id2);
     id2 = setInterval(move, 700, tetris);
@@ -154,19 +139,6 @@ function pauseGame() {
     play = false;
     buttonSound.play();
 }
-
-document.getElementById("startButton").addEventListener("click", startGame)
-document.getElementById("pauseButton").addEventListener("click", pauseGame)
-document.getElementById("resetButton").addEventListener("click", resetGame)
-
-// Create a new Tetris game
-let tetris = new Tetris();
-
-setInterval(print, 100, tetris);
-
-let scorebord = document.getElementById("scoreboard");
-
-tetris.ApplyShape();
 
 function move(tetris) {
     tetris.MoveDown();
@@ -201,3 +173,64 @@ function print(tetris) {
         }
     }
 }
+
+function drawGrid(ctx) {
+    ctx.beginPath();
+    for(let i = 1; i < 10; i++){                                                                        //Draws vertical lines
+        ctx.moveTo(i * BLOCK_SIZE, 0);
+        ctx.lineTo(i * BLOCK_SIZE, ROWS * BLOCK_SIZE);
+        ctx.stroke();
+    }
+    for(let i = 1; i < 20; i++){                                                                        //Draws horizontal lines
+        ctx.moveTo(0, i * BLOCK_SIZE);
+        ctx.lineTo(COLS * BLOCK_SIZE, i * BLOCK_SIZE);
+        ctx.stroke();
+    }
+}
+
+function init(){
+    tetris = new Tetris();                                                                              //Initializes the game
+    scorebord = document.getElementById("scoreboard");
+
+    touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
+
+    x = null;
+    y = null;
+
+    canvas = document.getElementById("board");                                                  //Initializes the main canvas
+    ctx = canvas.getContext("2d");
+    ctx.canvas.width = COLS * BLOCK_SIZE;
+    ctx.canvas.height = ROWS * BLOCK_SIZE;
+    ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+
+    block_canvas = document.getElementById("upcomingShape");                                    //Initializes the canvas to display the upcoming tetromino
+    blockctx = block_canvas.getContext("2d");
+    blockctx.scale(40, 40);
+
+    grid_canvas = document.getElementById('grid');
+    gridctx = grid_canvas.getContext("2d");
+    gridctx.canvas.width = COLS * BLOCK_SIZE;
+    gridctx.canvas.height = ROWS * BLOCK_SIZE;
+    gridctx.strokeStyle = "#484848";
+    drawGrid(gridctx);
+
+    document.getElementById("startButton").addEventListener("click", startGame);            //Sets all the button events, touch controls and keyboard controls
+    document.getElementById("pauseButton").addEventListener("click", pauseGame);
+    document.getElementById("resetButton").addEventListener("click", resetGame);
+    document.addEventListener("longpressevent", function(event) {
+        window.addEventListener("touchstart", touchstart, false);
+        window.addEventListener("touchend", touchend, false);
+    });
+    document.addEventListener('touchcoordinates', getTouchCoordinates, false);
+    document.addEventListener('touchcontrols', mobileControl, false);
+    document.addEventListener("keydown", keyHandler);
+
+    setInterval(print, 100, tetris);                                                                //Initializes the display of the game
+
+    tetris.ApplyShape();                                                                                    //Displays first tetromino
+
+    sound.MuteToggle();                                                                                     //Initializes sounds
+    sound.SoundSettings();
+}
+
+init();

@@ -8,7 +8,7 @@
             rel="stylesheet"
     />
     <link rel="stylesheet" href="tetris.css">
-    <title>Tetrix Game</title>
+    <title>Tetris AI</title>
     <script src="scripts/main.js" type="module"></script>
 </head>
 <body id="body">
@@ -22,18 +22,28 @@
 </div>
 -->
 <div class="container">
-    <div class="row m-4">
+    <div class="row mt-4">
         <div class="col text-center">
             <h1>Project groep 4: Tetris AI</h1>
         </div>
     </div>
+    <div class="row">
+        <nav>
+            <ul class="nav nav-tabs justify-content-center">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="genetic-explanation.html">Genetic Algorithms</a></li>
+                <li class="nav-item"><a class="nav-link" href="comparison.html">Comparison</a></li>
+            </ul>
+        </nav>
+    </div>
     <div class="row" id = "bla">
         <!--    TETRIS WINDOW   -->
         <div class="grid">
+            <canvas id="grid" class="game-board position-absolute"></canvas>
             <canvas id="board" class="game-board"></canvas>
             <div class="right-column">
                 <div>
-                    <h1>TETRIS</h1>
+                    <h1 class="m-2">TETRIS</h1>
                     <p>Score: <span id="scoreboard">0</span></p>
                     <p>AI Level: <span id="lines">0</span></p>
                     <p>Moves: <span id="level">0</span></p>
@@ -64,6 +74,4 @@
 </div>
 
 </body>
-
-<script src="scripts/webpage-data.js"></script>
 </html>
