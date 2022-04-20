@@ -2,11 +2,12 @@ import Tetris from "./modules/tetris.js"
 import Sound from "./modules/sound.js"
 
 //alert("Script detected")
+//alert(window.innerHeight)
 
 //Definitions of variables and constants
 let COLS = 10;
 let ROWS = 20;
-let BLOCK_SIZE = 45;
+let BLOCK_SIZE = window.innerHeight/25;
 
 let canvas;
 let ctx;
