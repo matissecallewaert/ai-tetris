@@ -15,6 +15,9 @@ let ctx;
 let block_canvas;
 let blockctx;
 
+let holding_canvas;
+let holdingctx;
+
 let grid_canvas;
 let gridctx;
 
@@ -63,6 +66,12 @@ let keyHandler = (k) => {
         } else if (k.key === " ") {
             tetris.Drop();
             buttonSound.play();
+        }else if (k.key === "h"){
+            if(tetris.holdShape === undefined){
+                tetris.HoldShape();
+            }else{
+                tetris.UseHoldShape();
+            }
         }
     }
 }
@@ -173,6 +182,16 @@ function print(tetris) {
             }
         }
     }
+    holdingctx.clearRect(0, 0, COLS, ROWS)
+    for (let y = 0; y < Object.values(tetris.holdShape.shape)[0].length; y++) {
+        for (let x = 0; x < Object.values(tetris.holdShape.shape)[0][0].length; x++) {
+            let waarde = Object.values(tetris.holdShape.shape)[0][y][x];
+            if (waarde !== 0) {
+                holdingctx.fillStyle = tetris.colors[waarde];
+                holdingctx.fillRect(x, y, 1, 1);
+            }
+        }
+    }
 }
 
 function drawGrid(ctx) {
@@ -207,6 +226,10 @@ function init(){
     block_canvas = document.getElementById("upcomingShape");                                    //Initializes the canvas to display the upcoming tetromino
     blockctx = block_canvas.getContext("2d");
     blockctx.scale(40, 40);
+
+    holding_canvas = document.getElementById("holdingShape");                                    //Initializes the canvas to display the upcoming tetromino
+    holdingctx = holding_canvas.getContext("2d");
+    holdingctx.scale(40, 40);
 
     grid_canvas = document.getElementById('grid');
     gridctx = grid_canvas.getContext("2d");

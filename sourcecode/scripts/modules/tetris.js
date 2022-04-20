@@ -66,11 +66,26 @@ export default class Tetris {
             y: 0,
             shape: this.bag[1]
         };
+        this.holdShape = undefined;
         this.ai = false;
         this.bagindex = 2;
         this.movesTaken = 0;
     }
+    HoldShape(){
+        this.RemoveShape();
+        this.holdShape = this.currentShape;
+        this.holdShape.x = 3;
+        this.holdShape.y = 0;
+        this.NextShape();
 
+    }
+    UseHoldShape(){
+        this.RemoveShape();
+        this.upcomingShape = this.currentShape;
+        this.currentShape = this.holdShape;
+        this.bagindex--;
+        this.holdShape = undefined;
+    }
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
     GenerateBag() {
             let random;
