@@ -1,122 +1,117 @@
-let data  = {
-    heightPerColumn : [3,5,5,5,6,6,5,4,4,5],
-    linesClear : 2,
-    holesPerColumn : [0,0,0,2,0,0,0,0,0,0]
-};
+export default class AI {
 
-let populationNumber = 1;
-let populationSize = 5;
-let genes = []
-let population = []
-let fittest = null;
-let secondFittest = null;
-let scores = [100,200,300,400,500];
-let crossoverRate = 0.3;
-let mutationRate = 0.1;
+    constructor() {
+        this.populationNumber = 1;
+        this.populationSize = 5;
+        this.genes = []
+        this.population = []
+        this.fittest = null;
+        this.secondFittest = null;
+        this.scores = [100,200,300,400,500];
+        this.crossoverRate = 0.3;
+        this.mutationRate = 0.1;
+    }
 
-
-
-
-function firstPopulation(){
-    for (let i=0;i<populationSize;i++){
-        for(let j=0;j<4;j++){
-            genes[j]=Math.random();
+    firstPopulation(){
+        for (let i=0; i < this.populationSize; i++){
+            for(let j=0;j<4;j++){
+                this.genes[j]=Math.random();
+            }
+            this.population[i] = this.genes;
         }
-        population[i] = genes;
     }
-}
 
-function getfittest(){
-    let max = scores.reduce(function (a,b){
-        return Math.max(a,b);
-    })
-    let index=scores.indexOf(max);
-    fittest=population[index];
-}
+    getfittest(){
+        let max = this.scores.reduce(function (a,b){
+            return Math.max(a,b);
+        })
+        let index=this.scores.indexOf(max);
+        this.fittest = this.population[index];
+    }
 
-function getsecondfittest(){
-    let bufferscores = scores;
-    bufferscores.sort((a,b) => a-b);
-    let index = scores.indexOf(bufferscores[3]);
-    secondFittest = population[index];
-}
+    getsecondfittest(){
+        let bufferscores = this.scores;
+        bufferscores.sort((a,b) => a-b);
+        let index = this.scores.indexOf(bufferscores[3]);
+        this.secondFittest = this.population[index];
+    }
 
-function crossover(){
-    if(Math.random()>crossoverRate){
-        genes[0] = Math.min(fittest[0],secondFittest[0]);
-    }
-    else{
-        genes[0] = Math.max(fittest[0],secondFittest[0]);
-    }
-    if(Math.random()>crossoverRate){
-        genes[1] = Math.min(fittest[1],secondFittest[1]);
-    }
-    else{
-        genes[1] = Math.max(fittest[1],secondFittest[1]);
-    }
-    if(Math.random()>crossoverRate){
-        genes[2] = Math.min(fittest[2],secondFittest[2]);
-    }
-    else{
-        genes[2] = Math.max(fittest[2],secondFittest[2]);
-    }
-    if(Math.random()>crossoverRate){
-        genes[3] = Math.min(fittest[3],secondFittest[3]);
-    }
-    else{
-        genes[3] = Math.max(fittest[3],secondFittest[3]);
-    }
-}
-
-function mutation(){
-    if(mutationRate>Math.random()){
-        genes[0] = genes[0] + (Math.random()*0.4)-0.2;
-    }
-    if(mutationRate>Math.random()){
-        genes[1] = genes[1] (Math.random()*0.4)-0.2;
-    }
-    if(mutationRate>Math.random()){
-        genes[2] = genes[2] (Math.random()*0.4)-0.2;
-    }
-    if(mutationRate>Math.random()){
-        genes[3] = genes[3] (Math.random()*0.4)-0.2;
-    }
-}
-
-function population(){
-    populationNumber++;
-    for (let i=0;i<populationSize-2;i++){
-            population[i] = genes;
+    crossover(){
+        if(Math.random() > this.crossoverRate){
+            this.genes[0] = Math.min(this.fittest[0], this.secondFittest[0]);
         }
-    population[3]=fittest;
-    population[4]=secondFittest;
-}
-
-
-function calcAggregateHeight(){
-    let aHeight=0;
-    for(let column of data["heightPerColumn"]){
-        aHeight+=column;
+        else{
+            this.genes[0] = Math.max(this.fittest[0], this.secondFittest[0]);
+        }
+        if(Math.random()> this.crossoverRate){
+            this.genes[1] = Math.min(this.fittest[1], this.secondFittest[1]);
+        }
+        else{
+            this.genes[1] = Math.max(this.fittest[1], this.secondFittest[1]);
+        }
+        if(Math.random()> this.crossoverRate){
+            this.genes[2] = Math.min(this.fittest[2], this.secondFittest[2]);
+        }
+        else{
+            this.genes[2] = Math.max(this.fittest[2], this.secondFittest[2]);
+        }
+        if(Math.random()> this.crossoverRate){
+            this.genes[3] = Math.min(this.fittest[3], this.secondFittest[3]);
+        }
+        else{
+            this.genes[3] = Math.max(this.fittest[3], this.secondFittest[3]);
+        }
     }
-    return aHeight*"placeholder";
-}
 
-function calcClearlines(){
-    return data["linesClear"]*"placeholder";
-}
-
-function calcHoles(){
-    let holes=0;
-    for(let column of data["heightPerColumn"]){
-        holes+=column;
+    mutation(){
+        if(this.mutationRate>Math.random()){
+            this.genes[0] = this.genes[0] + (Math.random()*0.4)-0.2;
+        }
+        if(this.mutationRate>Math.random()){
+            this.genes[1] = this.genes[1] (Math.random()*0.4)-0.2;
+        }
+        if(this.mutationRate>Math.random()){
+            this.genes[2] = this.genes[2] (Math.random()*0.4)-0.2;
+        }
+        if(this.mutationRate>Math.random()){
+            this.genes[3] = this.genes[3] (Math.random()*0.4)-0.2;
+        }
     }
-    return holes*"placeholder";
-}
 
-function calcBumpiness(){
-    let bumpiness=0;
-    for(let i;i<data["heightPerColumn"].length-1;i++){
-        bumpiness+=Math.abs(data["heightPerColumn"][i]-data["heightPerColumn"][i-1]);
+    population(){
+        this.populationNumber++;
+        for (let i=0;i< this.populationSize-2;i++){
+            this.population[i] = this.genes;
+        }
+        this.population[3] = this.fittest;
+        this.population[4] = this.secondFittest;
     }
-    return bumpiness*"placeholder";
+
+    calcAggregateHeight(){
+        let aHeight=0;
+        for(let column of this.data["heightPerColumn"]){
+            aHeight+=column;
+        }
+        return aHeight*"placeholder";
+    }
+
+     calcClearlines(){
+        return data["linesClear"]*"placeholder";
+    }
+
+    calcHoles(){
+        let holes=0;
+        for(let column of data["heightPerColumn"]){
+            holes+=column;
+        }
+        return holes*"placeholder";
+    }
+
+    calcBumpiness(){
+        let bumpiness=0;
+        for(let i; i < data["heightPerColumn"].length-1;i++){
+            bumpiness+=Math.abs(data["heightPerColumn"][i]-data["heightPerColumn"][i-1]);
+        }
+        return bumpiness*"placeholder";
+    }
 }
