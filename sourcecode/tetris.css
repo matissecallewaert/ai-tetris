@@ -7,15 +7,16 @@
 }
  */
 p {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 5px;
 }
-body{
+
+body {
     background-color: #0F1123;
     color: white;
 }
 
-span{
+span {
     padding: 0 2px;
 }
 
@@ -45,10 +46,10 @@ span{
     cursor: pointer;
 }
 
-#sound-speaker{
-    font-size:30px;
+#sound-speaker {
+    font-size: 30px;
 }
 
-.sound-item{
-    cursor:pointer;
+.sound-item {
+    cursor: pointer;
 }
