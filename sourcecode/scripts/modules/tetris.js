@@ -183,14 +183,23 @@ export default class Tetris {
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
         }
-        if (!this.Collides()) {
-            this.ApplyShape();
-        } else {
-            while (this.Collides()) {
+        if (this.Collides() && !this.TouchesRightWall()){
+            for(let i = 0; i<3;i++){
+                this.Transpose();
+                for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
+                    this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
+                }
+            }
+        }
+        if(this.TouchesRightWall()){
+            while (this.TouchesRightWall()) {
                 this.currentShape.x--;
             }
-            this.ApplyShape();
         }
+        this.ApplyShape();
+    }
+    TouchesRightWall(){
+        return this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length > this.grid[0].length;
     }
     RemoveRow(y) {
         this.grid[y] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
