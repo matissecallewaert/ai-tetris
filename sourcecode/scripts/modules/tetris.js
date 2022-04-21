@@ -123,7 +123,7 @@ export default class Tetris {
             }
             this.ApplyShape();
         } else {
-            console.error("out of index in bag!");
+            this.Reset();
         }
     }
     ApplyShape() { //de shape in het grid steken op de juiste plaats.
@@ -226,12 +226,16 @@ export default class Tetris {
     }
 
     UpdateScore() {
-        for (let y = 0; y < 20; y++) {
+        let aantal = 0;
+        let y;
+        for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
+                aantal++;
                 this.RemoveRow(y);
                 this.score += 100 * (20 - y);
             }
         }
+        this.score += (aantal-1)*100 *(20-y);
     }
     RemoveShape() {
         for (let y = this.currentShape.y; y < this.currentShape.y + Object.values(this.currentShape.shape)[0].length; y++) {
@@ -288,6 +292,7 @@ export default class Tetris {
             y: 0,
             shape: this.bag[1]
         };
+        this.holdShape = undefined;
         this.ApplyShape();
         this.bagindex = 2;
         this.movesTaken = 0;

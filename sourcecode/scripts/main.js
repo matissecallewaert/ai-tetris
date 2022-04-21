@@ -66,7 +66,7 @@ let keyHandler = (k) => {
         } else if (k.key === " ") {
             tetris.Drop();
             buttonSound.play();
-        }else if (k.key === "h"){
+        }else if (k.keyCode === 16){
             if(tetris.holdShape === undefined){
                 tetris.HoldShape();
             }else{
@@ -183,12 +183,14 @@ function print(tetris) {
         }
     }
     holdingctx.clearRect(0, 0, COLS, ROWS)
-    for (let y = 0; y < Object.values(tetris.holdShape.shape)[0].length; y++) {
-        for (let x = 0; x < Object.values(tetris.holdShape.shape)[0][0].length; x++) {
-            let waarde = Object.values(tetris.holdShape.shape)[0][y][x];
-            if (waarde !== 0) {
-                holdingctx.fillStyle = tetris.colors[waarde];
-                holdingctx.fillRect(x, y, 1, 1);
+    if(tetris.holdShape !== undefined){
+        for (let y = 0; y < Object.values(tetris.holdShape.shape)[0].length; y++) {
+            for (let x = 0; x < Object.values(tetris.holdShape.shape)[0][0].length; x++) {
+                let waarde = Object.values(tetris.holdShape.shape)[0][y][x];
+                if (waarde !== 0) {
+                    holdingctx.fillStyle = tetris.colors[waarde];
+                    holdingctx.fillRect(x, y, 1, 1);
+                }
             }
         }
     }
