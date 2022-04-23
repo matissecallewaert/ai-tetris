@@ -36,6 +36,10 @@ let tetris;
 let scorebord;
 let moves;
 
+let loadedData;
+let gameData;
+let highscore;
+
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, Reset), Rotate, MoveLeft == MoveRight, GameOver, BackgroundMusic
@@ -157,6 +161,15 @@ function move(tetris) {
 // Function to show the blocks on the canvas
 function print(tetris) {
     if(tetris.died){
+        loadedData = localStorage.getItem("highScores");
+        let data = JSON.parse(loadedData);
+        if(data.Highscore < tetris.score){
+            data.Highscore = tetris.score;
+            let gameDataJson = JSON.stringify(data);
+            localStorage.setItem("highScores", gameDataJson);
+        }
+        highscore = document.getElementById("highscore");
+        highscore.textContent = data.Highscore;
         tetris.Reset();
         resetGame();
     }
@@ -228,6 +241,18 @@ function init(){
     tetris = new Tetris();                                                                              //Initializes the game
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
+
+    highscore = document.getElementById("highscore");
+    loadedData = localStorage.getItem("highScores");
+    if(loadedData !== null){
+        let data = JSON.parse(loadedData);
+        highscore.textContent = data.Highscore;
+    }else{
+        let data = {Highscore:0};
+        let dataJson = JSON.stringify(data);
+        localStorage.setItem("highScores",dataJson);
+    }
+
 
     touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
 
