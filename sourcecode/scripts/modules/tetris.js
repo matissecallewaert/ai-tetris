@@ -70,6 +70,9 @@ export default class Tetris {
         this.ai = false;
         this.bagindex = 2;
         this.movesTaken = 0;
+        this.holding = false;
+        this.speed = 700;
+        this.died = false;
     }
     HoldShape(){
         this.RemoveShape();
@@ -77,14 +80,16 @@ export default class Tetris {
         this.holdShape.x = 3;
         this.holdShape.y = 0;
         this.NextShape();
-
+        this.holding = true;
     }
     UseHoldShape(){
         this.RemoveShape();
-        this.upcomingShape = this.currentShape;
-        this.currentShape = this.holdShape;
-        this.bagindex--;
-        this.holdShape = undefined;
+        let hulp = this.holdShape;
+        this.holdShape = this.currentShape;
+        this.currentShape = hulp;
+        this.holding = true;
+        this.holdShape.x = 3;
+        this.holdShape.y = 0;
     }
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
     GenerateBag() {
@@ -119,12 +124,15 @@ export default class Tetris {
             this.bagindex++;
             this.movesTaken++;
             if (this.Collides()) {
-                this.Reset();
+                this.died = true;
             }
-            this.ApplyShape();
+            else{
+                this.ApplyShape();
+            }
         } else {
-            this.Reset();
+            this.died = true;
         }
+        this.holding = false;
     }
     ApplyShape() { //de shape in het grid steken op de juiste plaats.
         for (let y = this.currentShape.y; y < this.currentShape.y + Object.values(this.currentShape.shape)[0].length; y++) {
@@ -305,5 +313,7 @@ export default class Tetris {
         this.ApplyShape();
         this.bagindex = 2;
         this.movesTaken = 0;
+        this.speed = 700;
+        this.died = false;
     }
 }

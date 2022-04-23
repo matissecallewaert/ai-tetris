@@ -20,8 +20,8 @@ let holdingctx;
 
 let grid_canvas;
 let gridctx;
+let vorigeScore = 0;
 
-let speed = 700;
 let play = false;
 let id2;
 
@@ -34,6 +34,7 @@ let timer;
 
 let tetris;
 let scorebord;
+let moves;
 
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
@@ -59,18 +60,16 @@ let keyHandler = (k) => {
         } else if (k.keyCode === 38) {
             tetris.Rotate();
             rotateSound.play();
-        } else if (k.key === "s") {
-            clearInterval(id2)
-            speed -= 50;
-            id2 = setInterval(move, speed, tetris);
         } else if (k.key === " ") {
             tetris.Drop();
             buttonSound.play();
         }else if (k.keyCode === 16){
-            if(tetris.holdShape === undefined){
-                tetris.HoldShape();
-            }else{
-                tetris.UseHoldShape();
+            if(tetris.holding === false){
+                if(tetris.holdShape === undefined){
+                    tetris.HoldShape();
+                }else{
+                    tetris.UseHoldShape();
+                }
             }
         }
     }
@@ -131,17 +130,17 @@ function onlongtouch() {
 // Various functions to Start, Pause and Reset the game
 function startGame() {
     clearInterval(id2);
-    id2 = setInterval(move, 700, tetris);
+    id2 = setInterval(move, tetris.speed, tetris);
     play = true;
     buttonSound.play();
 }
 
 function resetGame() {
     clearInterval(id2);
-    speed = 700;
     tetris.Reset();
     play = false;
     buttonSound.play();
+    vorigeScore = 0;
 }
 
 function pauseGame() {
@@ -152,11 +151,15 @@ function pauseGame() {
 
 function move(tetris) {
     tetris.MoveDown();
+    UpdateSpeed(tetris);
 }
 
 // Function to show the blocks on the canvas
 function print(tetris) {
-
+    if(tetris.died){
+        tetris.Reset();
+        resetGame();
+    }
     ctx.clearRect(0, 0, COLS, ROWS)
 
     for (let y = 0; y < 20; y++) {
@@ -171,6 +174,9 @@ function print(tetris) {
 
     scorebord.style.color = "#FFFFFF";
     scorebord.textContent = tetris.score;
+
+    moves.style.color = "#FFFFFF";
+    moves.textContent = tetris.movesTaken;
 
     blockctx.clearRect(0, 0, COLS, ROWS)
     for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
@@ -209,10 +215,19 @@ function drawGrid(ctx) {
         ctx.stroke();
     }
 }
+function UpdateSpeed(tetris){
+    if(tetris.score >= vorigeScore+1000){
+        clearInterval(id2)
+        tetris.speed -= 100;
+        id2 = setInterval(move, tetris.speed, tetris);
+        vorigeScore = tetris.score;
+    }
+}
 
 function init(){
     tetris = new Tetris();                                                                              //Initializes the game
     scorebord = document.getElementById("scoreboard");
+    moves = document.getElementById("level");
 
     touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
 

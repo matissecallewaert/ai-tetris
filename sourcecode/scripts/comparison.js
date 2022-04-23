@@ -1,4 +1,4 @@
-let amountOfPlayers = 10;
+let amountOfPlayers = 25;
 let table = document.getElementsByTagName("table")[0];
 let toAddData;
 let toAddTableTitles = ["Rank", "Player", "Rating", "XP"];
