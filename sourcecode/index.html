@@ -13,69 +13,104 @@
 </head>
 <body id="body">
 <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid ">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav w-100 justify-content-between nav-fill">
-                <a class="nav-item nav-link active" href="#">Home</a>
-                <a class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
-                <a class="nav-item nav-link" href="comparison.html">Comparison</a>
+    <div class="container-fluid">
+        <div class="navbar-nav w-100 justify-content-between nav-fill">
+            <div class="row w-100">
+                <div class="col-md-4 col-xs-12">
+                    <a class="nav-item nav-link active" href="#">Home</a>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <a class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <a class="nav-item nav-link" href="comparison.html">Comparison</a>
+                </div>
             </div>
         </div>
     </div>
 </nav>
 <div class="container">
-    <div class="row">
+    <div class="row mt-4">
         <div class="col text-center">
             <h1>Project groep 4: Tetris AI</h1>
         </div>
     </div>
     <div class="row" id = "bla">
         <!--    TETRIS WINDOW   -->
-        <div class="grid">
-            <canvas id="grid" class="game-board position-absolute"></canvas>
-            <canvas id="board" class="game-board"></canvas>
-            <div class="right-column">
-                <div>
-                    <h1 class="m-2">TETRIS</h1>
-                    <p>Score: <span id="scoreboard">0</span></p>
-                    <p>AI Level: <span id="lines">0</span></p>
-                    <p>Moves: <span id="level">0</span></p>
-                    <br>
-                    <div class="col">
-                        <div class="col">
-                            <p>HighScores</p>
-                            <p id="highscore">0</p>
-                            <br>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col">
-                            <p>Upcoming shape</p>
-                            <br>
-                            <canvas id="upcomingShape"></canvas>
-                            <!--canvas id="next" class="next"></canvas-->
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col">
-                            <p>Holding</p>
-                            <br>
-                            <canvas id="holdingShape"></canvas>
-                        </div>
-                    </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <canvas id="grid" class="game-board position-absolute"></canvas>
+                    <canvas id="board" class="game-board"></canvas>
                 </div>
-                <div class="row align-bottom">
-                    <div id="sound-div">
-                        <span class="sound-item" id="sound-speaker"></span>
-                        <span class="sound-item" id="sound-description"></span>
-                    </div>
-                    <div class="col">
-                        <button id="startButton" class="myButton">Play</button>
-                        <button id="pauseButton" class="myButton">Pause</button>
-                        <button id="resetButton" class="myButton">Reset</button>
+                <div class="col-7">
+                    <div class="right-column">
+                        <div>
+                            <h1 class="m-2">TETRIS</h1>
+                            <p>Score: <span id="scoreboard">0</span></p>
+                            <p>AI Level: <span id="lines">0</span></p>
+                            <p>Moves: <span id="level">0</span></p>
+                            <br>
+                            <div class="col">
+                                <div class="col">
+                                    <p>HighScores</p>
+                                    <p id="highscore">0</p>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="col">
+                                    <p>Upcoming shape</p>
+                                    <br>
+                                    <canvas id="upcomingShape"></canvas>
+                                    <!--canvas id="next" class="next"></canvas-->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p>Holding</p>
+                                    <br>
+                                    <canvas id="holdingShape"></canvas>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            Rotate
+                                        </div>
+                                        <div class="col">
+                                            Arrow up
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            Drop down
+                                        </div>
+                                        <div class="col">
+                                            Spacebar
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            Hold
+                                        </div>
+                                        <div class="col">
+                                            Shift
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-bottom">
+                            <div id="sound-div">
+                                <span class="sound-item" id="sound-speaker"></span>
+                                <span class="sound-item" id="sound-description"></span>
+                            </div>
+                            <div class="col">
+                                <button id="startButton" class="myButton">Play</button>
+                                <button id="pauseButton" class="myButton">Pause</button>
+                                <button id="resetButton" class="myButton">Reset</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

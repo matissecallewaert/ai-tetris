@@ -53,3 +53,7 @@ span {
 .sound-item {
     cursor: pointer;
 }
+
+.navbar {
+    background-color: #0F1123;
+}

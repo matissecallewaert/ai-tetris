@@ -90,6 +90,7 @@ export default class Tetris {
         this.holding = true;
         this.holdShape.x = 3;
         this.holdShape.y = 0;
+        this.ApplyShape();
     }
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
     GenerateBag() {
