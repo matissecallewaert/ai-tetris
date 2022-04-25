@@ -232,7 +232,7 @@ function drawGrid(ctx) {
 function UpdateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 1000) {
         clearInterval(id2)
-        tetris.speed -= 100;
+        tetris.speed -= 50;
         id2 = setInterval(move, tetris.speed, tetris);
         vorigeScore = tetris.score;
     }
