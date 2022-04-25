@@ -6,3 +6,8 @@ The user can choose between playing the game himself/herself or letting the AI p
 various medical sectors as well) to teach itself to play the game. The more it plays the game, the better it becomes.
 
 The user can make the AI stop any time and continue playing the game themselves.
+
+
+We use a proxy to collect data about tetris highscores. This way, the user can compare their performance to highlevel tetrisplayers.
+To set up this proxy, we use this command: lcp --proxyUrl https://ch.tetr.io
+
