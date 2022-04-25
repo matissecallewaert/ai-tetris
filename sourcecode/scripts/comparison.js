@@ -36,6 +36,7 @@ function addHighScore() {
         tr.appendChild(td);
     }
     table.appendChild(tr);
+
 }
 
 function addGlobalHighScores() {
@@ -60,8 +61,8 @@ function addGlobalHighScores() {
         })
         .catch(() => {
             let p = document.createElement("p");
-            let main = document.getElementsByTagName("main")[0];
-            p.innerText = "Something went wrong while loading the global scores.";
+            let main = document.getElementById("maindiv");
+            p.innerText = "\nSomething went wrong while loading the global scores.";
             main.appendChild(p);
         })
 
