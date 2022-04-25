@@ -5,9 +5,10 @@ import Sound from "./modules/sound.js"
 //alert(window.innerHeight)
 
 //Definitions of variables and constants
+
 let COLS = 10;
 let ROWS = 20;
-let BLOCK_SIZE = window.innerHeight/25;
+let BLOCK_SIZE = window.innerHeight / 25;
 
 let canvas;
 let ctx;
@@ -67,11 +68,11 @@ let keyHandler = (k) => {
         } else if (k.key === " ") {
             tetris.Drop();
             buttonSound.play();
-        }else if (k.keyCode === 16){
-            if(tetris.holding === false){
-                if(tetris.holdShape === undefined){
+        } else if (k.keyCode === 16) {
+            if (tetris.holding === false) {
+                if (tetris.holdShape === undefined) {
                     tetris.HoldShape();
-                }else{
+                } else {
                     tetris.UseHoldShape();
                 }
             }
@@ -93,7 +94,7 @@ let getTouchCoordinates = (event) => {
 let mobileControl = (event) => {
     let difX = event.changedTouches[0].clientX - x;
     let difY = event.changedTouches[0].clientY - y;
-    if ( Math.abs( difX ) > Math.abs( difY ) ) {
+    if (Math.abs(difX) > Math.abs(difY)) {
         if (difX > 0) {
             tetris.MoveRight();
         } else {
@@ -160,10 +161,10 @@ function move(tetris) {
 
 // Function to show the blocks on the canvas
 function print(tetris) {
-    if(tetris.died){
+    if (tetris.died) {
         loadedData = localStorage.getItem("highScores");
         let data = JSON.parse(loadedData);
-        if(data.Highscore < tetris.score){
+        if (data.Highscore < tetris.score) {
             data.Highscore = tetris.score;
             let gameDataJson = JSON.stringify(data);
             localStorage.setItem("highScores", gameDataJson);
@@ -202,7 +203,7 @@ function print(tetris) {
         }
     }
     holdingctx.clearRect(0, 0, COLS, ROWS)
-    if(tetris.holdShape !== undefined){
+    if (tetris.holdShape !== undefined) {
         for (let y = 0; y < Object.values(tetris.holdShape.shape)[0].length; y++) {
             for (let x = 0; x < Object.values(tetris.holdShape.shape)[0][0].length; x++) {
                 let waarde = Object.values(tetris.holdShape.shape)[0][y][x];
@@ -217,19 +218,19 @@ function print(tetris) {
 
 function drawGrid(ctx) {
     ctx.beginPath();
-    for(let i = 1; i < 10; i++){                                                                        //Draws vertical lines
+    for (let i = 1; i < 10; i++) {                                                                        //Draws vertical lines
         ctx.moveTo(i * BLOCK_SIZE, 0);
         ctx.lineTo(i * BLOCK_SIZE, ROWS * BLOCK_SIZE);
         ctx.stroke();
     }
-    for(let i = 1; i < 20; i++){                                                                        //Draws horizontal lines
+    for (let i = 1; i < 20; i++) {                                                                        //Draws horizontal lines
         ctx.moveTo(0, i * BLOCK_SIZE);
         ctx.lineTo(COLS * BLOCK_SIZE, i * BLOCK_SIZE);
         ctx.stroke();
     }
 }
-function UpdateSpeed(tetris){
-    if(tetris.score >= vorigeScore+1000){
+function UpdateSpeed(tetris) {
+    if (tetris.score >= vorigeScore + 1000) {
         clearInterval(id2)
         tetris.speed -= 100;
         id2 = setInterval(move, tetris.speed, tetris);
@@ -237,22 +238,21 @@ function UpdateSpeed(tetris){
     }
 }
 
-function init(){
+function init() {
     tetris = new Tetris();                                                                              //Initializes the game
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
 
     highscore = document.getElementById("highscore");
     loadedData = localStorage.getItem("highScores");
-    if(loadedData !== null){
+    if (loadedData !== null) {
         let data = JSON.parse(loadedData);
         highscore.textContent = data.Highscore;
-    }else{
-        let data = {Highscore:0};
+    } else {
+        let data = { Highscore: 0 };
         let dataJson = JSON.stringify(data);
-        localStorage.setItem("highScores",dataJson);
+        localStorage.setItem("highScores", dataJson);
     }
-
 
     touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
 
@@ -283,7 +283,7 @@ function init(){
     document.getElementById("startButton").addEventListener("click", startGame);            //Sets all the button events, touch controls and keyboard controls
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
     document.getElementById("resetButton").addEventListener("click", resetGame);
-    document.addEventListener("longpressevent", function(event) {
+    document.addEventListener("longpressevent", function (event) {
         window.addEventListener("touchstart", touchstart, false);
         window.addEventListener("touchend", touchend, false);
     });
