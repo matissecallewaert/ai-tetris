@@ -8,6 +8,6 @@ various medical sectors as well) to teach itself to play the game. The more it p
 The user can make the AI stop any time and continue playing the game themselves.
 
 
-We use a proxy to collect data about tetris highscores. This way, the user can compare their performance to highlevel tetrisplayers.
+Data about tetris highscores is collected through a proxy. This way, the user can compare their performance to highlevel tetrisplayers.
 To set up this proxy, we use this command: lcp --proxyUrl https://ch.tetr.io
 
