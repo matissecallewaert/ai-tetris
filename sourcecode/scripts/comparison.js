@@ -1,7 +1,7 @@
-let amountOfPlayers = 15;
+let amountOfPlayers = 25;
 let table = document.getElementsByTagName("table")[0];
 let toAddGlobalPlayerData;
-let toAddTableTitles = ["Rank", "Player", "Rating", "XP"];
+let toAddTableTitles = ["Rank", "Player", "TR-Rating", "Pieces per second"];
 let hscore = JSON.parse(localStorage.getItem("highScores")).Highscore;
 
 let td;
@@ -32,14 +32,15 @@ async function addGlobalHighScores() {
         .then(data => data.json())
         .then(jsondata => {
             for (let i = 0; i < amountOfPlayers; i++) {
-                toAddGlobalPlayerData = [i + 1, jsondata.data.users[i].username.trim(),
-                Number((jsondata.data.users[i].league.rating).toFixed(3)),
-                Number((jsondata.data.users[i].xp).toFixed(0))];
+                let pps = Number((jsondata.data.users[i].league.pps).toFixed(2)).toString();
+                if (pps.split(".")[1].length < 2) pps += "0";
 
-                //await waitForNSeconds(1);
-                fetch("http://localhost:8010/proxy/api/users/" + jsondata.data.users[i]._id + "/records")
-                    .then(data2 => data2.json())
-                    .then(jsondata2 => { console.log(jsondata2); console.log(jsondata2.data.zen.score); })
+                let trRating = Number((jsondata.data.users[i].league.rating).toFixed(3)).toString();
+                if (trRating.split(".")[1].length < 3) trRating += "0";
+
+                toAddGlobalPlayerData = [i + 1, jsondata.data.users[i].username.trim(),
+                    trRating, pps]
+
 
                 tr = document.createElement("tr");
                 for (let playerData of toAddGlobalPlayerData) {
@@ -48,17 +49,19 @@ async function addGlobalHighScores() {
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
+
             }
             console.log(jsondata);
-            addHighScore(false);
+            //addHighScore(false);
+
         })
-        .catch(() => {
-            let p = document.createElement("p");
-            let main = document.getElementById("maindiv");
-            p.innerText = "\nSomething went wrong while loading the global scores.";
-            main.appendChild(p);
-            addHighScore(true);
-        })
+    /*.catch(() => {
+        let p = document.createElement("p");
+        let main = document.getElementById("maindiv");
+        p.innerText = "\nSomething went wrong while loading the global scores.";
+        main.appendChild(p);
+        //addHighScore(true);
+    })*/
 
 }
 
