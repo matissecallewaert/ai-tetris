@@ -1,17 +1,60 @@
 let amountOfPlayers = 25;
 let table = document.getElementsByTagName("table")[0];
 let toAddGlobalPlayerData;
-let toAddTableTitles = ["Rank", "Player", "TR-Rating", "Pieces per second"];
+let toAddTableTitles = ["Rank", "Player", "TR-Rating", "PPS"];
+let topPlayerData = [];
+
 let hscore = JSON.parse(localStorage.getItem("highScores")).Highscore;
 
 let td;
 let tr;
 let th;
 
+let learnMore = document.getElementById("learnMore");
+let learnMoreText = document.getElementById("learnMoreText");
+
 function waitForNSeconds(n) {
     return new Promise(function (resolve) {
         setTimeout(resolve, n * 1000);
     });
+}
+
+
+function setUpExtraInfo() {
+    learnMore.addEventListener("click", toggleExplanation);
+    learnMoreText.hidden = true;
+    let currentplayers = document.getElementById("currentplayers");
+    fetch("http://localhost:8010/proxy/api/general/stats")
+        .then(data => data.json())
+        .then(jsondata => currentplayers.innerText = jsondata.data.usercount)
+        .catch(currentplayers.innerText = "N/A")
+    let topplayer = document.getElementById("topplayer");
+    let trrating = document.getElementById("trrating");
+    let pps = document.getElementById("pps");
+    let topinfo = document.getElementById("topinfo");
+
+    topplayer.innerText = topPlayerData[1];
+    trrating.innerText = topPlayerData[2];
+    pps.innerText = topPlayerData[3];
+
+    if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) { topinfo.hidden = true; }
+
+}
+
+function toggleExplanation() {
+    if (learnMoreText.hidden) {
+        learnMore.innerText = "Hide info";
+        scrollDown();
+    }
+    else {
+        learnMore.innerText = "Show info";
+    }
+    learnMoreText.hidden = !learnMoreText.hidden;
+}
+
+async function scrollDown() {
+    await waitForNSeconds(0.1);
+    document.getElementById('learnMoreText').scrollIntoView();
 }
 
 
@@ -27,7 +70,7 @@ function addTitles() {
 
 
 
-async function addGlobalHighScores() {
+function addGlobalHighScores() {
     fetch("http://localhost:8010/proxy/api/users/lists/league?limit=" + amountOfPlayers)
         .then(data => data.json())
         .then(jsondata => {
@@ -41,6 +84,7 @@ async function addGlobalHighScores() {
                 toAddGlobalPlayerData = [i + 1, jsondata.data.users[i].username.trim(),
                     trRating, pps]
 
+                if (i === 0) topPlayerData = toAddGlobalPlayerData;
 
                 tr = document.createElement("tr");
                 for (let playerData of toAddGlobalPlayerData) {
@@ -52,20 +96,26 @@ async function addGlobalHighScores() {
 
             }
             console.log(jsondata);
+            setUpExtraInfo();
             //addHighScore(false);
 
         })
-    /*.catch(() => {
-        let p = document.createElement("p");
-        let main = document.getElementById("maindiv");
-        p.innerText = "\nSomething went wrong while loading the global scores.";
-        main.appendChild(p);
-        //addHighScore(true);
-    })*/
+        .catch(() => {
+            let p = document.createElement("p");
+            let main = document.getElementById("maindiv");
+            p.innerText = "\nSomething went wrong while loading the global scores.";
+            p.style.textAlign = "center";
+            main.appendChild(p);
+            //addHighScore(true);
+        })
 
 }
 
-function addHighScore(fetchError) {
+
+
+//not in use anymore
+
+/* function addHighScore(fetchError) {
     let toAddUserData = ["99+", "You", "no rating", hscore];
     if (fetchError) toAddUserData[0] = "N/A";
     tr = document.createElement("tr");
@@ -84,7 +134,7 @@ function addHighScore(fetchError) {
     }
     table.appendChild(tr);
 
-}
+} */
 
 addTitles();
 addGlobalHighScores();

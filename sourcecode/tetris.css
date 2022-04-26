@@ -20,8 +20,16 @@ span {
     padding: 0 2px;
 }
 
+th {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 tr {
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
@@ -49,6 +57,24 @@ tr {
     font-size: 16px;
     padding: 15px 30px;
     cursor: pointer;
+}
+
+.learnMore {
+    color: rgb(13, 110, 253);
+    font-size: 15px;
+    margin: 10px;
+    float: right;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#learnMoreText {
+    margin: 50px;
+}
+
+
+.learnMore:hover {
+    color: rgb(13, 85, 255);
 }
 
 #sound-speaker {
