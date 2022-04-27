@@ -272,11 +272,15 @@ function init() {
 
     block_canvas = document.getElementById("upcomingShape");                                    //Initializes the canvas to display the upcoming tetromino
     blockctx = block_canvas.getContext("2d");
-    blockctx.scale(40, 40);
+    blockctx.canvas.width = 4 * BLOCK_SIZE;
+    blockctx.canvas.height = 2 * BLOCK_SIZE;
+    blockctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
     holding_canvas = document.getElementById("holdingShape");                                    //Initializes the canvas to display the upcoming tetromino
     holdingctx = holding_canvas.getContext("2d");
-    holdingctx.scale(40, 40);
+    holdingctx.canvas.width = 4 * BLOCK_SIZE;
+    holdingctx.canvas.height = 4 * BLOCK_SIZE;
+    holdingctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
     grid_canvas = document.getElementById('grid');
     gridctx = grid_canvas.getContext("2d");
