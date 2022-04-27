@@ -1,5 +1,7 @@
 import Tetris from "./modules/tetris.js"
 import Sound from "./modules/sound.js"
+import AI from "./modules/ai.js";
+
 
 //alert("Script detected")
 //alert(window.innerHeight)
@@ -7,7 +9,7 @@ import Sound from "./modules/sound.js"
 //Definitions of variables and constants
 let COLS = 10;
 let ROWS = 20;
-let BLOCK_SIZE = window.innerHeight/25;
+let BLOCK_SIZE = window.innerHeight / 25;
 
 let canvas;
 let ctx;
@@ -28,10 +30,10 @@ let y;
 // Length of time we want the user to touch before we do something
 let touchduration;
 let timer;
-
+let ai;
 let tetris;
+let tetris2;
 let scorebord;
-
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, Reset), Rotate, MoveLeft == MoveRight, GameOver, BackgroundMusic
@@ -63,15 +65,24 @@ let keyHandler = (k) => {
         } else if (k.key === " ") {
             tetris.Drop();
             buttonSound.play();
+        } else if (k.key === "a") {
+            buttonSound.play();
+            if (tetris.ai_activated) {
+                tetris.ai_activated = false;
+            } else {
+                tetris.ai_activated = true;
+                auto();
+            }
         }
+
     }
 }
 
 /** Function to handle touchscreen swipe controls:
-    - Swipe left to move the block to left
-    - Swipe right to move the block to right
-    - Long press for Hard-Drop
-**/
+ - Swipe left to move the block to left
+ - Swipe right to move the block to right
+ - Long press for Hard-Drop
+ **/
 
 let getTouchCoordinates = (event) => {
     x = event.touches[0].clientX;
@@ -81,7 +92,7 @@ let getTouchCoordinates = (event) => {
 let mobileControl = (event) => {
     let difX = event.changedTouches[0].clientX - x;
     let difY = event.changedTouches[0].clientY - y;
-    if ( Math.abs( difX ) > Math.abs( difY ) ) {
+    if (Math.abs(difX) > Math.abs(difY)) {
         if (difX > 0) {
             tetris.MoveRight();
         } else {
@@ -145,6 +156,33 @@ function move(tetris) {
     tetris.MoveDown();
 }
 
+function auto() {
+    allMoves();
+    makeMoves();
+    console.log("t1");
+}
+
+function allMoves() {
+    tetris.fakGenerateBag();
+    tetris.fakeDrop();
+    tetris.fakeRemoveShape();
+}
+
+async function makeMoves(){
+    await test();
+}
+
+function test(){
+    return new Promise(()=>{
+        setTimeout(tetris.MoveLeft(),700);
+        setTimeout(tetris.MoveDown(),1400);
+        setTimeout(tetris.MoveDown(),2100);
+        setTimeout(tetris.MoveDown(),2800);
+        setTimeout(tetris.MoveDown(),3500);
+        setTimeout(tetris.MoveDown(),4200);
+    })
+}
+
 // Function to show the blocks on the canvas
 function print(tetris) {
 
@@ -177,20 +215,23 @@ function print(tetris) {
 
 function drawGrid(ctx) {
     ctx.beginPath();
-    for(let i = 1; i < 10; i++){                                                                        //Draws vertical lines
+    for (let i = 1; i < 10; i++) {                                                                        //Draws vertical lines
         ctx.moveTo(i * BLOCK_SIZE, 0);
         ctx.lineTo(i * BLOCK_SIZE, ROWS * BLOCK_SIZE);
         ctx.stroke();
     }
-    for(let i = 1; i < 20; i++){                                                                        //Draws horizontal lines
+    for (let i = 1; i < 20; i++) {                                                                        //Draws horizontal lines
         ctx.moveTo(0, i * BLOCK_SIZE);
         ctx.lineTo(COLS * BLOCK_SIZE, i * BLOCK_SIZE);
         ctx.stroke();
     }
 }
 
-function init(){
-    tetris = new Tetris();                                                                              //Initializes the game
+function init() {
+    //Initializes the game
+    tetris = new Tetris();
+    tetris2 = {...tetris};
+    ai = new AI();
     scorebord = document.getElementById("scoreboard");
 
     touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
@@ -218,7 +259,7 @@ function init(){
     document.getElementById("startButton").addEventListener("click", startGame);            //Sets all the button events, touch controls and keyboard controls
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
     document.getElementById("resetButton").addEventListener("click", resetGame);
-    document.addEventListener("longpressevent", function(event) {
+    document.addEventListener("longpressevent", function (event) {
         window.addEventListener("touchstart", touchstart, false);
         window.addEventListener("touchend", touchend, false);
     });
