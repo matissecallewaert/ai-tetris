@@ -68,7 +68,7 @@ export default class Tetris {
         };
         this.holdShape = undefined;
         this.ai = false;
-        this.bagindex = 2;
+        this.bagindex = 1;
         this.movesTaken = 0;
         this.holding = false;
         this.speed = 700;
@@ -312,9 +312,10 @@ export default class Tetris {
         };
         this.holdShape = undefined;
         this.ApplyShape();
-        this.bagindex = 2;
+        this.bagindex = 1;
         this.movesTaken = 0;
         this.speed = 700;
         this.died = false;
+        this.holding = false;
     }
 }

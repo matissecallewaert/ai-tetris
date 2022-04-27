@@ -76,6 +76,10 @@ let keyHandler = (k) => {
                     tetris.UseHoldShape();
                 }
             }
+        }else if (k.key === "s") {
+            clearInterval(id2)
+            tetris.speed -= 50;
+            id2 = setInterval(move, tetris.speed, tetris);
         }
     }
 }
@@ -239,7 +243,8 @@ function UpdateSpeed(tetris) {
 }
 
 function init() {
-    tetris = new Tetris();                                                                              //Initializes the game
+    tetris = new Tetris();
+    console.log(tetris.bag);//Initializes the game
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
 
