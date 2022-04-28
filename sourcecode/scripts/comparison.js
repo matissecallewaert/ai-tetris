@@ -13,21 +13,19 @@ let th;
 let learnMore = document.getElementById("learnMore");
 let learnMoreText = document.getElementById("learnMoreText");
 
-function waitForNSeconds(n) {
-    return new Promise(function (resolve) {
-        setTimeout(resolve, n * 1000);
-    });
-}
-
-
 function setUpExtraInfo() {
     learnMore.addEventListener("click", toggleExplanation);
     learnMoreText.hidden = true;
     let currentplayers = document.getElementById("currentplayers");
+    let rankedplayers = document.getElementById("rankedplayers");
     fetch("http://localhost:8010/proxy/api/general/stats")
         .then(data => data.json())
-        .then(jsondata => currentplayers.innerText = jsondata.data.usercount)
-        .catch(currentplayers.innerText = "N/A")
+        .then(jsondata => { currentplayers.innerText = jsondata.data.usercount; rankedplayers.innerText = jsondata.data.rankedcount; })
+        .catch(() => {
+            currentplayers.innerText = "N/A";
+            rankedplayers.innerText = "N/A";
+            document.getElementById("amountofplayers").hidden = true;
+        })
     let topplayer = document.getElementById("topplayer");
     let trrating = document.getElementById("trrating");
     let pps = document.getElementById("pps");
@@ -39,6 +37,12 @@ function setUpExtraInfo() {
 
     if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) { topinfo.hidden = true; }
 
+
+
+}
+
+function scrollDown() {
+    setTimeout(function () { document.getElementById('learnMoreText').scrollIntoView(); }, 50);
 }
 
 function toggleExplanation() {
@@ -50,11 +54,6 @@ function toggleExplanation() {
         learnMore.innerText = "Show info";
     }
     learnMoreText.hidden = !learnMoreText.hidden;
-}
-
-async function scrollDown() {
-    await waitForNSeconds(0.1);
-    document.getElementById('learnMoreText').scrollIntoView();
 }
 
 
@@ -95,7 +94,7 @@ function addGlobalHighScores() {
                 table.appendChild(tr);
 
             }
-            console.log(jsondata);
+            //console.log(jsondata);
             setUpExtraInfo();
             //addHighScore(false);
 
@@ -106,6 +105,7 @@ function addGlobalHighScores() {
             p.innerText = "\nSomething went wrong while loading the global scores.";
             p.style.textAlign = "center";
             main.appendChild(p);
+            setUpExtraInfo();
             //addHighScore(true);
         })
 
