@@ -60,29 +60,33 @@ export default class Tetris {
             x: 3,
             y: 0,
             shape: this.bag[0],
-            linesCleared: 0
+            linesCleared: 0,
+            lost: false
         };
         this.upcomingShape = {
             x: 3,
             y: 0,
             shape: this.bag[1],
-            linesCleared: 0
+            linesCleared: 0,
+            lost: false
         };
         this.oldShape = {
             x: 3,
             y: 0,
             shape: this.bag[0],
-            linesCleared: 0
+            linesCleared: 0,
+            lost: false
         };
         this.ai_activated = false;
         this.bagindex = 2;
         this.movesTaken = 0;
         this.data = {
-            Height: [],
-            Holes: [],
+            height: [],
+            holes: [],
             linesCleared: 0
         };
         this.fakeShape = null;
+        this.ground = false;
     }
 
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
@@ -103,8 +107,8 @@ export default class Tetris {
         }
     }
 
-    fakGenerateBag() {
-        let copy = {...this.currentShape.shape}
+    fakeGenerateBag() {
+        let copy = {...this.currentShape.shape};
         this.fakeShape = copy;
     }
 
@@ -144,9 +148,6 @@ export default class Tetris {
                 linesCleared: 0
             };
             this.movesTaken++;
-            if (this.Collides()) {
-                this.Reset();
-            }
             this.ApplyShape();
         } else {
             console.error("out of index in bag!");
@@ -164,11 +165,13 @@ export default class Tetris {
     }
 
     MoveDown() {
+        this.ground = false;
         this.RemoveShape();
         this.currentShape.y++;
         if (!this.Collides()) {
             this.ApplyShape();
         } else {
+            this.ground = true;
             this.currentShape.y--;
             this.ApplyShape();
             this.UpdateScore();
@@ -198,7 +201,7 @@ export default class Tetris {
         }
     }
 
-    Drop(shape) {
+    Drop() {
         this.RemoveShape();
         while (!this.Collides()) {
             this.currentShape.y++;
@@ -210,16 +213,18 @@ export default class Tetris {
 
     }
 
-    fakeDrop() {
+    fakeDrop1() {
         this.RemoveShape();
         while (!this.Collides()) {
             this.currentShape.y++;
         }
         this.currentShape.y--;
         this.ApplyShape();
+    }
+
+    fakeDrop2(){
         this.oldShape = JSON.parse(JSON.stringify(this.currentShape));
         this.fakeNextShape();
-
     }
 
     Rotate() {
@@ -271,7 +276,7 @@ export default class Tetris {
         return overlap;
     }
 
-    fakeCollides(){
+    fakeCollides() {
         let overlap = false;
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             for (let x = 0; x < Object.values(this.currentShape.shape)[0][0].length; x++) {
@@ -329,23 +334,28 @@ export default class Tetris {
     }
 
     Height() {
+        let height = [0,0,0,0,0,0,0,0,0,0];
         for (let x = 0; x < 10; x++) {
-            for (let y = 19; y <= 0; y++) {
+            for (let y = 0; y <= 19; y++) {
                 if (this.grid[y][x] !== 0) {
-                    Object.values(this.data.Height)[x] = y;
+                    height[x] = 20-y;
+                    break;
                 }
             }
         }
+        this.data.height = height;
     }
 
     Holes() {
+        let holes=0;
         for (let x = 0; x < 10; x++) {
-            for (let y = 0; y < Object.values(this.data.Height)[x]; y++) {
+            for (let y = 19; y < (20-this.data.height[x]); y++) {
                 if (this.grid[y][x] === 0) {
-                    this.data.Holes++;
+                    holes++;
                 }
             }
         }
+        this.data.holes = holes;
     }
 
     getLinesCleared() {
@@ -398,6 +408,7 @@ export default class Tetris {
         this.ApplyShape();
         this.bagindex = 2;
         this.movesTaken = 0;
+        this.ground = false;
     }
 
 }

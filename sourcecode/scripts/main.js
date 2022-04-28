@@ -32,7 +32,6 @@ let touchduration;
 let timer;
 let ai;
 let tetris;
-let tetris2;
 let scorebord;
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
@@ -47,25 +46,28 @@ let sound = new Sound(document.getElementById("sound-div")),
 // Function to handle various keypresses from keyboard
 let keyHandler = (k) => {
     if (play) {
-        if (k.keyCode === 40) {
-            tetris.MoveDown();
-        } else if (k.keyCode === 37) {
-            tetris.MoveLeft();
-            moveSound.play();
-        } else if (k.keyCode === 39) {
-            tetris.MoveRight();
-            moveSound.play();
-        } else if (k.keyCode === 38) {
-            tetris.Rotate();
-            rotateSound.play();
-        } else if (k.key === "s") {
-            clearInterval(id2)
-            speed -= 50;
-            id2 = setInterval(move, speed, tetris);
-        } else if (k.key === " ") {
-            tetris.Drop();
-            buttonSound.play();
-        } else if (k.key === "a") {
+        if (!tetris.ai_activated) {
+            if (k.keyCode === 40) {
+                tetris.MoveDown();
+            } else if (k.keyCode === 37) {
+                tetris.MoveLeft();
+                moveSound.play();
+            } else if (k.keyCode === 39) {
+                tetris.MoveRight();
+                moveSound.play();
+            } else if (k.keyCode === 38) {
+                tetris.Rotate();
+                rotateSound.play();
+            } else if (k.key === "s") {
+                clearInterval(id2)
+                speed -= 50;
+                id2 = setInterval(move, speed, tetris);
+            } else if (k.key === " ") {
+                tetris.Drop();
+                buttonSound.play();
+            }
+        }
+        if (k.key === "a") {
             buttonSound.play();
             if (tetris.ai_activated) {
                 tetris.ai_activated = false;
@@ -74,7 +76,6 @@ let keyHandler = (k) => {
                 auto();
             }
         }
-
     }
 }
 
@@ -157,29 +158,85 @@ function move(tetris) {
 }
 
 function auto() {
-    allMoves();
     makeMoves();
-    console.log("t1");
+    tetris.ai_activated = false;
 }
 
-function allMoves() {
-    tetris.fakGenerateBag();
-    tetris.fakeDrop();
-    tetris.fakeRemoveShape();
+function getBestMove() {
+    let moves = getAllMoves();
+    let bestMove = moves[0];
+    for (let i = 0; i < moves.length; i++) {
+        if (bestMove.rating < moves[i].rating) {
+            bestMove = moves[i];
+        }
+    }
+    return bestMove;
 }
 
-async function makeMoves(){
-    await test();
+function getAllMoves() {
+    let allMoves = [];
+    let move = [{
+        rating: 0,
+        sideMoves: 0,
+        rotation:0
+    }]
+    for(let rot = 0;rot<4;rot++){
+        tetris.Rotate();
+        for (let x = -5; x < 5; x++) {
+            tetris.fakeGenerateBag();
+            if (x < 0) {
+                for (let xl = -5; xl <= x; xl++) {
+                    tetris.MoveLeft();
+                }
+            } else {
+                for (let xr = 0; xr <= x; xr++) {
+                    tetris.MoveRight();
+                }
+            }
+            tetris.fakeDrop1();
+            tetris.getData();
+            move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes);
+            move.sideMoves = x;
+            move.rotation = rot;
+            allMoves.push({...move});
+            tetris.fakeDrop2();
+            tetris.fakeRemoveShape();
+        }
+    }
+    console.log(allMoves);
+    return allMoves;
 }
 
-function test(){
-    return new Promise(()=>{
-        setTimeout(tetris.MoveLeft(),700);
-        setTimeout(tetris.MoveDown(),1400);
-        setTimeout(tetris.MoveDown(),2100);
-        setTimeout(tetris.MoveDown(),2800);
-        setTimeout(tetris.MoveDown(),3500);
-        setTimeout(tetris.MoveDown(),4200);
+async function makeMoves() {
+    for (let i = 0; i < 10; i++) {
+        let move = getBestMove();
+        for(let rot = 0;rot<move.rotation;rot++){
+            tetris.Rotate();
+        }
+        if (move.sideMoves < 0) {
+            for (let xl = -1; xl >= move.sideMoves; xl--) {
+                tetris.MoveLeft();
+            }
+        } else {
+            for (let xr = 0; xr <= move.sideMoves; xr++) {
+                tetris.MoveRight();
+            }
+        }
+        while (!tetris.ground) {
+            console.log(i);
+            tetris.MoveDown();
+            let x = await moveBuffer();
+        }
+        tetris.ground = false;
+    }
+
+}
+
+function moveBuffer() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, 300);
     })
 }
 
@@ -230,7 +287,6 @@ function drawGrid(ctx) {
 function init() {
     //Initializes the game
     tetris = new Tetris();
-    tetris2 = {...tetris};
     ai = new AI();
     scorebord = document.getElementById("scoreboard");
 

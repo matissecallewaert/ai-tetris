@@ -9,9 +9,10 @@ export default class AI {
         this.population = []
         this.fittest = null;
         this.secondFittest = null;
-        this.scores = [100,200,300,400,500];
+        this.scores = [];
         this.crossoverRate = 0.3;
         this.mutationRate = 0.1;
+        this.firstPopulation();
     }
 
     firstPopulation(){
@@ -94,15 +95,15 @@ export default class AI {
         for(let column of height){
             aHeight+=column;
         }
-        return aHeight*"placeholder";
+        return aHeight* this.genes[0];
     }
 
     calcClearlines(linesCleared){
-        return linesCleared*"placeholder";
+        return linesCleared*this.genes[1];
     }
 
     calcHoles(holes){
-        return holes*"placeholder";
+        return holes*this.genes[2];
     }
 
     calcBumpiness(height){
@@ -110,7 +111,15 @@ export default class AI {
         for(let i; i < height.length-1;i++){
             bumpiness+=Math.abs(height[i]-height[i+1]);
         }
-        return bumpiness*"placeholder";
+        return bumpiness*this.genes[3];
+    }
+
+    calcRating(height,linesCleared,holes){
+        let rating = this.calcClearlines(linesCleared)-
+            this.calcAggregateHeight(height)-
+            this.calcHoles(holes)-
+            this.calcBumpiness(height);
+        return rating;
     }
 
 }
