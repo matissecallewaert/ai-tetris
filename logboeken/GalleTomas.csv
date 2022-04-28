@@ -1,17 +1,18 @@
 Datum,Start,Einde,Plaats,Omschrijving
-16/02/22,09:00,12:00,Contacturen,Git leren
-17/02/22,08:00,10:00,Extern,Git leren
-23/02/22,09:00,12:00,Contacturen,Git leren + debuggen
-02/03/22,09:00,12:00,Contacturen,Brainstormen
-08/03/22,17:15,18:00,Discord Call,Concreet idee maken
-09/03/22,09:00,12:00,Contacturen,Verder uitwerken idee
-20/03/22,14:15,16:30,Discord Call,Diagrammen verder uitwerken
-27/03/22,10:45,11:45,Extern,Lezen hoe genetic AI in het algemeen en voor deze specifieke case werkt
-05/04/22,15:20,17:00,Thuis,Eerste versie van de website gemaakt
-13/04/22,21:00,23:30,Discord Call,verder gewerkt aan UI met Akash
-14/04/22,15:00,19:00,Discord Call,verder gewerkt aan UI en bugfixes met Akash en Matisse
-17/04/22,16:30,19:00,Thuis,grid over veld gemaakt; extra paginas en navbar gemaakt; eerste versie van uitleg getypt en code gestructureerd
-18/04/22,13:30,16:45,Thuis,navbar verbeterd en heholpen met kleine bugfix
-20/04/22,09:00,12:00,Contacturen,Navbar proberen collapsen
-24/04/22,11:00,13:00,Thuis,Navbar verbeteren; controls tonen; html structuur in container gestoken
-27/04/22,09:00,12:00,Contacturen,UI verbeterd; meer bootstrap toegepast
+16/02/2022,09:00,12:00,Contacturen,Git leren
+17/02/2022,08:00,10:00,Extern,Git leren
+23/02/2022,09:00,12:00,Contacturen,Git leren + debuggen
+02/03/2022,09:00,12:00,Contacturen,Brainstormen
+08/03/2022,17:15,18:00,Discord Call,Concreet idee maken
+09/03/2022,09:00,12:00,Contacturen,Verder uitwerken idee
+20/03/2022,14:15,16:30,Discord Call,Diagrammen verder uitwerken
+27/03/2022,10:45,11:45,Extern,Lezen hoe genetic AI in het algemeen en voor deze specifieke case werkt
+05/04/2022,15:20,17:00,Thuis,Eerste versie van de website gemaakt
+13/04/2022,21:00,23:30,Discord Call,verder gewerkt aan UI met Akash
+14/04/2022,15:00,19:00,Discord Call,verder gewerkt aan UI en bugfixes met Akash en Matisse
+17/04/2022,16:30,19:00,Thuis,grid over veld gemaakt; extra paginas en navbar gemaakt; eerste versie van uitleg getypt en code gestructureerd
+18/04/2022,13:30,16:45,Thuis,navbar verbeterd en heholpen met kleine bugfix
+20/04/2022,09:00,12:00,Contacturen,Navbar proberen collapsen
+24/04/2022,11:00,13:00,Thuis,Navbar verbeteren; controls tonen; html structuur in container gestoken
+27/04/2022,09:00,12:00,Contacturen,UI verbeterd; meer bootstrap toegepast
+28/04/2022,17:30,18:30,Thuis,"Light mode toegevoegd, pagina voor code uitleg toegevoegd, favicon aangemaakt, control van snelheid toegevoegd in tabel"
