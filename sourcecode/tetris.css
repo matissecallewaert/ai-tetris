@@ -87,6 +87,11 @@ tr {
     background-color: #0F1123;
 }
 
+.light-mode {
+    background-color: white;
+    color: black;
+}
+
 /* #keyupIcon {
     height: 30px;
     width: 30px;
