@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="tetris.css">
     <title>Tetris AI</title>
     <script src="scripts/main.js" type="module"></script>
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="icon" href="assets/images/favgif.gif" type="image/gif">
     <script src="scripts/lightmode.js" defer></script>
 </head>
 
@@ -18,7 +18,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <div class="navbar-nav w-100 justify-content-between nav-fill">
-                <button type="button" class="myButton btn btn-md" onclick="toggleLight()">Toggle Light</button>
+                <button type="button" class="myButton btn btn-md" onclick="toggleLight()" id="toggleLight">Toggle
+                    Light</button>
                 <div class="row w-100">
 
                     <div class="col-md-3 col-xs-12">
@@ -111,7 +112,7 @@
                 </div>
                 <div class="row">
                     <div class="col-7">
-                        Increase spead
+                        Increase speed
                     </div>
                     <div class="col">
                         s

@@ -12,10 +12,10 @@ let th;
 
 let learnMore = document.getElementById("learnMore");
 let learnMoreText = document.getElementById("learnMoreText");
+learnMore.addEventListener("click", toggleExplanation);
+learnMoreText.hidden = true;
 
 function setUpExtraInfo() {
-    learnMore.addEventListener("click", toggleExplanation);
-    learnMoreText.hidden = true;
     let currentplayers = document.getElementById("currentplayers");
     let rankedplayers = document.getElementById("rankedplayers");
     fetch("http://localhost:8010/proxy/api/general/stats")
