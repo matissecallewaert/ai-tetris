@@ -180,6 +180,16 @@ function print(tetris) {
     }
     ctx.clearRect(0, 0, COLS, ROWS)
 
+    let shape = tetris.EndUp();
+    for(let y = 0; y < Object.values(shape.shape)[0].length;y++){
+        for(let x = 0; x < Object.values(shape.shape)[0][0].length;x++){
+            if(Object.values(shape.shape)[0][y][x] !== 0){
+                ctx.fillStyle = "#808080";
+                ctx.fillRect(x+shape.x, y+shape.y-1, 1, 1);
+            }
+        }
+    }
+
     for (let y = 0; y < 20; y++) {
         for (let x = 0; x < 10; x++) {
             let value = tetris.grid[y][x];
@@ -189,6 +199,7 @@ function print(tetris) {
             }
         }
     }
+
 
     scorebord.style.color = "#FFFFFF";
     scorebord.textContent = tetris.score;
@@ -243,8 +254,7 @@ function UpdateSpeed(tetris) {
 }
 
 function init() {
-    tetris = new Tetris();
-    console.log(tetris.bag);//Initializes the game
+    tetris = new Tetris();//Initializes the game
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
 

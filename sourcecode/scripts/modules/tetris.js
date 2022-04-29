@@ -124,7 +124,7 @@ export default class Tetris {
             };
             this.bagindex++;
             this.movesTaken++;
-            if (this.Collides()) {
+            if (this.Collides(this.currentShape)) {
                 this.died = true;
             }
             else{
@@ -147,7 +147,7 @@ export default class Tetris {
     MoveDown() {
         this.RemoveShape();
         this.currentShape.y++;
-        if (!this.Collides()) {
+        if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
         } else {
             this.currentShape.y--;
@@ -159,7 +159,7 @@ export default class Tetris {
     MoveLeft() {
         this.RemoveShape();
         this.currentShape.x--;
-        if (!this.Collides()) {
+        if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
         } else {
             this.currentShape.x++;
@@ -169,7 +169,7 @@ export default class Tetris {
     MoveRight() {
         this.RemoveShape();
         this.currentShape.x++;
-        if (!this.Collides()) {
+        if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
         } else {
             this.currentShape.x--;
@@ -178,7 +178,7 @@ export default class Tetris {
     }
     Drop() {
         this.RemoveShape();
-        while (!this.Collides()) {
+        while (!this.Collides(this.currentShape)) {
             this.currentShape.y++;
         }
         this.currentShape.y--;
@@ -192,7 +192,7 @@ export default class Tetris {
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
         }
-        if (this.Collides() && !this.TouchesRightWall()){
+        if (this.Collides(this.currentShape) && !this.TouchesRightWall()){
             for(let i = 0; i<3;i++){
                 this.Transpose();
                 for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
@@ -223,15 +223,15 @@ export default class Tetris {
         }
     }
 
-    Collides() {
+    Collides(shape) {
         let overlap = false;
-        for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
-            for (let x = 0; x < Object.values(this.currentShape.shape)[0][0].length; x++) {
-                if (this.currentShape.x < 0 || this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length > 10 || this.currentShape.y + Object.values(this.currentShape.shape)[0].length > 20) {
+        for (let y = 0; y < Object.values(shape.shape)[0].length; y++) {
+            for (let x = 0; x < Object.values(shape.shape)[0][0].length; x++) {
+                if (shape.x < 0 || shape.x + Object.values(shape.shape)[0][0].length > 10 || shape.y + Object.values(shape.shape)[0].length > 20) {
                     overlap = true;
                     break;
                 }
-                if (this.grid[y + this.currentShape.y][x + this.currentShape.x] !== 0 && Object.values(this.currentShape.shape)[0][y][x] !== 0) {
+                if (this.grid[y + shape.y][x + shape.x] !== 0 && Object.values(shape.shape)[0][y][x] !== 0) {
                     overlap = true;
                     break;
                 }
@@ -273,6 +273,19 @@ export default class Tetris {
             }
         }
         this.currentShape.shape[Object.keys(this.currentShape.shape)[0]] = nieuw;
+    }
+    EndUp(){
+        this.RemoveShape();
+        let enupshape = {
+            x : this.currentShape.x,
+            y : this.currentShape.y,
+            shape : this.currentShape.shape
+        }
+        while(!this.Collides(enupshape)){
+            enupshape.y++;
+        }
+        this.ApplyShape();
+        return enupshape;
     }
     Reset() {
         this.grid = [

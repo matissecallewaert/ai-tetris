@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="289fc030-45f1-43f2-8d89-afdd8a6b9419" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/genetic-explanation.html" beforeDir="false" afterPath="$PROJECT_DIR$/genetic-explanation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/modules/tetris.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/modules/tetris.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +98,7 @@
       <workItem from="1650822056034" duration="370000" />
       <workItem from="1650888616312" duration="2275000" />
       <workItem from="1651043202428" duration="5449000" />
-      <workItem from="1651253327428" duration="664000" />
+      <workItem from="1651253327428" duration="4325000" />
     </task>
     <servers />
   </component>
