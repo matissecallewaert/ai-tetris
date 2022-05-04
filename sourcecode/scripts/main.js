@@ -41,6 +41,8 @@ let loadedData;
 let gameData;
 let highscore;
 
+let gameOverScreen;
+
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, Reset), Rotate, MoveLeft == MoveRight, GameOver, BackgroundMusic
@@ -138,10 +140,14 @@ function onlongtouch() {
 
 // Various functions to Start, Pause and Reset the game
 function startGame() {
+    if(tetris.died){
+        resetGame();
+    }
     clearInterval(id2);
     id2 = setInterval(move, tetris.speed, tetris);
     play = true;
     buttonSound.play();
+    gameOverScreen.setAttribute("visibility", "hidden")
 }
 
 function resetGame() {
@@ -150,6 +156,7 @@ function resetGame() {
     play = false;
     buttonSound.play();
     vorigeScore = 0;
+    gameOverScreen.setAttribute("visibility", "hidden")
 }
 
 function pauseGame() {
@@ -175,8 +182,8 @@ function print(tetris) {
         }
         highscore = document.getElementById("highscore");
         highscore.textContent = data.Highscore;
-        tetris.Reset();
-        resetGame();
+        gameOverScreen.setAttribute("visibility", "visible");
+        pauseGame();
     }
     ctx.clearRect(0, 0, COLS, ROWS)
 
@@ -200,11 +207,8 @@ function print(tetris) {
         }
     }
 
-
-    scorebord.style.color = "#FFFFFF";
     scorebord.textContent = tetris.score;
 
-    moves.style.color = "#FFFFFF";
     moves.textContent = tetris.movesTaken;
 
     blockctx.clearRect(0, 0, COLS, ROWS)
@@ -269,6 +273,8 @@ function init() {
         localStorage.setItem("highScores", dataJson);
     }
 
+    gameOverScreen = document.getElementById("game_over");
+
     touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
 
     x = null;
@@ -298,6 +304,9 @@ function init() {
     gridctx.canvas.height = ROWS * BLOCK_SIZE;
     gridctx.strokeStyle = "#484848";
     drawGrid(gridctx);
+
+    gameOverScreen.setAttribute("height", (ROWS * BLOCK_SIZE + 5).toString());
+    gameOverScreen.setAttribute("width", (COLS * BLOCK_SIZE + 5).toString());
 
     document.getElementById("startButton").addEventListener("click", startGame);            //Sets all the button events, touch controls and keyboard controls
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
