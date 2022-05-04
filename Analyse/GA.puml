@@ -1,0 +1,15 @@
+@startuml state
+hide empty description
+skinparam linetype ortho
+[*] -> init
+init -> fitness
+fitness -> selection
+selection -> crossover
+crossover -> mutation
+state c <<choice>>
+mutation --> c
+
+c --> [*]: Final generation reached
+c -> fitness: Make new generation
+
+@enduml

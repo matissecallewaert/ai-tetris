@@ -88,8 +88,8 @@ tr {
 }
 
 .light-mode {
-    background-color: white;
-    color: black;
+    background-color: #dcdcdc;
+    color: #444444;
 }
 
 /* #keyupIcon {
