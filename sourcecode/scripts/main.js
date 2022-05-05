@@ -31,6 +31,9 @@ let id2;
 let x;
 let y;
 
+let done = false;
+let index = 0;
+
 // Length of time we want the user to touch before we do something
 let touchduration;
 let timer;
@@ -38,7 +41,9 @@ let ai;
 let tetris;
 let scorebord;
 let moves;
-
+let ai_level;
+let ai_gene;
+let gene;
 let loadedData;
 let gameData;
 let highscore;
@@ -79,20 +84,20 @@ let keyHandler = (k) => {
                         tetris.UseHoldShape();
                     }
                 }
-            } else if (k.key === "s") {
-                clearInterval(id2)
-                tetris.speed -= 50;
-                id2 = setInterval(move, tetris.speed, tetris);
             }
-            if (k.key === "a") {
-                buttonSound.play();
-                if (tetris.ai_activated) {
-                    tetris.ai_activated = false;
-                } else {
-                    tetris.ai_activated = true;
-                    auto();
-                }
+        }
+        if (k.key === "a") {
+            buttonSound.play();
+            if (tetris.ai_activated) {
+                tetris.ai_activated = false;
+            } else {
+                tetris.ai_activated = true;
+                auto();
             }
+        } else if (k.key === "s") {
+            clearInterval(id2)
+            tetris.speed -= 50;
+            id2 = setInterval(move, tetris.speed, tetris);
         }
     }
 }
@@ -160,7 +165,10 @@ function startGame() {
 function resetGame() {
     clearInterval(id2);
     tetris.Reset();
+    ai.reset();
+    ai_level.innerText = 1;
     play = false;
+    tetris.ai_activated = false;
     buttonSound.play();
     vorigeScore = 0;
 }
@@ -172,23 +180,50 @@ function pauseGame() {
 }
 
 function move(tetris) {
-    tetris.MoveDown();
+    if (tetris.ai_activated) {
+        tetris.fakeMoveDown1();
+    } else {
+        tetris.MoveDown();
+    }
+
     UpdateSpeed(tetris);
 }
 
-function auto() {
-    makeMoves();
-    tetris.ai_activated = false;
+async function auto() {
+    await algorithm();
+    while (tetris.ai_activated === true) {
+        await makeMoves();
+    }
 }
+
+async function algorithm() {
+    for (let i = 0; i < ai.maxGeneration; i++) {
+        for (let j = 0; j < ai.populationSize; j++) {
+            index = j;
+            ai_gene.innerText = index + 1;
+            gene = ai.population[j];
+            makeMoves();
+            await waitUntil(() => done === true);
+            ai.scores[j] = JSON.parse(JSON.stringify(tetris.score));
+            console.log(j);
+        }
+        ai.populationNumber++;
+        ai_level.innerText = ai.populationNumber + 1;
+        ai.populate();
+    }
+}
+
 
 function getBestMove() {
     let moves = getAllMoves();
+    console.log(moves);
     let bestMove = moves[0];
     for (let i = 0; i < moves.length; i++) {
         if (bestMove.rating < moves[i].rating) {
             bestMove = moves[i];
         }
     }
+    console.log(bestMove.rating + "best");
     return bestMove;
 }
 
@@ -197,9 +232,9 @@ function getAllMoves() {
     let move = [{
         rating: 0,
         sideMoves: 0,
-        rotation:0
+        rotation: 0
     }]
-    for(let rot = 0;rot<4;rot++){
+    for (let rot = 0; rot < 4; rot++) {
         tetris.Rotate();
         for (let x = -5; x < 5; x++) {
             tetris.fakeGenerateBag();
@@ -213,23 +248,26 @@ function getAllMoves() {
                 }
             }
             tetris.fakeDrop1();
+            tetris.fakeUpdateScore();
             tetris.getData();
-            move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes);
+            move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes, gene);
+            console.log(tetris.data.linesCleared);
             move.sideMoves = x;
-            move.rotation = rot;
+            move.rotation = rot+1;
             allMoves.push({...move});
             tetris.fakeDrop2();
             tetris.fakeRemoveShape();
         }
     }
-    console.log(allMoves);
     return allMoves;
 }
 
+
 async function makeMoves() {
-    for (let i = 0; i < 10; i++) {
+    done = false;
+    while (!tetris.died && tetris.movesTaken < 500) {
         let move = getBestMove();
-        for(let rot = 0;rot<move.rotation;rot++){
+        for (let rot = 0; rot < move.rotation; rot++) {
             tetris.Rotate();
         }
         if (move.sideMoves < 0) {
@@ -241,27 +279,34 @@ async function makeMoves() {
                 tetris.MoveRight();
             }
         }
-        while (!tetris.ground) {
-            console.log(i);
-            tetris.MoveDown();
-            let x = await moveBuffer();
-        }
+        await waitUntil(() => tetris.ground === true);
+        tetris.fakeMoveDown2();
         tetris.ground = false;
+        ai.moves
+        if (!tetris.ai_activated) {
+            break;
+        }
     }
-
+    done = true;
 }
 
-function moveBuffer() {
+const waitUntil = (condition) => {
     return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, 300);
+        let interval = setInterval(() => {
+            if (!condition()) {
+                return
+            }
+
+            clearInterval(interval)
+            resolve()
+        }, 100)
     })
 }
 
 // Function to show the blocks on the canvas
 function print(tetris) {
     if (tetris.died) {
+        ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
         loadedData = localStorage.getItem("highScores");
         let data = JSON.parse(loadedData);
         if (data.Highscore < tetris.score) {
@@ -272,16 +317,18 @@ function print(tetris) {
         highscore = document.getElementById("highscore");
         highscore.textContent = data.Highscore;
         tetris.Reset();
-        resetGame();
+        if (!tetris.ai_activated) {
+            resetGame();
+        }
     }
     ctx.clearRect(0, 0, COLS, ROWS)
 
     let shape = tetris.EndUp();
-    for(let y = 0; y < Object.values(shape.shape)[0].length;y++){
-        for(let x = 0; x < Object.values(shape.shape)[0][0].length;x++){
-            if(Object.values(shape.shape)[0][y][x] !== 0){
+    for (let y = 0; y < Object.values(shape.shape)[0].length; y++) {
+        for (let x = 0; x < Object.values(shape.shape)[0][0].length; x++) {
+            if (Object.values(shape.shape)[0][y][x] !== 0) {
                 ctx.fillStyle = "#808080";
-                ctx.fillRect(x+shape.x, y+shape.y-1, 1, 1);
+                ctx.fillRect(x + shape.x, y + shape.y - 1, 1, 1);
             }
         }
     }
@@ -340,6 +387,7 @@ function drawGrid(ctx) {
         ctx.stroke();
     }
 }
+
 function UpdateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 1000) {
         clearInterval(id2)
@@ -353,8 +401,13 @@ function init() {
     //Initializes the game
     tetris = new Tetris();
     ai = new AI();
+    ai.reset();
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
+    ai_level = document.getElementById("lines");
+    ai_level.innerText = (ai.populationNumber + 1).toString();
+    ai_gene = document.getElementById("gene");
+    ai_gene.innerText = (index + 1).toString();
 
     highscore = document.getElementById("highscore");
     loadedData = localStorage.getItem("highScores");
@@ -362,7 +415,7 @@ function init() {
         let data = JSON.parse(loadedData);
         highscore.textContent = data.Highscore;
     } else {
-        let data = { Highscore: 0 };
+        let data = {Highscore: 0};
         let dataJson = JSON.stringify(data);
         localStorage.setItem("highScores", dataJson);
     }

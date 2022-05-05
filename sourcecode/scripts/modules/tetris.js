@@ -83,7 +83,8 @@ export default class Tetris {
         this.data = {
             height: [],
             holes: [],
-            linesCleared: 0
+            linesCleared: 0,
+            movesIndex:0
         };
         this.fakeShape = null;
         this.ground = false;
@@ -176,7 +177,6 @@ export default class Tetris {
                 shape: this.fakeShape,
                 linesCleared: 0
             };
-            this.movesTaken++;
             this.ApplyShape();
         } else {
             console.error("out of index in bag!");
@@ -206,6 +206,24 @@ export default class Tetris {
             this.UpdateScore();
             this.NextShape();
         }
+    }
+
+    fakeMoveDown1(){
+        this.ground = false;
+        this.RemoveShape();
+        this.currentShape.y++;
+        if (!this.Collides(this.currentShape)) {
+            this.ApplyShape();
+        } else {
+            this.ground = true;
+            this.currentShape.y--;
+            this.ApplyShape();
+        }
+    }
+
+    fakeMoveDown2(){
+        this.UpdateScore();
+        this.NextShape();
     }
 
     MoveLeft() {
@@ -244,7 +262,7 @@ export default class Tetris {
 
     fakeDrop1() {
         this.RemoveShape();
-        while (!this.Collides()) {
+        while (!this.Collides(this.currentShape)) {
             this.currentShape.y++;
         }
         this.currentShape.y--;
@@ -344,6 +362,15 @@ export default class Tetris {
         this.score += (aantal-1)*100 *(20-y);
     }
 
+    fakeUpdateScore(){
+        let y;
+        for (y = 0; y < 20; y++) {
+            if (this.grid[y].every(item => item !== 0)) {
+                this.currentShape.linesCleared++;
+            }
+        }
+    }
+
     RemoveShape() {
         for (let y = this.currentShape.y; y < this.currentShape.y + Object.values(this.currentShape.shape)[0].length; y++) {
             for (let x = this.currentShape.x; x < this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length; x++) {
@@ -418,12 +445,16 @@ export default class Tetris {
         this.data.linesCleared = this.currentShape.linesCleared;
     }
 
+    getMovesIndex(){
+        this.data.movesIndex = this.movesTaken;
+    }
+
     getData() {
         this.Height();
         this.Holes();
         this.getLinesCleared();
+        this.getMovesIndex();
     }
-
 
     Reset() {
         this.grid = [
