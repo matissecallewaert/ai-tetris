@@ -19,3 +19,5 @@ Datum,Start,Einde,Plaats,Omschrijving
 16/04/22,20:00,22:00,Thuis,Touch support toegevoegd
 20/04/22,09:00,12:00,Contacturen,Verder gewerkt aan UI
 26/04/22,09:00,12:00,Contacturen,Verder gewerkt aan AI
+04/05/22,09:00,12:00,Contacturen,Verder gewerkt aan UI (Game Over scherm toegevoegd)
+05/05/22,20:00,23:00,Thuis,Verschillende keyhandler functies toegevoegd + bug fixes
