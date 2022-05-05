@@ -95,8 +95,9 @@ export default class Tetris {
         this.bagindex = 1;
         this.movesTaken = 0;
         this.holding = false;
-        this.speed = 700;
+        this.speed = 10;
         this.died = false;
+        this.fakeDied = false;
     }
     HoldShape(){
         this.RemoveShape();
@@ -177,6 +178,9 @@ export default class Tetris {
                 shape: this.fakeShape,
                 linesCleared: 0
             };
+            if (this.Collides(this.currentShape)) {
+                this.fakeDied = true;
+            }
             this.ApplyShape();
         } else {
             console.error("out of index in bag!");
@@ -356,10 +360,10 @@ export default class Tetris {
                 aantal++;
                 this.RemoveRow(y);
                 this.currentShape.linesCleared++;
-                this.score += 100 * (20 - y);
+                this.score += 1000 * (20 - y);
             }
         }
-        this.score += (aantal-1)*100 *(20-y);
+        this.score += (aantal-1)*1000 *(20-y);
     }
 
     fakeUpdateScore(){
@@ -432,7 +436,7 @@ export default class Tetris {
     Holes() {
         let holes=0;
         for (let x = 0; x < 10; x++) {
-            for (let y = 19; y < (20-this.data.height[x]); y++) {
+            for (let y = 19; y > (20-this.data.height[x]); y--) {
                 if (this.grid[y][x] === 0) {
                     holes++;
                 }
@@ -496,7 +500,7 @@ export default class Tetris {
         this.ApplyShape();
         this.bagindex = 1;
         this.movesTaken = 0;
-        this.speed = 700;
+        this.speed = 10;
         this.died = false;
         this.holding = false;
         this.ground = false;
