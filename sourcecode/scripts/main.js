@@ -55,6 +55,16 @@ let sound = new Sound(document.getElementById("sound-div")),
 
 // Function to handle various keypresses from keyboard
 let keyHandler = (k) => {
+    if (k.key === "p") {
+        buttonSound.play();
+        startGame();
+    } else if (k.key === "h") {
+        buttonSound.play();
+        pauseGame();
+    } else if (k.key === "r") {
+        buttonSound.play();
+        resetGame();
+    }
     if (play) {
         if (k.keyCode === 40) {
             tetris.MoveDown();
@@ -85,6 +95,19 @@ let keyHandler = (k) => {
         }
     }
 }
+
+/**
+ * Function to disable scrolling on canvas when pressing the arrow keys
+ */
+let arrow_keys_handler = function(e) {
+    if (play) {
+        switch(e.code){
+            case "ArrowUp": case "ArrowDown": case "ArrowLeft": case "ArrowRight":
+            case "Space": e.preventDefault(); break;
+            default: break; // do not block other keys
+        }
+    }
+};
 
 /** Function to handle touchscreen swipe controls:
     - Swipe left to move the block to left
@@ -318,6 +341,8 @@ function init() {
     document.addEventListener('touchcoordinates', getTouchCoordinates, false);
     document.addEventListener('touchcontrols', mobileControl, false);
     document.addEventListener("keydown", keyHandler);
+
+    window.addEventListener("keydown", arrow_keys_handler, false);
 
     setInterval(print, 100, tetris);                                                                //Initializes the display of the game
 
