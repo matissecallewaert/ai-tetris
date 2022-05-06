@@ -68,6 +68,7 @@ let keyHandler = (k) => {
     if (play) {
         if (k.keyCode === 40) {
             tetris.MoveDown();
+            tetris.score++;
         } else if (k.keyCode === 37) {
             tetris.MoveLeft();
             moveSound.play();
@@ -88,7 +89,7 @@ let keyHandler = (k) => {
                     tetris.UseHoldShape();
                 }
             }
-        }else if (k.key === "s") {
+        } else if (k.key === "s") {
             clearInterval(id2)
             tetris.speed -= 50;
             id2 = setInterval(move, tetris.speed, tetris);
@@ -99,9 +100,9 @@ let keyHandler = (k) => {
 /**
  * Function to disable scrolling on canvas when pressing the arrow keys
  */
-let arrow_keys_handler = function(e) {
+let arrow_keys_handler = function (e) {
     if (play) {
-        switch(e.code){
+        switch (e.code) {
             case "ArrowUp": case "ArrowDown": case "ArrowLeft": case "ArrowRight":
             case "Space": e.preventDefault(); break;
             default: break; // do not block other keys
@@ -163,7 +164,7 @@ function onlongtouch() {
 
 // Various functions to Start, Pause and Reset the game
 function startGame() {
-    if(tetris.died){
+    if (tetris.died) {
         resetGame();
     }
     clearInterval(id2);
@@ -190,7 +191,7 @@ function pauseGame() {
 
 function move(tetris) {
     tetris.MoveDown();
-    UpdateSpeed(tetris);
+    if (tetris.speed > 150) UpdateSpeed(tetris);
 }
 
 // Function to show the blocks on the canvas
@@ -211,11 +212,11 @@ function print(tetris) {
     ctx.clearRect(0, 0, COLS, ROWS)
 
     let shape = tetris.EndUp();
-    for(let y = 0; y < Object.values(shape.shape)[0].length;y++){
-        for(let x = 0; x < Object.values(shape.shape)[0][0].length;x++){
-            if(Object.values(shape.shape)[0][y][x] !== 0){
+    for (let y = 0; y < Object.values(shape.shape)[0].length; y++) {
+        for (let x = 0; x < Object.values(shape.shape)[0][0].length; x++) {
+            if (Object.values(shape.shape)[0][y][x] !== 0) {
                 ctx.fillStyle = "#808080";
-                ctx.fillRect(x+shape.x, y+shape.y-1, 1, 1);
+                ctx.fillRect(x + shape.x, y + shape.y - 1, 1, 1);
             }
         }
     }
@@ -272,9 +273,11 @@ function drawGrid(ctx) {
     }
 }
 function UpdateSpeed(tetris) {
-    if (tetris.score >= vorigeScore + 1000) {
+    if (tetris.score >= vorigeScore + 4000) {
         clearInterval(id2)
         tetris.speed -= 50;
+
+        console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
         id2 = setInterval(move, tetris.speed, tetris);
         vorigeScore = tetris.score;
     }

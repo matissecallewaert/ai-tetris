@@ -1,5 +1,6 @@
 let amountOfPlayers = 25;
-let table = document.getElementsByTagName("table")[0];
+let table = document.getElementById("highscoreTable");
+table.hidden = true;
 let toAddGlobalPlayerData;
 let toAddTableTitles = ["Rank", "Player", "TR-Rating", "PPS"];
 let topPlayerData = [];
@@ -96,17 +97,25 @@ function addGlobalHighScores() {
             }
             //console.log(jsondata);
             setUpExtraInfo();
+            setTimeout(function () {
+                table.hidden = false;
+                document.getElementById("loading...").hidden = true;
+            }, 1500);
             //addHighScore(false);
 
         })
         .catch(() => {
-            let p = document.createElement("p");
-            let main = document.getElementById("maindiv");
-            p.innerText = "\nSomething went wrong while loading the global scores.";
-            p.style.textAlign = "center";
-            main.appendChild(p);
-            setUpExtraInfo();
-            //addHighScore(true);
+            setTimeout(function () {
+                document.getElementById("loading...").hidden = true;
+                let p = document.createElement("p");
+                let main = document.getElementById("maindiv");
+                document.getElementById("loading...").hidden = true;
+                p.innerText = "\nSomething went wrong while loading the global scores.";
+                p.style.textAlign = "center";
+                main.appendChild(p);
+                setUpExtraInfo();
+                //addHighScore(true);
+            }, 1500);
         })
 
 }
