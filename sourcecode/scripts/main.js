@@ -221,7 +221,7 @@ function getBestMove() {
     let bestMove = moves[0];
     for (let i = 0; i < moves.length; i++) {
         if (bestMove.rating < moves[i].rating) {
-            bestMove = moves[i];
+            bestMove = JSON.parse(JSON.stringify(moves[i]));
         }
     }
     return bestMove;
@@ -239,7 +239,7 @@ function getAllMoves() {
         for (let x = -5; x < 5; x++) {
             tetris.fakeGenerateBag();
             if (x < 0) {
-                for (let xl = -5; xl <= x; xl++) {
+                for (let xl = -1; xl >= x; xl--) {
                     tetris.MoveLeft();
                 }
             } else {

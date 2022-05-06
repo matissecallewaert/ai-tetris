@@ -12,16 +12,16 @@ export default class AI {
         this.secondFittest = null;
         this.scores = [];
         this.moves = [];
-        this.crossoverRate = 0.03;
-        this.mutationRate = 0.1;
-        this.random=0;
+        this.crossoverRate = 0.3;
+        this.mutationRate = 0.05;
+        this.random = 0;
         this.firstPopulation();
     }
 
     firstPopulation() {
         for (let i = 0; i < this.populationSize; i++) {
             for (let j = 0; j < 5; j++) {
-                this.genes[j] = (Math.random() * 2) - 1;
+                this.genes[j] = (Math.random()*2) -1;
             }
             this.population[i] = JSON.parse(JSON.stringify(this.genes));
         }
@@ -160,17 +160,17 @@ export default class AI {
     calcBumpiness(height, gene) {
         let bumpiness = 0;
         for (let i = 0; i < height.length - 1; i++) {
-            bumpiness += Math.abs(height[i] - height[i + 1]);
+            bumpiness += Math.abs((height[i] - height[i + 1]));
         }
         return bumpiness * gene[4];
     }
 
     calcRating(height, linesCleared, holes, gene) {
-        let rating = this.calcClearlines(linesCleared, gene) +
-            this.calcAggregateHeight(height, gene) +
-            this.calcRelativeHeight(height, gene) +
-            this.calcHoles(holes, gene) +
-            this.calcBumpiness(height, gene)
+        let rating = this.calcClearlines(linesCleared,gene) +
+            this.calcBumpiness(height,gene) +
+            this.calcAggregateHeight(height,gene) +
+            this.calcRelativeHeight(height,gene) +
+            this.calcHoles(holes,gene)
         return rating;
     }
 

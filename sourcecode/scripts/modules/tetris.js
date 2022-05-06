@@ -360,10 +360,9 @@ export default class Tetris {
                 aantal++;
                 this.RemoveRow(y);
                 this.currentShape.linesCleared++;
-                this.score += 1000 * (20 - y);
             }
         }
-        this.score += (aantal-1)*1000 *(20-y);
+        this.score += (aantal)*10000;
     }
 
     fakeUpdateScore(){
