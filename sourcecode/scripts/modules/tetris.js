@@ -355,14 +355,16 @@ export default class Tetris {
     UpdateScore() {
         let aantal = 0;
         let y;
+        let scoreDict = { 0: 0, 1: 0, 2: 100, 3: 600, 4: 3100 };
         for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
                 aantal++;
                 this.RemoveRow(y);
                 this.currentShape.linesCleared++;
+                this.score += 100;
             }
         }
-        this.score += (aantal)*10000;
+        this.score += scoreDict[aantal];
     }
 
     fakeUpdateScore(){
@@ -435,7 +437,7 @@ export default class Tetris {
     Holes() {
         let holes=0;
         for (let x = 0; x < 10; x++) {
-            for (let y = 19; y > (20-this.data.height[x]); y--) {
+            for (let y = 19; y >= (20-this.data.height[x]); y--) {
                 if (this.grid[y][x] === 0) {
                     holes++;
                 }
