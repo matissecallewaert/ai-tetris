@@ -218,6 +218,9 @@ async function algorithm() {
             await waitUntil(() => printBuffer === true);
             printBuffer = false;
         }
+        console.log(ai.moves.reduce(function (a, b) {
+            return Math.max(a, b);
+        }) + " in generation " + (ai.populationNumber + 1));
         index = 0;
         ai.populationNumber++;
         ai_level.innerText = ai.populationNumber + 1;
@@ -322,9 +325,6 @@ function print(tetris) {
     if (tetris.died) {
         ai.scores[index] = JSON.parse(JSON.stringify(tetris.score));
         ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
-        console.log(ai.moves.reduce(function (a, b) {
-            return Math.max(a, b);
-        }) + " in generation " + (ai.populationNumber + 1));
         index++;
         loadedData = localStorage.getItem("highScores");
         let data = JSON.parse(loadedData);
