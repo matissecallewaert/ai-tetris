@@ -44,6 +44,7 @@ let scorebord;
 let moves;
 let ai_level;
 let ai_gene;
+let ai_chromosomes;
 let gene;
 let loadedData;
 let gameData;
@@ -168,7 +169,7 @@ function resetGame() {
     tetris.Reset();
     ai.reset();
     ai_level.innerText = 1;
-    index=0;
+    index = 0;
     play = false;
     tetris.ai_activated = false;
     buttonSound.play();
@@ -203,12 +204,21 @@ async function algorithm() {
         for (let j = index; j < ai.populationSize; j++) {
             ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
             gene = ai.population[j];
+            ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
+                "RelativeHeight: " + gene[1] + "\n" +
+                "MaxHeight: " + gene[2] + "\n" +
+                "Clearlines: " + gene[3] + "\n" +
+                "Holes: " + gene[4] + "\n" +
+                "Bumpiness: " + gene[5] + "\n" +
+                "LastColumn: " + gene[6] + "\n" +
+                "MultipleLinesClear: " + gene[7] + "\n" +
+                "MaxLinesClear: " + gene[8] + "\n";
             makeMoves();
             await waitUntil(() => done === true);
-            await  waitUntil(()=> printBuffer ===true);
-            printBuffer=false;
+            await waitUntil(() => printBuffer === true);
+            printBuffer = false;
         }
-        index =0;
+        index = 0;
         ai.populationNumber++;
         ai_level.innerText = ai.populationNumber + 1;
         ai.populate();
@@ -253,9 +263,9 @@ function getAllMoves() {
 
             move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes, gene);
             move.sideMoves = x;
-            move.rotation = rot+1;
+            move.rotation = rot + 1;
             tetris.fakeDrop2();
-            if(tetris.fakeDied){
+            if (tetris.fakeDied) {
                 move.rating = move.rating - 1000;
             }
             allMoves.push({...move});
@@ -307,12 +317,14 @@ const waitUntil = (condition) => {
 }
 
 
-
 // Function to show the blocks on the canvas
 function print(tetris) {
     if (tetris.died) {
         ai.scores[index] = JSON.parse(JSON.stringify(tetris.score));
         ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
+        console.log(ai.moves.reduce(function (a, b) {
+            return Math.max(a, b);
+        }) + " in generation " + (ai.populationNumber + 1));
         index++;
         loadedData = localStorage.getItem("highScores");
         let data = JSON.parse(loadedData);
@@ -379,7 +391,7 @@ function print(tetris) {
             }
         }
     }
-    printBuffer=true;
+    printBuffer = true;
 }
 
 function drawGrid(ctx) {
@@ -416,7 +428,8 @@ function init() {
     ai_level.innerText = (ai.populationNumber + 1).toString();
     ai_gene = document.getElementById("gene");
     ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
-
+    ai_chromosomes = document.getElementById("chromosomes");
+    ai_chromosomes.innerText = "no data";
     highscore = document.getElementById("highscore");
     loadedData = localStorage.getItem("highScores");
     if (loadedData !== null) {

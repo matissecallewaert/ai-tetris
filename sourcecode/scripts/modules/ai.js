@@ -13,8 +13,8 @@ export default class AI {
         this.secondFittest = null;
         this.scores = [];
         this.moves = [];
-        this.crossoverRate = 0.6;
-        this.mutationRate = 0.1;
+        this.crossoverRate = 0.3;
+        this.mutationRate = 0.05;
         this.random = 0;
         this.firstPopulation();
     }
@@ -64,8 +64,8 @@ export default class AI {
 
     crossover() {
         this.random = Math.random();
-        for(let i = 0; i<this.chromosomes;i++){
-            if (this.random > this.crossoverRate) {
+        for (let i = 0; i < this.chromosomes; i++) {
+            if (this.random < this.crossoverRate) {
                 this.genes[i] = Math.min(this.fittest[i], this.secondFittest[i]);
             } else {
                 this.genes[i] = Math.max(this.fittest[i], this.secondFittest[i]);
@@ -131,11 +131,17 @@ export default class AI {
     }
 
     calcClearlines(linesCleared, gene) {
-        return linesCleared * gene[3];
+        if(linesCleared !== 0){
+            return linesCleared * gene[3];
+        }
+        return gene[3] * -1;
     }
 
     calcHoles(holes, gene) {
-        return holes * gene[4];
+        if(holes !== 0){
+            return holes * gene[4];
+        }
+        return gene[4] * -1;
     }
 
     calcBumpiness(height, gene) {
@@ -143,6 +149,7 @@ export default class AI {
         for (let i = 0; i < height.length - 1; i++) {
             bumpiness += Math.abs((height[i] - height[i + 1]));
         }
+
         return bumpiness * gene[5];
     }
 
@@ -154,21 +161,21 @@ export default class AI {
         if (height[9] === min) {
             return gene[6];
         }
-        return -1;
+        return  gene[6] * -1;
     }
 
     calcMultipleLinesClear(linesCleared, gene) {
         if (linesCleared > 1) {
             return linesCleared * gene[7];
         }
-        return 0;
+        return this.calcClearlines(linesCleared, gene);
     }
 
     calcMaxLinesClear(linesCleared, gene) {
         if (linesCleared === 4) {
             return linesCleared * gene[8];
         }
-        return 0;
+        return this.calcMultipleLinesClear(linesCleared, gene);
     }
 
     calcRating(height, linesCleared, holes, gene) {

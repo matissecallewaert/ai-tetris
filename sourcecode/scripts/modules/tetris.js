@@ -437,7 +437,7 @@ export default class Tetris {
     Holes() {
         let holes=0;
         for (let x = 0; x < 10; x++) {
-            for (let y = 19; y >= (20-this.data.height[x]); y--) {
+            for (let y = (20-this.data.height[x]); y <20 ; y++) {
                 if (this.grid[y][x] === 0) {
                     holes++;
                 }
