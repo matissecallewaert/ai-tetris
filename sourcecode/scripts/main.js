@@ -225,6 +225,8 @@ async function algorithm() {
         ai.populationNumber++;
         ai_level.innerText = ai.populationNumber + 1;
         ai.populate();
+        console.log(ai.fittest);
+        console.log(ai.secondFittest);
     }
 }
 

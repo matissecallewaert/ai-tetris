@@ -13,8 +13,8 @@ export default class AI {
         this.secondFittest = null;
         this.scores = [];
         this.moves = [];
-        this.crossoverRate = 0.3;
-        this.mutationRate = 0.05;
+        this.crossoverRate = 0.4;
+        this.mutationRate = 0.4;
         this.random = 0;
         this.firstPopulation();
     }
@@ -64,20 +64,23 @@ export default class AI {
 
     crossover() {
         this.random = Math.random();
+        let fittest = JSON.parse(JSON.stringify(this.fittest));
+        let secondFittest = JSON.parse(JSON.stringify(this.secondFittest));
         for (let i = 0; i < this.chromosomes; i++) {
             if (this.random < this.crossoverRate) {
-                this.genes[i] = Math.min(this.fittest[i], this.secondFittest[i]);
+                this.genes[i] = Math.min(fittest[i], secondFittest[i]);
             } else {
-                this.genes[i] = Math.max(this.fittest[i], this.secondFittest[i]);
+                this.genes[i] = Math.max(fittest[i], secondFittest[i]);
             }
         }
     }
 
     mutation() {
         this.random = Math.random();
-        for (let i = 0; i < this.chromosomes; i++) {
-            if (this.mutationRate > this.random) {
-                this.genes[i] = this.genes[i] + (Math.random() * 0.5) - 0.25;
+        let genes = JSON.parse(JSON.stringify(this.genes));
+        if(this.random<this.mutationRate){
+            for (let i = 0; i < this.chromosomes; i++) {
+                this.genes[i] = genes[i] + (Math.random() * 0.5) - 0.25;
             }
         }
     }
