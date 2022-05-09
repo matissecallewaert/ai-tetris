@@ -5,17 +5,23 @@ export default class AI {
     constructor() {
         this.populationNumber = 0;
         this.populationSize = 50;
-        this.maxGeneration = 50;
-        this.chromosomes = 9;
+        this.maxGeneration = 5000;
+        this.chromosomes = 6;
         this.genes = [];
         this.population = [];
+        this.breeder = [];
+        this.breederSize = Math.floor((this.populationSize * this.parentRate));
+        this.parentRate = 0.5
+        this.fitness = this.chromosomes;
         this.fittest = null;
-        this.secondFittest = null;
+        this.gene1 = null;
+        this.gene2 = null;
         this.scores = [];
         this.moves = [];
-        this.crossoverRate = 0.4;
-        this.mutationRate = 0.4;
+        this.crossoverRate = 0.3;
+        this.mutationRate = 0.05;
         this.random = 0;
+        this.extra = false;
         this.firstPopulation();
     }
 
@@ -28,49 +34,47 @@ export default class AI {
         }
     }
 
-    getfittest() {
+    getFittest() {
         let maxS = this.scores.reduce(function (a, b) {
             return Math.max(a, b);
         })
-        let maxM = 0;
-        for (let i = 0; i < this.scores.length; i++) {
-            if (maxS === this.scores[i]) {
-                maxM = Math.max(maxM, this.moves[i]);
-            }
-        }
-        let index = this.moves.indexOf(maxM);
+
+        let index = this.scores.indexOf(maxS);
         this.fittest = JSON.parse(JSON.stringify(this.population[index]));
+        this.fittest[this.fitness] = maxS;
+        this.scores[index] = -1;
     }
 
-    getsecondfittest() {
-        let bufferScores = JSON.parse(JSON.stringify(this.scores));
-        let maxM = 0;
-        let maxS = bufferScores.reduce(function (a, b) {
-            return Math.max(a, b);
-        })
-        let maxIndex = bufferScores.indexOf(maxS);
-        bufferScores[maxIndex] = -1;
-        maxS = bufferScores.reduce(function (a, b) {
-            return Math.max(a, b);
-        })
-        for (let i = 0; i < this.scores.length; i++) {
-            if (maxS === this.scores[i]) {
-                maxM = Math.max(maxM, this.moves[i]);
-            }
+    fillBreeder() {
+        for (let i = 0; i < this.breederSize; i++) {
+            this.getFittest();
+            this.breeder[i] = JSON.parse(JSON.stringify(this.fittest));
         }
-        let index = this.moves.indexOf(maxM);
-        this.secondFittest = JSON.parse(JSON.stringify(this.population[index]));
+    }
+
+    makeParents() {
+        this.gene1 = JSON.parse(JSON.stringify(this.breeder[Math.floor(Math.random() * (this.breeder.length))]));
+        this.gene2 = JSON.parse(JSON.stringify(this.breeder[Math.floor(Math.random() * (this.breeder.length))]));
     }
 
     crossover() {
         this.random = Math.random();
-        let fittest = JSON.parse(JSON.stringify(this.fittest));
-        let secondFittest = JSON.parse(JSON.stringify(this.secondFittest));
+        let gene1;
+        let gene2;
+
+        if (this.gene1[this.chromosomes] > this.gene2[this.chromosomes]) {
+            gene1 = JSON.parse(JSON.stringify(this.gene1));
+            gene2 = JSON.parse(JSON.stringify(this.gene2));
+        } else {
+            gene2 = JSON.parse(JSON.stringify(this.gene1));
+            gene1 = JSON.parse(JSON.stringify(this.gene2));
+        }
+
         for (let i = 0; i < this.chromosomes; i++) {
             if (this.random < this.crossoverRate) {
-                this.genes[i] = Math.min(fittest[i], secondFittest[i]);
+                this.genes[i] = Math.min(gene1[i], gene2[i]);
             } else {
-                this.genes[i] = Math.max(fittest[i], secondFittest[i]);
+                this.genes[i] = Math.max(gene1[i], gene2[i]);
             }
         }
     }
@@ -78,18 +82,18 @@ export default class AI {
     mutation() {
         this.random = Math.random();
         let genes = JSON.parse(JSON.stringify(this.genes));
-        if(this.random<this.mutationRate){
-            for (let i = 0; i < this.chromosomes; i++) {
+        for (let i = 0; i < this.chromosomes; i++) {
+            if (this.random < this.mutationRate) {
                 this.genes[i] = genes[i] + (Math.random() * 0.5) - 0.25;
             }
         }
     }
 
     populate() {
-        this.getfittest();
-        this.getsecondfittest();
+        this.fillBreeder();
         this.population = [];
         for (let i = 0; i < this.populationSize; i++) {
+            this.makeParents();
             this.crossover();
             this.mutation();
             this.population[i] = JSON.parse(JSON.stringify(this.genes));
@@ -99,7 +103,6 @@ export default class AI {
     reset() {
         this.firstPopulation();
         this.fittest = null;
-        this.secondFittest = null;
         this.scores = [];
         this.populationNumber = 0;
     }
@@ -134,14 +137,14 @@ export default class AI {
     }
 
     calcClearlines(linesCleared, gene) {
-        if(linesCleared !== 0){
+        if (linesCleared !== 0) {
             return linesCleared * gene[3];
         }
         return gene[3] * -1;
     }
 
     calcHoles(holes, gene) {
-        if(holes !== 0){
+        if (holes !== 0) {
             return holes * gene[4];
         }
         return gene[4] * -1;
@@ -164,7 +167,7 @@ export default class AI {
         if (height[9] === min) {
             return gene[6];
         }
-        return  gene[6] * -1;
+        return gene[6] * -1;
     }
 
     calcMultipleLinesClear(linesCleared, gene) {
@@ -187,10 +190,7 @@ export default class AI {
             this.calcAggregateHeight(height, gene) +
             this.calcRelativeHeight(height, gene) +
             this.calcMaxHeight(height, gene) +
-            this.calcHoles(holes, gene) +
-            this.calcLastColumn(height, gene) +
-            this.calcMultipleLinesClear(linesCleared, gene) +
-            this.calcMaxLinesClear(linesCleared, gene);
+            this.calcHoles(holes, gene);
         return rating;
     }
 
