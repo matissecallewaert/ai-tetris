@@ -33,6 +33,12 @@
                         <a class="nav-item nav-link active" href="#">Leaderboard</a>
                     </div>
                 </div>
+                <div class="navbar-right">
+                    <select data-i18n-switcher class="locale-switcher">
+                        <option value="en">English</option>
+                        <option value="nl">Nederlands</option>
+                    </select>
+                </div>
             </div>
         </div>
     </nav>
@@ -40,11 +46,11 @@
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <p class="h2">Project groep 4: Tetris AI</p>
+                <p data-i18n-key="title" class="h2">Project groep 4: Tetris AI</p>
             </div>
         </div>
         <div class="row mt-4" id="maindiv">
-            <p class="h3" style="text-align: center;">Best Modern Tetris Players<a href="https://ch.tetr.io"
+            <p data-i18n-key="lb-title" class="h3" style="text-align: center;">Best Modern Tetris Players<a href="https://ch.tetr.io"
                     target="_blank">(source)</a>
             </p>
             <table class="center" id="highscoreTable">
@@ -56,9 +62,9 @@
             <p style="text-align: center;" id="loading...">Getting data... <br><img src="assets/images/favgif.gif"
                     width="32" height="32"> </p>
         </div>
-        <span class="learnMore" id="learnMore">Show info</span>
+        <span data-i18n-key="lb-show" class="learnMore" id="learnMore">Show info</span>
 
-        <p id="learnMoreText">
+        <p id="learnMoreText" data-i18n-key="lb-info">
             This leaderboard is kept and updated on <a href="https://tetr.io" target="_blank">tetr.io</a>.
             On this website users can play the Tetris stacker game competitively. Winning online ranked games
             against other players earns a player a higher TR Rating. Only 1% of the players have a TR Rating of over

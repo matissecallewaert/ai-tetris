@@ -12,6 +12,7 @@
     <script src="scripts/main.js" type="module"></script>
     <link rel="icon" href="assets/images/favgif.gif" type="image/gif">
     <script src="scripts/lightmode.js" defer></script>
+    <script src="scripts/translator.js" defer></script>
 </head>
 
 <body id="body">
@@ -21,17 +22,23 @@
                 <button type="button" class="myButton btn btn-md" onclick="toggleLight()" id="toggleLight">Toggle Light</button>
                 <div class="row w-100">
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link active" href="#">Home</a>
+                        <a data-i18n-key="home" class="nav-item nav-link active" href="#">Home</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
+                        <a data-i18n-key="genetic-algorithms" class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link" href="behind-the-code.html">Behind the Code</a>
+                        <a data-i18n-key="behind-the-code" class="nav-item nav-link" href="behind-the-code.html">Behind the Code</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link" href="comparison.html">Leaderboard</a>
+                        <a data-i18n-key="leaderboard" class="nav-item nav-link" href="comparison.html">Leaderboard</a>
                     </div>
+                </div>
+                <div class="navbar-right">
+                    <select data-i18n-switcher class="locale-switcher">
+                        <option value="en">English</option>
+                        <option value="nl">Nederlands</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -39,7 +46,7 @@
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <p class="h2">Project groep 4: Tetris AI</p>
+                <p data-i18n-key="title" class="h2">Project groep 4: Tetris AI</p>
             </div>
         </div>
         <div class="row">
@@ -68,12 +75,12 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <p>Upcoming shape</p>
+                            <p data-i18n-key="upcoming-shape">Upcoming shape</p>
                             <br>
                             <canvas id="upcomingShape"></canvas>
                         </div>
                         <div class="col">
-                            <p>Holding</p>
+                            <p data-i18n-key="holding">Holding</p>
                             <br>
                             <canvas id="holdingShape"></canvas>
                         </div>
@@ -126,11 +133,11 @@
                 </div>
                 <div class="row align-bottom">
                     <div class="col">
-                        <button id="startButton" type="button" class="myButton btn btn-sm">Play</button>
+                        <button data-i18n-key="play" id="startButton" type="button" class="myButton btn btn-sm">Play</button>
 
-                        <button id="pauseButton" type="button" class="myButton btn btn-sm">Pause</button>
+                        <button data-i18n-key="pause" id="pauseButton" type="button" class="myButton btn btn-sm">Pause</button>
 
-                        <button id="resetButton" type="button" class="myButton btn btn-sm">Reset</button>
+                        <button data-i18n-key="reset" id="resetButton" type="button" class="myButton btn btn-sm">Reset</button>
 
                         <div class="row align-bottom">
                             <div id="sound-div">

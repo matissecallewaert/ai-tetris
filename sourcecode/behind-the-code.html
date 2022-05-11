@@ -12,6 +12,7 @@
     <script src="scripts/main.js" type="module"></script>
     <script src="scripts/lightmode.js" defer></script>
     <link rel="icon" href="assets/images/favgif.gif" type="image/gif">
+    <script src="scripts/translator.js" defer></script>
 </head>
 
 <body>
@@ -34,6 +35,12 @@
                         <a class="nav-item nav-link" href="comparison.html">Leaderboard</a>
                     </div>
                 </div>
+                <div class="navbar-right">
+                    <select data-i18n-switcher class="locale-switcher">
+                        <option value="en">English</option>
+                        <option value="nl">Nederlands</option>
+                    </select>
+                </div>
             </div>
         </div>
     </nav>
@@ -41,20 +48,49 @@
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <p class="h2">Project groep 4: Tetris AI</p>
+                <p data-i18n-key="title" class="h2">Project groep 4: Tetris AI</p>
             </div>
         </div>
         <div class="row m-3">
             <div class="col">
-                <p class="h4">How did the team apply it?</p>
-                <p class="text-break">
-                    50 individuals are created per generation. Each one gets the chance to play the game. The moves made
-                    by each gene get rated based on [INSERT PARAMETERS]. Once the individuals are done with their moves,
-                    they get sorted in a list in ascending order based on their respective rating. The ones with the
-                    best ratings are selected to create children for the next generation. [INSERT SPECIFIC TYPE OF
-                    SELECTION] There is also the possibility of a child mutating their genes [INSERT EXACT NUMBERS]. At
-                    the end of the cycle a new generation of 50 genes is created out of the best scoring ones from the
-                    previous generation, at which point the cycle can start again.
+                <p data-i18n-key="btc-intro-title" class="h3">How did the project come to fruition?</p>
+                <p data-i18n-key="btc-intro-content" class="text-break">
+                    The team members divided each part of the project amongst themselves; Matisse created tetris, Josse
+                    coded the data gathering, Nathan made the genetic algorithm and Akash and Tomas handled the website and
+                    the UI. They helped each other when needing assistance of course, so </p>
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col">
+                <p data-i18n-key="btc-ga-title" class="h4">The Genetic Algorithm</p>
+                <p data-i18n-key="btc-ga-content" class="text-break">
+                    Lorem ipsum dolor sit amet consectetur adipiscing ofzo.</p>
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col">
+                <p data-i18n-key="btc-tet-title" class="h4">Tetris</p>
+                <p data-i18n-key="btc-tet-content" class="text-break">
+                    Lorem ipsum dolor sit amet consectetur adipiscing ofzo.</p>
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col">
+                <p data-i18n-key="btc-dg-title" class="h4">Data Gathering</p>
+                <p data-i18n-key="btc-dg-content" class="text-break">
+                    Lorem ipsum dolor sit amet consectetur adipiscing ofzo.</p>
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col">
+                <p data-i18n-key="btc-web-title" class="h4">The Website</p>
+                <p data-i18n-key="btc-web-content" class="text-break">
+                    The main goal was to clearly present the project and each of its components in an intuitive way.
+                    Bootstrap was used for easily constructing a proper layout, but this also brought along its own set of
+                    problems. The main feature that couldn't be added was a collapsable navigation bar. Lots of attempts and
+                    various methods were tried for this to work, from the built-in bootstrap feature to writing new code,
+                    but to no avail.
+                </p>
             </div>
         </div>
     </div>
