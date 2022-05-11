@@ -13,6 +13,7 @@ let ROWS = 20;
 let BLOCK_SIZE = window.innerHeight / 25;
 
 let canvas;
+let chart;
 let ctx;
 
 let block_canvas;
@@ -224,6 +225,7 @@ async function algorithm() {
         }) + " in generation " + (ai.populationNumber + 1));
         index = 0;
         ai.populationNumber++;
+        handleRandomDataset();
         ai_level.innerText = ai.populationNumber + 1;
         ai.populate();
     }
@@ -418,6 +420,71 @@ function UpdateSpeed(tetris) {
     }
 }
 
+/**
+ * Start of graph
+ * @type {{data: {datasets: [{backgroundColor: string[], borderColor: string[], data: number[], borderWidth: number, label: string}], labels: string[]}, options: {scales: {y: {beginAtZero: boolean}}}, type: string}}
+ */
+const graphData = {
+   type: "line",
+   data: {
+       labels: [],
+       datasets: [
+           {
+               label: "Max moves per generation",
+               data: [],
+               backgroundColor: [
+                   "rgba(255, 99, 132, 0.2)",
+                   "rgba(54, 162, 235, 0.2)",
+                   "rgba(255, 206, 86, 0.2)",
+                   "rgba(75, 192, 192, 0.2)",
+                   "rgba(153, 102, 255, 0.2)",
+                   "rgba(255, 159, 64, 0.2)"
+               ],
+               borderColor: [
+                   "rgba(255, 99, 132, 1)",
+                   "rgba(54, 162, 235, 1)",
+                   "rgba(255, 206, 86, 1)",
+                   "rgba(75, 192, 192, 1)",
+                   "rgba(153, 102, 255, 1)",
+                   "rgba(255, 159, 64, 1)"
+               ],
+               borderWidth: 1
+           }
+       ]
+   },
+   options: {
+       scales: {
+           y: {
+               beginAtZero: true
+           }
+       }
+   }
+};
+
+const refreshChart = () => {
+   const graphctx = document.getElementById("myChart").getContext("2d");
+   chart = new Chart(graphctx, graphData);
+};
+
+const handleRandomDataset = () => {
+    if (tetris.ai_activated) {
+            let bla = ai.moves.reduce(function (a, b) {
+                return Math.max(a, b);
+            })
+            graphData.data.datasets[0].data.push(bla);
+            graphData.data.labels.push(ai.populationNumber);
+    }
+    chart.destroy();
+    refreshChart();
+};
+
+// util
+// random function
+const getRandomInt = () => {
+   return Math.floor(Math.random() *  20);
+};
+// End of graph
+
 function init() {
     //Initializes the game
     tetris = new Tetris();
@@ -483,6 +550,10 @@ function init() {
     document.addEventListener('touchcoordinates', getTouchCoordinates, false);
     document.addEventListener('touchcontrols', mobileControl, false);
     document.addEventListener("keydown", keyHandler);
+
+    window.onload = function () {
+        refreshChart();
+    }
 
     setInterval(print, 100, tetris);                                                                //Initializes the display of the game
 
