@@ -78,7 +78,6 @@ export default class Tetris {
             lost: false
         };
         this.ai_activated = false;
-        this.bagindex = 2;
         this.movesTaken = 0;
         this.data = {
             height: [],
@@ -341,21 +340,6 @@ export default class Tetris {
         return overlap;
     }
 
-    fakeCollides() {
-        let overlap = false;
-        for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
-            for (let x = 0; x < Object.values(this.currentShape.shape)[0][0].length; x++) {
-                if (this.grid[y + this.currentShape.y][x + this.currentShape.x] !== 0 && Object.values(this.currentShape.shape)[0][y][x] !== 0) {
-                    overlap = true;
-                    break;
-                }
-            }
-            if (overlap) {
-                break;
-            }
-        }
-        return overlap;
-    }
 
     UpdateScore() {
         let aantal = 0;

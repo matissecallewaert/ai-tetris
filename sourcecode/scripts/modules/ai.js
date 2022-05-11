@@ -1,5 +1,3 @@
-import Tetris from "./tetris.js";
-
 export default class AI {
 
     constructor() {
@@ -20,16 +18,16 @@ export default class AI {
         this.moves = [];
         this.crossoverRate = 0.4;
         this.mutationRate = 0.05;
+        this.mutationValue = 0.5;
+        this.geneInitValue = 1;
         this.random = 0;
-        this.extra = false;
         this.firstPopulation();
-        this.perfectGene = [-0.6152727732730796, -0.15842464424735841, -100.08679520494876472, 10000000.82568649650722883, 0.15452215909537684, -0.021586109522043928]
     }
 
     firstPopulation() {
         for (let i = 0; i < this.populationSize; i++) {
             for (let j = 0; j < this.chromosomes; j++) {
-                this.genes[j] = (Math.random()) - 0.5;
+                this.genes[j] = (Math.random() * this.geneInitValue) - (this.geneInitValue / 2);
             }
             this.population[i] = JSON.parse(JSON.stringify(this.genes));
         }
@@ -92,7 +90,7 @@ export default class AI {
         let genes = JSON.parse(JSON.stringify(this.genes));
         for (let i = 0; i < this.chromosomes; i++) {
             if (this.random < this.mutationRate) {
-                this.genes[i] = genes[i] + (Math.random() * 0.4) - 0.2;
+                this.genes[i] = genes[i] + (Math.random() * this.mutationValue) - (this.mutationValue / 2);
             }
         }
     }
@@ -144,7 +142,7 @@ export default class AI {
         return mHeight * gene[2];
     }
 
-    calcClearlines(linesCleared, gene) {
+    calcClearLines(linesCleared, gene) {
         return linesCleared * gene[3];
     }
 
@@ -167,14 +165,13 @@ export default class AI {
     }
 
     calcRating(height, linesCleared, holes, blockades, gene) {
-        let rating = this.calcClearlines(linesCleared, gene) +
+        return this.calcClearLines(linesCleared, gene) +
             this.calcAggregateHeight(height, gene) +
             this.calcRelativeHeight(height, gene) +
             this.calcMaxHeight(height, gene) +
             this.calcHoles(holes, gene) +
             this.calcBlockades(blockades, gene) +
             this.calcBumpiness(height, gene);
-        return rating;
     }
 
 }

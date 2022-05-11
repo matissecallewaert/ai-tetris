@@ -18,12 +18,12 @@ end
 
 loop Loop over InitialGenomsPopulation and sort the array in descending order
 InitialGenomsPopulation --> Gene: Copy the best genes to new array
-InitialGenomsPopulation --> Gene: Remove the bad genes
 end
 
-create Child
 loop Select tuples from finest genes and create 50 children
-Gene -> Child: Child created from two best genes
+Gene --> Crossover: 2 Gene are going to pair and randomly exchange their chromosomes;
+create Child
+Crossover --> Child: the random chromosomes selection create a new gene ( child )
 Child --> Mutation: Child can have some mutation
 Child --> Children: Store the child in an array of children
 end

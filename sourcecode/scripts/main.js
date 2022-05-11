@@ -192,8 +192,8 @@ function move(tetris) {
         tetris.fakeMoveDown1();
     } else {
         tetris.MoveDown();
+        UpdateSpeed(tetris);
     }
-    UpdateSpeed(tetris);
 }
 
 async function auto() {
@@ -373,12 +373,14 @@ function print(tetris) {
     moves.textContent = tetris.movesTaken;
 
     blockctx.clearRect(0, 0, COLS, ROWS)
-    for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
-        for (let x = 0; x < Object.values(tetris.upcomingShape.shape)[0][0].length; x++) {
-            let waarde = Object.values(tetris.upcomingShape.shape)[0][y][x];
-            if (waarde !== 0) {
-                blockctx.fillStyle = tetris.colors[waarde];
-                blockctx.fillRect(x, y, 1, 1);
+    if(tetris.upcomingShape.shape !== null){
+        for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
+            for (let x = 0; x < Object.values(tetris.upcomingShape.shape)[0][0].length; x++) {
+                let waarde = Object.values(tetris.upcomingShape.shape)[0][y][x];
+                if (waarde !== 0) {
+                    blockctx.fillStyle = tetris.colors[waarde];
+                    blockctx.fillRect(x, y, 1, 1);
+                }
             }
         }
     }
