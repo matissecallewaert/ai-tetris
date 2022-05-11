@@ -6,29 +6,30 @@ export default class AI {
         this.populationNumber = 0;
         this.populationSize = 50;
         this.maxGeneration = 5000;
-        this.chromosomes = 6;
+        this.chromosomes = 7;
         this.genes = [];
         this.population = [];
         this.breeder = [];
+        this.parentRate = 0.50;
         this.breederSize = Math.floor((this.populationSize * this.parentRate));
-        this.parentRate = 0.5
         this.fitness = this.chromosomes;
         this.fittest = null;
         this.gene1 = null;
         this.gene2 = null;
         this.scores = [];
         this.moves = [];
-        this.crossoverRate = 0.3;
+        this.crossoverRate = 0.4;
         this.mutationRate = 0.05;
         this.random = 0;
         this.extra = false;
         this.firstPopulation();
+        this.perfectGene = [-0.6152727732730796, -0.15842464424735841, -100.08679520494876472, 10000000.82568649650722883, 0.15452215909537684, -0.021586109522043928]
     }
 
     firstPopulation() {
         for (let i = 0; i < this.populationSize; i++) {
             for (let j = 0; j < this.chromosomes; j++) {
-                this.genes[j] = (Math.random() * 2) - 1;
+                this.genes[j] = (Math.random()) - 0.5;
             }
             this.population[i] = JSON.parse(JSON.stringify(this.genes));
         }
@@ -39,10 +40,17 @@ export default class AI {
             return Math.max(a, b);
         })
 
-        let index = this.scores.indexOf(maxS);
+        let maxM = 0;
+        for (let i = 0; i < this.scores.length; i++) {
+            if (maxS === this.scores[i]) {
+                maxM = Math.max(maxM, this.moves[i]);
+            }
+        }
+        let index = this.moves.indexOf(maxM);
         this.fittest = JSON.parse(JSON.stringify(this.population[index]));
-        this.fittest[this.fitness] = maxS;
+        this.fittest[this.fitness] = maxM;
         this.scores[index] = -1;
+        this.moves[index] = -1;
     }
 
     fillBreeder() {
@@ -84,7 +92,7 @@ export default class AI {
         let genes = JSON.parse(JSON.stringify(this.genes));
         for (let i = 0; i < this.chromosomes; i++) {
             if (this.random < this.mutationRate) {
-                this.genes[i] = genes[i] + (Math.random() * 0.5) - 0.25;
+                this.genes[i] = genes[i] + (Math.random() * 0.4) - 0.2;
             }
         }
     }
@@ -133,64 +141,39 @@ export default class AI {
             return Math.max(a, b);
         })
 
-        return mHeight * gene[2]
+        return mHeight * gene[2];
     }
 
     calcClearlines(linesCleared, gene) {
-        if (linesCleared !== 0) {
-            return linesCleared * gene[3];
-        }
-        return gene[3] * -1;
+        return linesCleared * gene[3];
     }
 
     calcHoles(holes, gene) {
-        if (holes !== 0) {
-            return holes * gene[4];
-        }
-        return gene[4] * -1;
+        return holes * gene[4];
+
+    }
+
+    calcBlockades(blockades, gene) {
+        return blockades * gene[5];
     }
 
     calcBumpiness(height, gene) {
         let bumpiness = 0;
-        for (let i = 0; i < height.length - 1; i++) {
+        for (let i = 0; i < (height.length - 1); i++) {
             bumpiness += Math.abs((height[i] - height[i + 1]));
         }
 
-        return bumpiness * gene[5];
+        return bumpiness * gene[6];
     }
 
-    calcLastColumn(height, gene) {
-        let min = height.reduce(function (a, b) {
-            return Math.min(a, b);
-        })
-
-        if (height[9] === min) {
-            return gene[6];
-        }
-        return gene[6] * -1;
-    }
-
-    calcMultipleLinesClear(linesCleared, gene) {
-        if (linesCleared > 1) {
-            return linesCleared * gene[7];
-        }
-        return this.calcClearlines(linesCleared, gene);
-    }
-
-    calcMaxLinesClear(linesCleared, gene) {
-        if (linesCleared === 4) {
-            return linesCleared * gene[8];
-        }
-        return this.calcMultipleLinesClear(linesCleared, gene);
-    }
-
-    calcRating(height, linesCleared, holes, gene) {
+    calcRating(height, linesCleared, holes, blockades, gene) {
         let rating = this.calcClearlines(linesCleared, gene) +
-            this.calcBumpiness(height, gene) +
             this.calcAggregateHeight(height, gene) +
             this.calcRelativeHeight(height, gene) +
             this.calcMaxHeight(height, gene) +
-            this.calcHoles(holes, gene);
+            this.calcHoles(holes, gene) +
+            this.calcBlockades(blockades, gene) +
+            this.calcBumpiness(height, gene);
         return rating;
     }
 

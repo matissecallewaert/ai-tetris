@@ -100,6 +100,10 @@ let keyHandler = (k) => {
             clearInterval(id2)
             tetris.speed -= 50;
             id2 = setInterval(move, tetris.speed, tetris);
+        } else if (k.key === "d") {
+            clearInterval(id2)
+            tetris.speed += 50;
+            id2 = setInterval(move, tetris.speed, tetris);
         }
     }
 }
@@ -188,7 +192,6 @@ function move(tetris) {
     } else {
         tetris.MoveDown();
     }
-    tetris.score++;
     UpdateSpeed(tetris);
 }
 
@@ -207,12 +210,10 @@ async function algorithm() {
             ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
                 "RelativeHeight: " + gene[1] + "\n" +
                 "MaxHeight: " + gene[2] + "\n" +
-                "Clearlines: " + gene[3] + "\n" +
+                "ClearLines: " + gene[3] + "\n" +
                 "Holes: " + gene[4] + "\n" +
-                "Bumpiness: " + gene[5] + "\n" +
-                "LastColumn: " + gene[6] + "\n" +
-                "MultipleLinesClear: " + gene[7] + "\n" +
-                "MaxLinesClear: " + gene[8] + "\n";
+                "Blockades: " + gene[6] + "\n" +
+                "Bumpiness: " + gene[5] + "\n";
             makeMoves();
             await waitUntil(() => done === true);
             await waitUntil(() => printBuffer === true);
@@ -243,28 +244,28 @@ function getBestMove() {
 function getAllMoves() {
     let allMoves = [];
     let move = [{
-        rating: 0,
+        rating: -100000,
         sideMoves: 0,
         rotation: 0
     }]
     for (let rot = 0; rot < 4; rot++) {
         tetris.Rotate();
-        for (let x = -5; x < 5; x++) {
+        for (let x = -10; x < 10; x++) {
             tetris.fakeGenerateBag();
             if (x < 0) {
-                for (let xl = -1; xl >= x; xl--) {
+                for (let xl = 0; xl < Math.abs(x); xl++) {
                     tetris.MoveLeft();
                 }
-            } else {
-                for (let xr = 0; xr <= x; xr++) {
+            } else if (x > 0) {
+                for (let xr = 0; xr < x; xr++) {
                     tetris.MoveRight();
                 }
             }
             tetris.fakeDrop1();
-            tetris.fakeUpdateScore();
+            tetris.fakeUpdateScore1();
             tetris.getData();
-
-            move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes, gene);
+            tetris.fakeUpdateScore2();
+            move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes, tetris.data.blockades, gene);
             move.sideMoves = x;
             move.rotation = rot + 1;
             tetris.fakeDrop2();
@@ -282,17 +283,17 @@ function getAllMoves() {
 
 async function makeMoves() {
     done = false;
-    while (!tetris.died && tetris.movesTaken < 500) {
+    while (!tetris.died && tetris.movesTaken <= 499) {
         let move = getBestMove();
         for (let rot = 0; rot < move.rotation; rot++) {
             tetris.Rotate();
         }
         if (move.sideMoves < 0) {
-            for (let xl = -1; xl >= move.sideMoves; xl--) {
+            for (let xl = 0; xl < Math.abs(move.sideMoves); xl++) {
                 tetris.MoveLeft();
             }
-        } else {
-            for (let xr = 0; xr <= move.sideMoves; xr++) {
+        } else if (move.sideMoves > 0) {
+            for (let xr = 0; xr < move.sideMoves; xr++) {
                 tetris.MoveRight();
             }
         }
@@ -422,6 +423,7 @@ function init() {
     tetris = new Tetris();
     ai = new AI();
     ai.reset();
+    localStorage.clear();
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
     ai_level = document.getElementById("lines");

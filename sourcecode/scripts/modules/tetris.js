@@ -82,9 +82,10 @@ export default class Tetris {
         this.movesTaken = 0;
         this.data = {
             height: [],
-            holes: [],
+            holes: 0,
+            blockades: 0,
             linesCleared: 0,
-            movesIndex:0
+            movesIndex: 0
         };
         this.fakeShape = null;
         this.ground = false;
@@ -95,11 +96,13 @@ export default class Tetris {
         this.bagindex = 1;
         this.movesTaken = 0;
         this.holding = false;
-        this.speed = 10;
+        this.speed = 700;
         this.died = false;
         this.fakeDied = false;
+        this.fakeGrid = null;
     }
-    HoldShape(){
+
+    HoldShape() {
         this.RemoveShape();
         this.holdShape = this.currentShape;
         this.holdShape.x = 3;
@@ -107,7 +110,8 @@ export default class Tetris {
         this.NextShape();
         this.holding = true;
     }
-    UseHoldShape(){
+
+    UseHoldShape() {
         this.RemoveShape();
         let hulp = this.holdShape;
         this.holdShape = this.currentShape;
@@ -117,6 +121,7 @@ export default class Tetris {
         this.holdShape.y = 0;
         this.ApplyShape();
     }
+
     //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
     GenerateBag() {
         let random;
@@ -160,8 +165,7 @@ export default class Tetris {
             this.movesTaken++;
             if (this.Collides(this.currentShape)) {
                 this.died = true;
-            }
-            else{
+            } else {
                 this.ApplyShape();
             }
         } else {
@@ -212,7 +216,7 @@ export default class Tetris {
         }
     }
 
-    fakeMoveDown1(){
+    fakeMoveDown1() {
         this.ground = false;
         this.RemoveShape();
         this.currentShape.y++;
@@ -225,7 +229,7 @@ export default class Tetris {
         }
     }
 
-    fakeMoveDown2(){
+    fakeMoveDown2() {
         this.UpdateScore();
         this.NextShape();
     }
@@ -273,7 +277,7 @@ export default class Tetris {
         this.ApplyShape();
     }
 
-    fakeDrop2(){
+    fakeDrop2() {
         this.oldShape = JSON.parse(JSON.stringify(this.currentShape));
         this.fakeNextShape();
     }
@@ -284,22 +288,23 @@ export default class Tetris {
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
         }
-        if (this.Collides(this.currentShape) && !this.TouchesRightWall()){
-            for(let i = 0; i<3;i++){
+        if (this.Collides(this.currentShape) && !this.TouchesRightWall()) {
+            for (let i = 0; i < 3; i++) {
                 this.Transpose();
                 for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
                     this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
                 }
             }
         }
-        if(this.TouchesRightWall()){
+        if (this.TouchesRightWall()) {
             while (this.TouchesRightWall()) {
                 this.currentShape.x--;
             }
         }
         this.ApplyShape();
     }
-    TouchesRightWall(){
+
+    TouchesRightWall() {
         return this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length > this.grid[0].length;
     }
 
@@ -355,7 +360,7 @@ export default class Tetris {
     UpdateScore() {
         let aantal = 0;
         let y;
-        let scoreDict = { 0: 0, 1: 0, 2: 100, 3: 600, 4: 3100 };
+        let scoreDict = {0: 0, 1: 0, 2: 100, 3: 600, 4: 3100};
         for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
                 aantal++;
@@ -367,13 +372,19 @@ export default class Tetris {
         this.score += scoreDict[aantal];
     }
 
-    fakeUpdateScore(){
+    fakeUpdateScore1() {
         let y;
+        this.fakeGrid = JSON.parse(JSON.stringify(this.grid));
         for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
+                this.RemoveRow(y);
                 this.currentShape.linesCleared++;
             }
         }
+    }
+
+    fakeUpdateScore2() {
+        this.grid = JSON.parse(JSON.stringify(this.fakeGrid));
     }
 
     RemoveShape() {
@@ -407,14 +418,14 @@ export default class Tetris {
         this.currentShape.shape[Object.keys(this.currentShape.shape)[0]] = nieuw;
     }
 
-    EndUp(){
+    EndUp() {
         this.RemoveShape();
         let enupshape = {
-            x : this.currentShape.x,
-            y : this.currentShape.y,
-            shape : this.currentShape.shape
+            x: this.currentShape.x,
+            y: this.currentShape.y,
+            shape: this.currentShape.shape
         }
-        while(!this.Collides(enupshape)){
+        while (!this.Collides(enupshape)) {
             enupshape.y++;
         }
         this.ApplyShape();
@@ -422,11 +433,11 @@ export default class Tetris {
     }
 
     Height() {
-        let height = [0,0,0,0,0,0,0,0,0,0];
+        let height = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         for (let x = 0; x < 10; x++) {
-            for (let y = 0; y <= 19; y++) {
+            for (let y = 0; y < 20; y++) {
                 if (this.grid[y][x] !== 0) {
-                    height[x] = 20-y;
+                    height[x] = 20 - y;
                     break;
                 }
             }
@@ -435,28 +446,53 @@ export default class Tetris {
     }
 
     Holes() {
-        let holes=0;
+        let holes = 0;
+        let y = 19;
         for (let x = 0; x < 10; x++) {
-            for (let y = (20-this.data.height[x]); y <20 ; y++) {
+            while (y > (20 - this.data.height[x])) {
                 if (this.grid[y][x] === 0) {
                     holes++;
                 }
+                y--;
             }
         }
         this.data.holes = holes;
+    }
+
+    Blockades() {
+        let holes = false;
+        let counter = 10;
+        let blockades = 0;
+        for (let x = 0; x < 10; x++) {
+            let y = 19;
+            while (y > (20 - this.data.height[x])) {
+                if (this.grid[y][x] === 0) {
+                    holes = true;
+                }
+                if (holes) {
+                    if (this.grid[y-1][x] !== 0) {
+                        blockades++;
+                    }
+                }
+                y--;
+                holes = false;
+            }
+        }
+        this.data.blockades = blockades + counter;
     }
 
     getLinesCleared() {
         this.data.linesCleared = this.currentShape.linesCleared;
     }
 
-    getMovesIndex(){
+    getMovesIndex() {
         this.data.movesIndex = this.movesTaken;
     }
 
     getData() {
         this.Height();
         this.Holes();
+        this.Blockades();
         this.getLinesCleared();
         this.getMovesIndex();
     }
@@ -501,7 +537,7 @@ export default class Tetris {
         this.ApplyShape();
         this.bagindex = 1;
         this.movesTaken = 0;
-        this.speed = 10;
+        this.speed = 700;
         this.died = false;
         this.holding = false;
         this.ground = false;
