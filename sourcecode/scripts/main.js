@@ -211,6 +211,10 @@ function resetGame() {
     play_sound = true;
     buttonSound.play();
     vorigeScore = 0;
+    graphData.data.datasets[0].data = [];
+    graphData.data.labels = [];
+    chart.destroy();
+    refreshChart();
     gameOverScreen.setAttribute("visibility", "hidden")
 }
 
@@ -469,7 +473,7 @@ const graphData = {
        labels: [],
        datasets: [
            {
-               label: "Max moves per generation",
+               label: "Average moves per generation",
                data: [],
                backgroundColor: [
                    "rgba(255, 99, 132, 0.2)",
@@ -507,20 +511,15 @@ const refreshChart = () => {
 
 const handleRandomDataset = () => {
     if (tetris.ai_activated) {
-            let bla = ai.moves.reduce(function (a, b) {
-                return Math.max(a, b);
-            })
-            graphData.data.datasets[0].data.push(bla);
-            graphData.data.labels.push(ai.populationNumber);
+
+        let bla = ai.moves.reduce(function (a, b) {
+            return a + b;
+        })
+        graphData.data.datasets[0].data.push(bla/ai.populationSize);
+        graphData.data.labels.push(ai.populationNumber);
     }
     chart.destroy();
     refreshChart();
-};
-
-// util
-// random function
-const getRandomInt = () => {
-   return Math.floor(Math.random() *  20);
 };
 // End of graph
 
