@@ -27,6 +27,7 @@ let gridctx;
 let vorigeScore = 0;
 
 let play = false;
+let play_sound = true;
 let id2;
 
 let x;
@@ -194,6 +195,7 @@ function startGame() {
     clearInterval(id2);
     id2 = setInterval(move, tetris.speed, tetris);
     play = true;
+    play_sound = true;
     buttonSound.play();
     gameOverScreen.setAttribute("visibility", "hidden")
 }
@@ -206,6 +208,7 @@ function resetGame() {
     index = 0;
     play = false;
     tetris.ai_activated = false;
+    play_sound = true;
     buttonSound.play();
     vorigeScore = 0;
     gameOverScreen.setAttribute("visibility", "hidden")
@@ -214,7 +217,9 @@ function resetGame() {
 function pauseGame() {
     clearInterval(id2);
     play = false;
-    buttonSound.play();
+    if (play_sound) {
+        buttonSound.play();
+    }
 }
 
 function move(tetris) {
@@ -368,10 +373,12 @@ function print(tetris) {
         }
         highscore = document.getElementById("highscore");
         highscore.textContent = data.Highscore;
-        gameOverScreen.setAttribute("visibility", "visible");
-        pauseGame();
         if (!tetris.ai_activated) {
-            resetGame();
+            gameOverScreen.setAttribute("visibility", "visible");
+            play_sound = false;
+            pauseGame();
+        } else {
+            tetris.Reset();
         }
     }
     ctx.clearRect(0, 0, COLS, ROWS)
