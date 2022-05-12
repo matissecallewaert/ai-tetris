@@ -24,3 +24,4 @@ Datum,Start,Einde,Plaats,Omschrijving
 07/05/2022,22:00,23:30,Thuis,AI proberen verbeteren met Tomas
 10/05/2022,08:00,11:00,Thuis,Poging tot dynamische grafiek laten tekenen (TODO: Tekenen in react)
 11/05/2022,09:00,12:44,Thuis,Gewerkt om grafiek te tekenen in react om de evolutie van AI te tonen
+12/05/2022,17:00,19:23,Thuis,AI en main gemerged + verschillende bug fixes
