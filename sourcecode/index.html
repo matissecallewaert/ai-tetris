@@ -11,6 +11,7 @@
     <title>Tetris AI</title>
     <script src="scripts/main.js" type="module"></script>
     <link rel="icon" href="assets/images/favgif.gif" type="image/gif">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts/lightmode.js" defer></script>
     <script src="scripts/translator.js" defer></script>
 </head>
@@ -66,6 +67,7 @@
                     <p class="h3 ">TETRIS</p>
                     <p>Score: <span id="scoreboard">0</span></p>
                     <p>AI Level: <span id="lines">0</span></p>
+                    <p>Gene: <span id="gene">0</span></p>
                     <p>Moves: <span id="level">0</span></p>
                     <br>
                     <div class="col">
@@ -84,6 +86,11 @@
                             <br>
                             <canvas id="holdingShape"></canvas>
                         </div>
+                    </div>
+                    <div class="col">
+                        <p>chromosomes</p>
+                        <p id = "chromosomes"></p>
+                        <br>
                     </div>
                 </div>
             </div>
@@ -121,7 +128,17 @@
 
                     </div>
                 </div>
-                <div class="row">
+                <div class="row border-bottom">
+                    <div class="col-7">
+                        Activate AI
+                    </div>
+                    <div class="col">
+                        a
+                        <!--img src="assets/images/shift.png" alt="spacebarpng" id="keyshiftIcon"-->
+
+                    </div>
+                </div>
+                <div class="row border-bottom">
                     <div class="col-7">
                         Increase speed
                     </div>
@@ -131,6 +148,17 @@
 
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-7">
+                        Decrease speed
+                    </div>
+                    <div class="col">
+                        d
+                        <!--img src="assets/images/shift.png" alt="spacebarpng" id="keyshiftIcon"-->
+
+                    </div>
+                </div>
+
                 <div class="row align-bottom">
                     <div class="col">
                         <button data-i18n-key="play" id="startButton" type="button" class="myButton btn btn-sm">Play</button>
@@ -145,6 +173,12 @@
                                 <span class="sound-item" id="sound-description"></span>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row align-bottom">
+                    <div class="col">
+                        <!-- Chart canvas -->
+                        <canvas id="myChart" width="400" height="400"></canvas>
                     </div>
                 </div>
             </div>

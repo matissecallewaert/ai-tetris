@@ -37,6 +37,11 @@ tr {
     font-family: 'Press Start 2P', cursive;
 }
 
+#chromosomes{
+    color: rgb(13, 110, 253);
+    font-size: 10px;
+}
+
 .grid {
     display: grid;
     grid-template-columns: 620px 500px;
