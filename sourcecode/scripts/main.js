@@ -2,10 +2,6 @@ import Tetris from "./modules/tetris.js"
 import Sound from "./modules/sound.js"
 import AI from "./modules/ai.js";
 
-
-//alert("Script detected")
-//alert(window.innerHeight)
-
 //Definitions of variables and constants
 
 let COLS = 10;
@@ -238,10 +234,10 @@ function pauseGame() {
         buttonSound.play();
     }
 }
-
+//various functions for the movement of the game for user and AI
 function move(tetris) {
     if (tetris.ai_activated) {
-        tetris.fakeMoveDown1();
+        tetris.AIMoveDown();
     } else {
         tetris.MoveDown();
         if (tetris.speed > 150) UpdateSpeed(tetris);
@@ -307,7 +303,7 @@ function getAllMoves() {
     for (let rot = 0; rot < 4; rot++) {
         tetris.Rotate();
         for (let x = -10; x < 10; x++) {
-            tetris.fakeGenerateBag();
+            tetris.CopyCurrentShape();
             if (x < 0) {
                 for (let xl = 0; xl < Math.abs(x); xl++) {
                     tetris.MoveLeft();
@@ -317,20 +313,21 @@ function getAllMoves() {
                     tetris.MoveRight();
                 }
             }
-            tetris.fakeDrop1();
-            tetris.fakeUpdateScore1();
+            tetris.AIDrop();
+            tetris.AIUpdateScore();
             tetris.getData();
-            tetris.fakeUpdateScore2();
+            tetris.grid = JSON.parse(JSON.stringify(tetris.fakeGrid));
             move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes, tetris.data.blockades, gene);
             move.sideMoves = x;
             move.rotation = rot + 1;
-            tetris.fakeDrop2();
+            tetris.oldShape = JSON.parse(JSON.stringify(tetris.currentShape));
+            tetris.AINextShape();
             if (tetris.fakeDied) {
                 move.rating = move.rating - 1000;
             }
             allMoves.push({...move});
             tetris.fakeDied = false;
-            tetris.fakeRemoveShape();
+            tetris.RemoveShape(tetris.oldShape);
         }
     }
     return allMoves;
@@ -359,7 +356,8 @@ async function makeMoves() {
             tetris.ground = false;
             break;
         }
-        tetris.fakeMoveDown2();
+        tetris.UpdateScore();
+        tetris.NextShape();
         tetris.ground = false
         console.log(tetris.ai_activated);
     }
@@ -457,7 +455,7 @@ function print(tetris) {
     }
     printBuffer = true;
 }
-
+//function to draw the grid
 function drawGrid(ctx) {
     ctx.beginPath();
     for (let i = 1; i < 10; i++) {                                                                        //Draws vertical lines
@@ -471,13 +469,12 @@ function drawGrid(ctx) {
         ctx.stroke();
     }
 }
-
+//function to change the speed of the game when a criteria is met
 function UpdateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 4000) {
         clearInterval(id2)
         tetris.speed -= 50;
-
-        console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
+        //console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
         id2 = setInterval(move, tetris.speed, tetris);
         vorigeScore = tetris.score;
     }
@@ -544,8 +541,9 @@ const handleRandomDataset = () => {
 
 // End of graph
 
+
+//Initializes the game
 function init() {
-    //Initializes the game
     tetris = new Tetris();
     ai = new AI();
     scorebord = document.getElementById("scoreboard");

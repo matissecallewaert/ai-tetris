@@ -51,7 +51,6 @@ export default class Tetris {
                 [0, 7, 7]
             ]
         }
-        this.teller = 0;
         this.colors = ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFA500", "#FFE600", "#FF007F", "#6A0DAD"];
         this.bag = [];
         this.GenerateBag();
@@ -91,9 +90,7 @@ export default class Tetris {
 
         // Hold Shape begin
         this.holdShape = undefined;
-        this.ai = false;
         this.bagindex = 1;
-        this.movesTaken = 0;
         this.holding = false;
         this.speed = 700;
         this.died = false;
@@ -103,7 +100,7 @@ export default class Tetris {
     }
 
     HoldShape() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.holdShape = this.currentShape;
         this.holdShape.x = 3;
         this.holdShape.y = 0;
@@ -112,7 +109,7 @@ export default class Tetris {
     }
 
     UseHoldShape() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         let hulp = this.holdShape;
         this.holdShape = this.currentShape;
         this.currentShape = hulp;
@@ -122,7 +119,7 @@ export default class Tetris {
         this.ApplyShape();
     }
 
-    //genereren van de set van shapes die gebruikt worden, aangezien er maar 500 moves mogen worden gemaakt loopt de forlus tot 500.
+    //generates a set of shapes with a maximum of 500 shapes
     GenerateBag() {
         let random;
         let y = 0;
@@ -140,10 +137,9 @@ export default class Tetris {
         }
     }
 
-    fakeGenerateBag() {
+    CopyCurrentShape() {
         this.fakeShape = {...this.currentShape.shape};
     }
-
 
     //het veranderen van de currentshape en upcomingshape.
     NextShape() {
@@ -173,7 +169,7 @@ export default class Tetris {
         this.holding = false;
     }
 
-    fakeNextShape() {
+    AINextShape() {
         if (this.bagindex <= 499) {
             this.currentShape = {
                 x: 3,
@@ -200,7 +196,7 @@ export default class Tetris {
 
     MoveDown() {
         this.ground = false;
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.currentShape.y++;
         if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
@@ -213,9 +209,9 @@ export default class Tetris {
         }
     }
 
-    fakeMoveDown1() {
+    AIMoveDown() {
         this.ground = false;
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.currentShape.y++;
         if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
@@ -226,13 +222,8 @@ export default class Tetris {
         }
     }
 
-    fakeMoveDown2() {
-        this.UpdateScore();
-        this.NextShape();
-    }
-
     MoveLeft() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.currentShape.x--;
         if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
@@ -243,7 +234,7 @@ export default class Tetris {
     }
 
     MoveRight() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.currentShape.x++;
         if (!this.Collides(this.currentShape)) {
             this.ApplyShape();
@@ -254,7 +245,7 @@ export default class Tetris {
     }
 
     Drop() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.score += (20 - this.currentShape.y) * 2;
         while (!this.Collides(this.currentShape)) {
             this.currentShape.y++;
@@ -266,8 +257,8 @@ export default class Tetris {
 
     }
 
-    fakeDrop1() {
-        this.RemoveShape();
+    AIDrop() {
+        this.RemoveShape(this.currentShape);
         while (!this.Collides(this.currentShape)) {
             this.currentShape.y++;
         }
@@ -275,13 +266,8 @@ export default class Tetris {
         this.ApplyShape();
     }
 
-    fakeDrop2() {
-        this.oldShape = JSON.parse(JSON.stringify(this.currentShape));
-        this.fakeNextShape();
-    }
-
     Rotate() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         this.Transpose();
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
@@ -355,7 +341,7 @@ export default class Tetris {
         this.score += scoreDict[aantal];
     }
 
-    fakeUpdateScore1() {
+    AIUpdateScore() {
         let y;
         this.fakeGrid = JSON.parse(JSON.stringify(this.grid));
         for (y = 0; y < 20; y++) {
@@ -366,24 +352,10 @@ export default class Tetris {
         }
     }
 
-    fakeUpdateScore2() {
-        this.grid = JSON.parse(JSON.stringify(this.fakeGrid));
-    }
-
-    RemoveShape() {
-        for (let y = this.currentShape.y; y < this.currentShape.y + Object.values(this.currentShape.shape)[0].length; y++) {
-            for (let x = this.currentShape.x; x < this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length; x++) {
-                if (Object.values(this.currentShape.shape)[0][y - this.currentShape.y][x - this.currentShape.x] !== 0) {
-                    this.grid[y][x] = 0;
-                }
-            }
-        }
-    }
-
-    fakeRemoveShape() {
-        for (let y = this.oldShape.y; y < this.oldShape.y + Object.values(this.oldShape.shape)[0].length; y++) {
-            for (let x = this.oldShape.x; x < this.oldShape.x + Object.values(this.oldShape.shape)[0][0].length; x++) {
-                if (Object.values(this.oldShape.shape)[0][y - this.oldShape.y][x - this.oldShape.x] !== 0) {
+    RemoveShape(shape) {
+        for (let y = shape.y; y < shape.y + Object.values(shape.shape)[0].length; y++) {
+            for (let x = shape.x; x < shape.x + Object.values(shape.shape)[0][0].length; x++) {
+                if (Object.values(shape.shape)[0][y - shape.y][x - shape.x] !== 0) {
                     this.grid[y][x] = 0;
                 }
             }
@@ -402,7 +374,7 @@ export default class Tetris {
     }
 
     EndUp() {
-        this.RemoveShape();
+        this.RemoveShape(this.currentShape);
         let enupshape = {
             x: this.currentShape.x,
             y: this.currentShape.y,

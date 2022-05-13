@@ -124,29 +124,5 @@ function addGlobalHighScores() {
 
 }
 
-
-//not in use anymore
-
-/* function addHighScore(fetchError) {
-    let toAddUserData = ["99+", "You", "no rating", hscore];
-    if (fetchError) toAddUserData[0] = "N/A";
-    tr = document.createElement("tr");
-    for (let userData of toAddUserData) {
-        td = document.createElement("td");
-        td.innerText = "...";
-        tr.appendChild(td);
-    }
-    table.appendChild(tr);
-
-    tr = document.createElement("tr");
-    for (let userData of toAddUserData) {
-        td = document.createElement("td");
-        td.innerText = userData;
-        tr.appendChild(td);
-    }
-    table.appendChild(tr);
-
-} */
-
 addTitles();
 addGlobalHighScores();
