@@ -4,62 +4,122 @@ title ==Class Diagram==
 
 skinparam ClassAttributeIconSize 0
 class Tetris{
-    +shapes: {vormletter: int[][]}
+    +shapes: Dictionary<vormletter:string, shape : int[][]>
     +grid: int[][]
-    +currentShape: {x,y,shape}
+    +currentShape: {x: int,y: int,shape,lost: bool,linescleared: int}
     +colors: string[]
-    +upcomingShape: {x,y,shape}
+    +upcomingShape: {x: int,y: int,shape, lost:bool, linescleared: int}
+    +holdingShape: {x: int,y: int,shape, lost:bool, linescleared: int}
+    +oldShape: {x: int,y: int,shape, lost:bool, linescleared: int}
     +bag: shape[]
     +bagIndex: int
     +score: int
-    +ai: boolean
+    +data: {height: [], holes: int, blockades: int, linescleared:int,movesIndex:int}
+    +ai_activated: boolean
+    +fakeShape: shape
+    +ground: boolean
+    +holding: boolean   
+    +speed: int
+    +died: boolean
+    +fakeDied: boolean
+    +fakeGrid: int[][]
+    +HoldShape():void
+    +UseHoldShape(): void
     +movesTaken: int
-    +Besturing()
     +MoveDown(): void
+    +fakeMoveDown1(): void
+    +fakeMoveDown2(): void
+    +Drop(): void
+    +fakeDrop1(): void
+    +fakeDrop2(): void
+    +TouchesRightWall(): boolean
+    +EndUp(): void
     +MoveLeft():void
     +MoveRight(): void
     +RotateShape():void
-    +GetState(): state: {grid,currentShape,upcomingShape,bag,bagIndex,rndSeed,score}
-    +LoadState(state): void
-    +GetCummulativeHeight(): double
-    +GetHoles():double
-    +GetHolesArray():int[][]
-    +GetRougness(): double
-    +GetRelativeHeight(): double
-    +GetHeigt(): double
+    +GetData(): state: {height: [], holes: int, blockades: int, linescleared:int,movesIndex:int}
+    +GetLinesCleared(): void
+    +GetMovesIndex(): void
+    +Holes(): void
+    +Height(): void
+    +Blockades(): void
     +Reset(): void
-    -ClearRows(): void
+    -removeRow(y: int): void
     -ApplyShape(): void
     -RemoveShape(): void
+    -fakeRemoveShape(): void
     -NextShape(): void
+    -fakeNextShape(): void
     -GenerateBag(): void
-    -Collides(scene: Grid, object: Shape): boolean
-    -Rotate(shapematrix: int[][], times: int)
-    -Transpone(array: int[]): void
-    -Output(): void
+    -fakeGenerateBag(): void
+    -Collides(object: Shape): boolean
+    -Rotate(): void
+    -Transpone(): void
     -UpdateScore(): void
+    -fakeUpdateScore1(): void
+    -fakeUpdateScore2(): void
+
 }
 class AI{
-    -genomes: {-id: double,
-        -rowsCleared: double,
-        -weightedHeight: double,
-        -cumulativeHeigth: double,
-        -relativeHeight: double,
-        -holes: double,
-        -rougness: double}[]
-    +AI()
-    -CreateInitialPopulation(): void
-    -EvaluateNextGenome(): void
-    -Evolve(): void
-    -MakeChild(mum: genome, dad: genome): genome
-    -GetAllPossibleMoves():int[{}]
-    -GetHighestRatedMoves(moves:int[{}]):{}
-    -MakeNextMove(): void
+    +populationNumber: int
+    +populationSize:int
+    +maxGeneration:int
+    +chromosomes:int
+    +genes:int[]
+    +population:int[]
+    +breeder:int[]
+    +parentRate:int
+    +breederSize:int
+    +fitness:int
+    +fittest:int[]
+    +gene1:int[]
+    +gne2:int[]
+    +scores:int[]
+    +moves:int[]
+    +crossoverRate:int
+    +mutationRate:int
+    +mutationValue:int
+    +geneInitValue:int
+    +random:int
+    +firstPopulation():void
+    +getFittest():void
+    +fillBreeder():void
+    +makeParent():void
+    +crossover():void
+    +mutation():void
+    +populate():void
+    +reset():void
+    +calcAggregateHeight(height:int[],gene:int[]):int
+    +calcRelativeHeight(height:int[],gene:int[]):int
+    +calcMaxHeight(height:int[],gene:int[]):int
+    +calcClearLines(linesCleared:int[],gene:int[]):int
+    +calcHoles(holes:int,gene:int[]):int
+    +calcHoles(holes:int,gene:int[]):int
+    +calcHoles(holes:int,gene:int[]):int
+    +calcRating(height:int[],linesCleared:int,holes:int,blockades:int,gene:int[]):int
 }
-class User{
-    +User()
+class main{
     +KeyHandler(): void
+    +Init():void
+    +Print(canvas: canvas):void
+    +UpdateSpeed(): void
+    +GetToucheCoordinates(event: Event): void
+    +mobileControl(event: Event): void
+    +TouchStart(event: Event): void
+    +TouchEnd(event: Event):void
+    +onlongTouch(): void
+    +startGame():void
+    +resetGame(): void
+    +pausegame(): void
+    +move(tetris: Tetris): void
+    +auto(): void
+    +algorithm(): void
+    +GetBestMoves(): void
+    +getAllMoves(): void
+    +makeMoves(): void
+    +waitUntil(): void
+    +DrawGrid(canvas: Canvas): void
 }
-User ..> Tetris: gebruikt
+main ..> Tetris: gebruikt
 AI .> Tetris: gebruikt
 @enduml
