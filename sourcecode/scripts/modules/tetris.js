@@ -52,7 +52,7 @@ export default class Tetris {
             ]
         }
         this.teller = 0;
-        this.colors = ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFA500", "#FFFF00", "#FF007F", "#6A0DAD"];
+        this.colors = ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFA500", "#FFE600", "#FF007F", "#6A0DAD"];
         this.bag = [];
         this.GenerateBag();
         this.score = 0;
