@@ -544,7 +544,6 @@ function init() {
     tetris = new Tetris();
     ai = new AI();
     ai.reset();
-    localStorage.clear();
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
     ai_level = document.getElementById("lines");
