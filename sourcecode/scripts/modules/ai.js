@@ -52,7 +52,7 @@ export default class AI {
     }
 
     fillBreeder() {
-        if(this.breederSize <1){
+        if (this.breederSize < 1) {
             this.breederSize = 1;
         }
         for (let i = 0; i < this.breederSize; i++) {

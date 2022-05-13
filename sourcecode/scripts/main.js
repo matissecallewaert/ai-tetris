@@ -111,11 +111,11 @@ let keyHandler = (k) => {
                 auto();
             }
         } else if (k.key === "s") {
-            tetris.speed = Math.max(1000/60, tetris.speed - 50);
+            tetris.speed = Math.max(1000 / 60, tetris.speed - 50);
             clearInterval(id2);
             id2 = setInterval(move, tetris.speed, tetris);
         } else if (k.key === "d") {
-            tetris.speed = Math.max(1000/60, tetris.speed + 50);
+            tetris.speed = Math.max(1000 / 60, tetris.speed + 50);
             clearInterval(id2)
             id2 = setInterval(move, tetris.speed, tetris);
         }
@@ -217,7 +217,7 @@ function resetGame() {
     tetris.Reset();
     ai.reset();
     ai_level.innerText = 1;
-    ai_gene.innerText = "1"+ " / " + (ai.populationSize).toString();
+    ai_gene.innerText = "1" + " / " + (ai.populationSize).toString();
     index = 0;
     play = false;
     tetris.ai_activated = false;
@@ -255,7 +255,7 @@ async function auto() {
 async function algorithm() {
     for (let i = ai.populationNumber; i < ai.maxGeneration; i++) {
         for (let j = index; j < ai.populationSize; j++) {
-            if(!tetris.ai_activated){
+            if (!tetris.ai_activated) {
                 return;
             }
             ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
@@ -270,7 +270,7 @@ async function algorithm() {
             makeMoves();
             await waitUntil(() => done === true);
             await waitUntil(() => printBuffer === true);
-            await waitUntil(()=> tetris.tetrisReset === true);
+            await waitUntil(() => tetris.tetrisReset === true);
             printBuffer = false;
             tetris.tetrisReset = false;
         }
@@ -535,12 +535,13 @@ const handleRandomDataset = () => {
         let bla = ai.moves.reduce(function (a, b) {
             return a + b;
         })
-        graphData.data.datasets[0].data.push(bla/ai.populationSize);
+        graphData.data.datasets[0].data.push(bla / ai.populationSize);
         graphData.data.labels.push(ai.populationNumber);
     }
     chart.destroy();
     refreshChart();
 };
+
 // End of graph
 
 function init() {
@@ -624,11 +625,15 @@ function init() {
         refreshChart();
     }
 
-    setInterval(print, 1000/60, tetris);     //60fps                                                           //Initializes the display of the game
+    //Initializes the display of the game
+    //60fps
+    setInterval(print, 1000 / 60, tetris);
 
-    tetris.ApplyShape();                                                                                    //Displays first tetromino
+    //Displays first tetromino
+    tetris.ApplyShape();
 
-    sound.MuteToggle();                                                                                     //Initializes sounds
+    //Initializes sounds
+    sound.MuteToggle();
     sound.SoundSettings();
 }
 
