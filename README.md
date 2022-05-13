@@ -10,3 +10,5 @@ The user can make the AI stop any time and continue playing the game themselves.
 Data about high level tetris players is collected through a proxy.
 To set up this proxy, we use this command: lcp --proxyUrl https://ch.tetr.io
 
+Currently the website is deploted on: 
+https://singular-shortbread-7c56ff.netlify.app
