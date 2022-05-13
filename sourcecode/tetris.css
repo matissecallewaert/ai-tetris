@@ -97,6 +97,11 @@ tr {
     color: #444444;
 }
 
+#toggleLight {
+    font-size: 30px;
+    vertical-align: middle;
+}
+
 /* #keyupIcon {
     height: 30px;
     width: 30px;
