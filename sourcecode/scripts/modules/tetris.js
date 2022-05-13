@@ -99,6 +99,7 @@ export default class Tetris {
         this.died = false;
         this.fakeDied = false;
         this.fakeGrid = null;
+        this.tetrisReset = false;
     }
 
     HoldShape() {
@@ -140,8 +141,7 @@ export default class Tetris {
     }
 
     fakeGenerateBag() {
-        let copy = {...this.currentShape.shape};
-        this.fakeShape = copy;
+        this.fakeShape = {...this.currentShape.shape};
     }
 
 
@@ -185,8 +185,6 @@ export default class Tetris {
                 this.fakeDied = true;
             }
             this.ApplyShape();
-        } else {
-            console.error("out of index in bag!");
         }
     }
 
@@ -526,6 +524,7 @@ export default class Tetris {
         this.died = false;
         this.holding = false;
         this.ground = false;
+        this.tetrisReset = true;
     }
 
 }

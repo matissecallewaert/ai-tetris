@@ -111,12 +111,12 @@ let keyHandler = (k) => {
                 auto();
             }
         } else if (k.key === "s") {
-            clearInterval(id2)
-            tetris.speed -= 50;
+            tetris.speed = Math.max(1000/60, tetris.speed - 50);
+            clearInterval(id2);
             id2 = setInterval(move, tetris.speed, tetris);
         } else if (k.key === "d") {
+            tetris.speed = Math.max(1000/60, tetris.speed + 50);
             clearInterval(id2)
-            tetris.speed += 50;
             id2 = setInterval(move, tetris.speed, tetris);
         }
     }
@@ -211,6 +211,7 @@ function resetGame() {
     tetris.Reset();
     ai.reset();
     ai_level.innerText = 1;
+    ai_gene.innerText = 1;
     index = 0;
     play = false;
     tetris.ai_activated = false;
@@ -243,7 +244,6 @@ function move(tetris) {
 
 async function auto() {
     await algorithm();
-    await makeMoves();
 }
 
 async function algorithm() {
@@ -264,7 +264,9 @@ async function algorithm() {
             makeMoves();
             await waitUntil(() => done === true);
             await waitUntil(() => printBuffer === true);
+            await waitUntil(()=> tetris.tetrisReset === true);
             printBuffer = false;
+            tetris.tetrisReset = false;
         }
         console.log(ai.moves.reduce(function (a, b) {
             return Math.max(a, b);
@@ -331,6 +333,7 @@ function getAllMoves() {
 
 async function makeMoves() {
     done = false;
+
     while (!tetris.died && tetris.movesTaken <= 499) {
         let move = getBestMove();
         for (let rot = 0; rot < move.rotation; rot++) {
@@ -347,13 +350,12 @@ async function makeMoves() {
         }
         await waitUntil(() => tetris.ground === true);
         if (!tetris.ai_activated) {
-            tetris.ground = false
+            tetris.ground = false;
             break;
         }
         tetris.fakeMoveDown2();
         tetris.ground = false
         console.log(tetris.ai_activated);
-
     }
     done = true;
 }
@@ -391,6 +393,8 @@ function print(tetris) {
             gameOverScreen.setAttribute("visibility", "visible");
             play_sound = false;
             pauseGame();
+            ai.reset();
+            ai_level.innerText = 1;
         } else {
             tetris.Reset();
         }
@@ -537,8 +541,6 @@ function init() {
     //Initializes the game
     tetris = new Tetris();
     ai = new AI();
-    ai.reset();
-    localStorage.clear();
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
     ai_level = document.getElementById("lines");
@@ -611,7 +613,7 @@ function init() {
         refreshChart();
     }
 
-    setInterval(print, 100, tetris);                                                                //Initializes the display of the game
+    setInterval(print, 1000/60, tetris);     //60fps                                                           //Initializes the display of the game
 
     tetris.ApplyShape();                                                                                    //Displays first tetromino
 

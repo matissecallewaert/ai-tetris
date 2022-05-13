@@ -52,6 +52,9 @@ export default class AI {
     }
 
     fillBreeder() {
+        if(this.breederSize <1){
+            this.breederSize = 1;
+        }
         for (let i = 0; i < this.breederSize; i++) {
             this.getFittest();
             this.breeder[i] = JSON.parse(JSON.stringify(this.fittest));
@@ -97,7 +100,6 @@ export default class AI {
 
     populate() {
         this.fillBreeder();
-        this.population = [];
         for (let i = 0; i < this.populationSize; i++) {
             this.makeParents();
             this.crossover();
