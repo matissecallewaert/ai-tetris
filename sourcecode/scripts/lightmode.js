@@ -13,10 +13,10 @@ function toggleLight() {
     toggle()
     if (getMode() === "dark") {
         localStorage.setItem("mode", "light")
-        document.getElementById("toggleLight").innerText = "Toggle Dark"
+        document.getElementById("toggleLight").innerText = "\u{1F31A}"
     } else {
         localStorage.setItem("mode", "dark")
-        document.getElementById("toggleLight").innerText = "Toggle Light"
+        document.getElementById("toggleLight").innerText = "\u{1F31D}"
     }
 }
 
@@ -29,10 +29,11 @@ function toggle() {
 }
 
 function init() {
+    document.getElementById("toggleLight").innerText = "\u{1F31D}";
     if (localStorage.getItem("mode") === null) localStorage.setItem("mode", "dark")
     if (getMode() === "light") {
         toggle()
-        document.getElementById("toggleLight").innerText = "Toggle Dark"
+        document.getElementById("toggleLight").innerText = "\u{1F31A}"
     }
 }
 
