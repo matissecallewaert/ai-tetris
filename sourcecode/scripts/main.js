@@ -138,6 +138,12 @@ let arrow_keys_handler = function (e) {
             default:
                 break; // do not block other keys
         }
+    } else if (!play) {
+        switch (e.code) {
+            case "Space":
+                e.preventDefault();
+                break;
+        }
     }
 };
 
@@ -560,24 +566,28 @@ function init() {
 
     gameOverScreen = document.getElementById("game_over");
 
-    touchduration = 800;                                                                                //Time the player has to touch the screen to hard drop current tetromino
+    //Time the player has to touch the screen to hard drop current tetromino
+    touchduration = 800;
 
     x = null;
     y = null;
 
-    canvas = document.getElementById("board");                                                  //Initializes the main canvas
+    //Initializes the main canvas
+    canvas = document.getElementById("board");
     ctx = canvas.getContext("2d");
     ctx.canvas.width = COLS * BLOCK_SIZE;
     ctx.canvas.height = ROWS * BLOCK_SIZE;
     ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-    block_canvas = document.getElementById("upcomingShape");                                    //Initializes the canvas to display the upcoming tetromino
+    //Initializes the canvas to display the upcoming tetromino
+    block_canvas = document.getElementById("upcomingShape");
     blockctx = block_canvas.getContext("2d");
     blockctx.canvas.width = 4 * BLOCK_SIZE;
     blockctx.canvas.height = 2 * BLOCK_SIZE;
     blockctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-    holding_canvas = document.getElementById("holdingShape");                                    //Initializes the canvas to display the upcoming tetromino
+    //Initializes the canvas to display the upcoming tetromino
+    holding_canvas = document.getElementById("holdingShape");
     holdingctx = holding_canvas.getContext("2d");
     holdingctx.canvas.width = 4 * BLOCK_SIZE;
     holdingctx.canvas.height = 4 * BLOCK_SIZE;
@@ -593,7 +603,8 @@ function init() {
     gameOverScreen.setAttribute("height", (ROWS * BLOCK_SIZE + 5).toString());
     gameOverScreen.setAttribute("width", (COLS * BLOCK_SIZE + 5).toString());
 
-    document.getElementById("startButton").addEventListener("click", startGame);            //Sets all the button events, touch controls and keyboard controls
+    //Sets all the button events, touch controls and keyboard controls
+    document.getElementById("startButton").addEventListener("click", startGame);
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
     document.getElementById("resetButton").addEventListener("click", resetGame);
     document.addEventListener("longpressevent", function (event) {
