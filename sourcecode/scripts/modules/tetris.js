@@ -100,6 +100,7 @@ export default class Tetris {
         this.fakeDied = false;
         this.fakeGrid = null;
     }
+
     HoldShape() {
         this.RemoveShape();
         this.holdShape = this.currentShape;
@@ -108,6 +109,7 @@ export default class Tetris {
         this.NextShape();
         this.holding = true;
     }
+
     UseHoldShape() {
         this.RemoveShape();
         let hulp = this.holdShape;
@@ -343,7 +345,7 @@ export default class Tetris {
     UpdateScore() {
         let aantal = 0;
         let y;
-        let scoreDict = { 0: 0, 1: 0, 2: 100, 3: 600, 4: 3100 };
+        let scoreDict = {0: 0, 1: 0, 2: 100, 3: 600, 4: 3100};
         for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
                 aantal++;
@@ -453,7 +455,7 @@ export default class Tetris {
                     holes = true;
                 }
                 if (holes) {
-                    if (this.grid[y-1][x] !== 0) {
+                    if (this.grid[y - 1][x] !== 0) {
                         blockades++;
                     }
                 }

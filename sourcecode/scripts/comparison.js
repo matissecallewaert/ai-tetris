@@ -21,7 +21,10 @@ function setUpExtraInfo() {
     let rankedplayers = document.getElementById("rankedplayers");
     fetch("http://localhost:8010/proxy/api/general/stats")
         .then(data => data.json())
-        .then(jsondata => { currentplayers.innerText = jsondata.data.usercount; rankedplayers.innerText = jsondata.data.rankedcount; })
+        .then(jsondata => {
+            currentplayers.innerText = jsondata.data.usercount;
+            rankedplayers.innerText = jsondata.data.rankedcount;
+        })
         .catch(() => {
             currentplayers.innerText = "N/A";
             rankedplayers.innerText = "N/A";
@@ -36,22 +39,24 @@ function setUpExtraInfo() {
     trrating.innerText = topPlayerData[2];
     pps.innerText = topPlayerData[3];
 
-    if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) { topinfo.hidden = true; }
-
+    if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) {
+        topinfo.hidden = true;
+    }
 
 
 }
 
 function scrollDown() {
-    setTimeout(function () { document.getElementById('learnMoreText').scrollIntoView(); }, 50);
+    setTimeout(function () {
+        document.getElementById('learnMoreText').scrollIntoView();
+    }, 50);
 }
 
 function toggleExplanation() {
     if (learnMoreText.hidden) {
         learnMore.innerText = "Hide info";
         scrollDown();
-    }
-    else {
+    } else {
         learnMore.innerText = "Show info";
     }
     learnMoreText.hidden = !learnMoreText.hidden;
@@ -67,7 +72,6 @@ function addTitles() {
     }
     table.appendChild(tr);
 }
-
 
 
 function addGlobalHighScores() {
@@ -119,7 +123,6 @@ function addGlobalHighScores() {
         })
 
 }
-
 
 
 //not in use anymore

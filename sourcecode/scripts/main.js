@@ -128,9 +128,15 @@ let keyHandler = (k) => {
 let arrow_keys_handler = function (e) {
     if (play) {
         switch (e.code) {
-            case "ArrowUp": case "ArrowDown": case "ArrowLeft": case "ArrowRight":
-            case "Space": e.preventDefault(); break;
-            default: break; // do not block other keys
+            case "ArrowUp":
+            case "ArrowDown":
+            case "ArrowLeft":
+            case "ArrowRight":
+            case "Space":
+                e.preventDefault();
+                break;
+            default:
+                break; // do not block other keys
         }
     }
 };
@@ -237,14 +243,15 @@ function move(tetris) {
 
 async function auto() {
     await algorithm();
-    while (tetris.ai_activated === true) {
-        await makeMoves();
-    }
+    await makeMoves();
 }
 
 async function algorithm() {
     for (let i = ai.populationNumber; i < ai.maxGeneration; i++) {
         for (let j = index; j < ai.populationSize; j++) {
+            if(!tetris.ai_activated){
+                return;
+            }
             ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
             gene = ai.population[j];
             ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
@@ -339,11 +346,14 @@ async function makeMoves() {
             }
         }
         await waitUntil(() => tetris.ground === true);
-        tetris.fakeMoveDown2();
-        tetris.ground = false
         if (!tetris.ai_activated) {
+            tetris.ground = false
             break;
         }
+        tetris.fakeMoveDown2();
+        tetris.ground = false
+        console.log(tetris.ai_activated);
+
     }
     done = true;
 }
@@ -412,7 +422,7 @@ function print(tetris) {
     moves.textContent = tetris.movesTaken;
 
     blockctx.clearRect(0, 0, COLS, ROWS)
-    if(tetris.upcomingShape.shape !== null){
+    if (tetris.upcomingShape.shape !== null) {
         for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
             for (let x = 0; x < Object.values(tetris.upcomingShape.shape)[0][0].length; x++) {
                 let waarde = Object.values(tetris.upcomingShape.shape)[0][y][x];
@@ -468,45 +478,45 @@ function UpdateSpeed(tetris) {
  * @type {{data: {datasets: [{backgroundColor: string[], borderColor: string[], data: number[], borderWidth: number, label: string}], labels: string[]}, options: {scales: {y: {beginAtZero: boolean}}}, type: string}}
  */
 const graphData = {
-   type: "line",
-   data: {
-       labels: [],
-       datasets: [
-           {
-               label: "Max moves per generation",
-               data: [],
-               backgroundColor: [
-                   "rgba(255, 99, 132, 0.2)",
-                   "rgba(54, 162, 235, 0.2)",
-                   "rgba(255, 206, 86, 0.2)",
-                   "rgba(75, 192, 192, 0.2)",
-                   "rgba(153, 102, 255, 0.2)",
-                   "rgba(255, 159, 64, 0.2)"
-               ],
-               borderColor: [
-                   "rgba(255, 99, 132, 1)",
-                   "rgba(54, 162, 235, 1)",
-                   "rgba(255, 206, 86, 1)",
-                   "rgba(75, 192, 192, 1)",
-                   "rgba(153, 102, 255, 1)",
-                   "rgba(255, 159, 64, 1)"
-               ],
-               borderWidth: 1
-           }
-       ]
-   },
-   options: {
-       scales: {
-           y: {
-               beginAtZero: true
-           }
-       }
-   }
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [
+            {
+                label: "Average moves per generation",
+                data: [],
+                backgroundColor: [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)"
+                ],
+                borderColor: [
+                    "rgba(255, 99, 132, 1)",
+                    "rgba(54, 162, 235, 1)",
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)"
+                ],
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
 };
 
 const refreshChart = () => {
-   const graphctx = document.getElementById("myChart").getContext("2d");
-   chart = new Chart(graphctx, graphData);
+    const graphctx = document.getElementById("myChart").getContext("2d");
+    chart = new Chart(graphctx, graphData);
 };
 
 const handleRandomDataset = () => {

@@ -1,17 +1,17 @@
-    //with this code "Toggle Dark" is very blurry, no idea why"
+//with this code "Toggle Dark" is very blurry, no idea why"
 
-    /* 
+/*
 
-    let togLight = document.getElementById("toggleLight");
-    if (togLight.innerText == "Toggle Light") togLight.innerText = "Toggle Dark";
-    else togLight.innerText = "Toggle Light";
-    */
+let togLight = document.getElementById("toggleLight");
+if (togLight.innerText == "Toggle Light") togLight.innerText = "Toggle Dark";
+else togLight.innerText = "Toggle Light";
+*/
 
-    //maybe add some kind of global variable bool isDark to initiate toggleLight() on every page once it's toggled on.
+//maybe add some kind of global variable bool isDark to initiate toggleLight() on every page once it's toggled on.
 
-function toggleLight(){
+function toggleLight() {
     toggle()
-    if(getMode() === "dark") {
+    if (getMode() === "dark") {
         localStorage.setItem("mode", "light")
         document.getElementById("toggleLight").innerText = "Toggle Dark"
     } else {
@@ -28,15 +28,15 @@ function toggle() {
     nav.classList.toggle("navbar-light");
 }
 
-function init(){
-    if(localStorage.getItem("mode") === null)   localStorage.setItem("mode", "dark")
-    if(getMode() === "light"){
+function init() {
+    if (localStorage.getItem("mode") === null) localStorage.setItem("mode", "dark")
+    if (getMode() === "light") {
         toggle()
         document.getElementById("toggleLight").innerText = "Toggle Dark"
     }
 }
 
-function getMode(){
+function getMode() {
     return localStorage.getItem("mode")
 }
 
