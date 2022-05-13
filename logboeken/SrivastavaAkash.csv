@@ -25,3 +25,5 @@ Datum,Start,Einde,Plaats,Omschrijving
 10/05/2022,08:00,11:00,Thuis,Poging tot dynamische grafiek laten tekenen (TODO: Tekenen in react)
 11/05/2022,09:00,12:44,Thuis,Gewerkt om grafiek te tekenen in react om de evolutie van AI te tonen
 12/05/2022,17:00,19:23,Thuis,AI en main gemerged + verschillende bug fixes
+13/05/2022,09:30,13:00,Thuis,Verschillende bug fixes via discord
+13/05/2022,14:00,17:33,Thuis,Code cleanup en format + testen
