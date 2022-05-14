@@ -11,26 +11,26 @@
     <script type="module" src="scripts/comparison.js" defer></script>
     <script src="scripts/lightmode.js" defer></script>
     <link rel="icon" href="assets/images/favgif.gif" type="image/gif">
+    <script src="scripts/translator.js" defer></script>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container-fluid">
             <div class="navbar-nav w-100 justify-content-between nav-fill">
-                <button type="button" class="myButton btn btn-md" onclick="toggleLight()" id="toggleLight">Toggle
-                    Light</button>
+                <button type="button" class="myButton btn btn-md" onclick="toggleLight()" id="toggleLight"></button>
                 <div class="row w-100">
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link" href="index.html">Home</a>
+                        <a data-i18n-key="home" class="nav-item nav-link" href="index.html">Home</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
+                        <a data-i18n-key="genetic-algorithms" class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link" href="behind-the-code.html">Behind the Code</a>
+                        <a data-i18n-key="behind-the-code" class="nav-item nav-link" href="behind-the-code.html">Behind the Code</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a class="nav-item nav-link active" href="#">Leaderboard</a>
+                        <a data-i18n-key="leaderboard" class="nav-item nav-link active" href="#">Leaderboard</a>
                     </div>
                 </div>
                 <div class="navbar-right">
