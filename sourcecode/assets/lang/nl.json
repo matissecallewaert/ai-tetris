@@ -34,7 +34,7 @@
   "btc-tet-title": "Tetris",
   "btc-tet-content": "",
   "btc-dg-title": "Data Verzamelen",
-  "btc-dg-content": "Voor het verzamelen van data startten we met veel onderzoek rond dataverzameling en dataschrapen. Het team besliste om data te verzamelen van een tetris leaderboard. We kwamen overeen om een dataschraper te bouwen in Python en na wat problemen met permissie om te schrapen lukte het ons om succesvol de code voor de dataschraper te schrijven. Deze schraper haalde de data van een online tetris leaderboard en zette het om naar een json bestand. Matisse vond echter een website genaamd tetr.io die een API had waarvan we statistieken over de beste tetrisspelers op hun website van konden halen. Dus besloten we om ons systeem te veranderen en javascript te gebruiken om van de API van tetr.io data af te halen en nu gebruikt de website tetr.io voor het leaderboard.",
+  "btc-dg-content": "Voor het verzamelen van data startten we met veel onderzoek rond dataverzameling en dataschrapen. Het team besliste om data te verzamelen van een tetris leaderboard. We kwamen overeen om een dataschraper te bouwen in Python en na wat problemen met permissie om te schrapen lukte het ons om succesvol de code voor de dataschraper te schrijven. Deze schraper haalde de data van een online tetris leaderboard en zette het om naar een json bestand. Matisse vond echter een website genaamd tetr.io die een API had waarvan we statistieken over de beste tetrisspelers op hun website van konden halen. Dus besloten we om ons systeem te veranderen en javascript te gebruiken om van de API van tetr.io data af te halen. Nu gebruikt de website tetr.io voor het leaderboard.",
   "btc-web-title": "De Website",
   "btc-web-content": "",
   "lb-title": "Beste Moderne Tetris Spelers",
