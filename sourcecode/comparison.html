@@ -24,17 +24,19 @@
                         <a data-i18n-key="home" class="nav-item nav-link" href="index.html">Home</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a data-i18n-key="genetic-algorithms" class="nav-item nav-link" href="genetic-explanation.html">Genetic Algorithms</a>
+                        <a data-i18n-key="genetic-algorithms" class="nav-item nav-link"
+                            href="genetic-explanation.html">Genetic Algorithms</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
-                        <a data-i18n-key="behind-the-code" class="nav-item nav-link" href="behind-the-code.html">Behind the Code</a>
+                        <a data-i18n-key="behind-the-code" class="nav-item nav-link" href="behind-the-code.html">Behind
+                            the Code</a>
                     </div>
                     <div class="col-md-3 col-xs-12">
                         <a data-i18n-key="leaderboard" class="nav-item nav-link active" href="#">Leaderboard</a>
                     </div>
                 </div>
                 <div class="navbar-right">
-                    <select data-i18n-switcher class="locale-switcher">
+                    <select data-i18n-switcher class="locale-switcher" id="localeSwitcher">
                         <option value="en">English</option>
                         <option value="nl">Nederlands</option>
                     </select>
@@ -50,31 +52,38 @@
             </div>
         </div>
         <div class="row mt-4" id="maindiv">
-            <p data-i18n-key="lb-title" class="h3" style="text-align: center;">Best Modern Tetris Players<a href="https://ch.tetr.io"
-                    target="_blank">(source)</a>
+            <p data-i18n-key="lb-title" class="h3" style="text-align: center;">Best Modern Tetris Players
             </p>
             <table class="center" id="highscoreTable">
-
-
+                <tr>
+                    <th data-i18n-key="lb-rank"></th>
+                    <th data-i18n-key="lb-player"></th>
+                    <th data-i18n-key="lb-rating"></th>
+                    <th data-i18n-key="lb-pps"></th>
+                </tr>
                 <!--table is made in comparison.js-->
-
             </table>
-            <p style="text-align: center;" id="loading...">Getting data... <br><img src="assets/images/favgif.gif"
-                    width="32" height="32"> </p>
+            <p style="text-align: center;" id="source"><a href="https://ch.tetr.io" target="_blank">(source)</a></p>
+            <p style="text-align: center;" id="loading..." data-i18n-key="lb-gettingData"> </p>
+            <p style="text-align: center;" id="loadingGif"><img src="assets/images/favgif.gif" width="32" height="32">
+            </p>
+            <p style="text-align: center;" id="dataError" data-i18n-key="lb-error"></p>
         </div>
         <span data-i18n-key="lb-show" class="learnMore" id="learnMore">Show info</span>
 
-        <p id="learnMoreText" data-i18n-key="lb-info">
-            This leaderboard is kept and updated on <a href="https://tetr.io" target="_blank">tetr.io</a>.
+        <p id="learnMoreText">
+            This leaderboard is kept and updated on tetr.io.
             On this website users can play the Tetris stacker game competitively. Winning online ranked games
             against other players earns a player a higher TR Rating. Only 1% of the players have a TR Rating of over
-            24520. <span id="amountofplayers">There are currently <span id="currentplayers"></span> players registered
-                on the website. <span id="rankedplayers"></span> of those play competitively.</span>
+            24520.
+        </p>
+        <p id="learnMoreText2">
+            <span id="amountofplayers"><span id="currentplayers"></span>
+                <span id="rankedplayers"></span>
+            </span>
             <br><br>
             <span id="topinfo">
-                The top player right now is <span id="topplayer">"N/A"</span> with a TR Rating of <span
-                    id="trrating">"N/A"</span> and
-                an average of <span id="pps">"N/A"</span> pieces placed per second.
+                <span id="topplayer"></span><span id="trrating"></span><span id="pps"></span>
             </span>
         </p>
     </div>

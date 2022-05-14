@@ -13,8 +13,26 @@ let th;
 
 let learnMore = document.getElementById("learnMore");
 let learnMoreText = document.getElementById("learnMoreText");
+let learnMoreText2 = document.getElementById("learnMoreText2");
+
+let language;
+
 learnMore.addEventListener("click", toggleExplanation);
 learnMoreText.hidden = true;
+learnMoreText2.hidden = true;
+learnMore.setAttribute("data-i18n-key", "lb-learnMore");
+learnMoreText.setAttribute("data-i18n-key", "lb-info");
+document.getElementById("dataError").hidden = true;
+document.getElementById("source").hidden = true;
+
+document.getElementById("localeSwitcher").addEventListener("change", checkLanguage);
+
+function checkLanguage() {
+    let select = document.getElementById("localeSwitcher");
+    let value = select.options[select.selectedIndex].value;
+    language = value;
+    setUpExtraInfo();
+}
 
 function setUpExtraInfo() {
     let currentplayers = document.getElementById("currentplayers");
@@ -22,12 +40,16 @@ function setUpExtraInfo() {
     fetch("http://localhost:8010/proxy/api/general/stats")
         .then(data => data.json())
         .then(jsondata => {
-            currentplayers.innerText = jsondata.data.usercount;
-            rankedplayers.innerText = jsondata.data.rankedcount;
+            if (language == "en") {
+                currentplayers.innerText = "There are currently " + jsondata.data.usercount + " players registered on the website.";
+                rankedplayers.innerText = jsondata.data.rankedcount + " of those play competitively.";
+            }
+            else {
+                currentplayers.innerText = "Er zijn momenteel " + jsondata.data.usercount + " spelers geregistreerd op de website.";
+                rankedplayers.innerText = jsondata.data.rankedcount + " van die spelers spelen competitief.";
+            }
         })
         .catch(() => {
-            currentplayers.innerText = "N/A";
-            rankedplayers.innerText = "N/A";
             document.getElementById("amountofplayers").hidden = true;
         })
     let topplayer = document.getElementById("topplayer");
@@ -35,10 +57,16 @@ function setUpExtraInfo() {
     let pps = document.getElementById("pps");
     let topinfo = document.getElementById("topinfo");
 
-    topplayer.innerText = topPlayerData[1];
-    trrating.innerText = topPlayerData[2];
-    pps.innerText = topPlayerData[3];
-
+    if (language == "en") {
+        topplayer.innerText = "The top player right now is " + topPlayerData[1];
+        trrating.innerText = " with a TR Rating of " + topPlayerData[2];
+        pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
+    }
+    else {
+        topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
+        trrating.innerText = " met een TR Rating van " + topPlayerData[2];
+        pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
+    }
     if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) {
         topinfo.hidden = true;
     }
@@ -53,24 +81,10 @@ function scrollDown() {
 }
 
 function toggleExplanation() {
-    if (learnMoreText.hidden) {
-        learnMore.innerText = "Hide info";
-        scrollDown();
-    } else {
-        learnMore.innerText = "Show info";
-    }
+    if (learnMoreText.hidden) scrollDown();
+    learnMoreText.setAttribute("data-i18n-key", "lb-info");
     learnMoreText.hidden = !learnMoreText.hidden;
-}
-
-
-function addTitles() {
-    tr = document.createElement("tr");
-    for (let title of toAddTableTitles) {
-        th = document.createElement("th");
-        th.innerText = title;
-        tr.appendChild(th);
-    }
-    table.appendChild(tr);
+    learnMoreText2.hidden = !learnMoreText2.hidden;
 }
 
 
@@ -80,10 +94,10 @@ function addGlobalHighScores() {
         .then(jsondata => {
             for (let i = 0; i < amountOfPlayers; i++) {
                 let pps = Number((jsondata.data.users[i].league.pps).toFixed(2)).toString();
-                if (pps.split(".")[1].length < 2) pps += "0";
+                while (pps.split(".")[1].length < 2) pps += "0";
 
                 let trRating = Number((jsondata.data.users[i].league.rating).toFixed(3)).toString();
-                if (trRating.split(".")[1].length < 3) trRating += "0";
+                while (trRating.split(".")[1].length < 3) trRating += "0";
 
                 toAddGlobalPlayerData = [i + 1, jsondata.data.users[i].username.trim(),
                     trRating, pps]
@@ -99,30 +113,24 @@ function addGlobalHighScores() {
                 table.appendChild(tr);
 
             }
-            //console.log(jsondata);
-            setUpExtraInfo();
+            checkLanguage();
             setTimeout(function () {
                 table.hidden = false;
                 document.getElementById("loading...").hidden = true;
+                document.getElementById("loadingGif").hidden = true;
+                document.getElementById("source").hidden = false;
+                document.getElementById("dataError").hidden = true;
             }, 1500);
-            //addHighScore(false);
-
         })
         .catch(() => {
             setTimeout(function () {
                 document.getElementById("loading...").hidden = true;
-                let p = document.createElement("p");
-                let main = document.getElementById("maindiv");
-                document.getElementById("loading...").hidden = true;
-                p.innerText = "\nSomething went wrong while loading the global scores.";
-                p.style.textAlign = "center";
-                main.appendChild(p);
-                setUpExtraInfo();
-                //addHighScore(true);
+                document.getElementById("loadingGif").hidden = true;
+                document.getElementById("dataError").hidden = false;
+                checkLanguage();
             }, 1500);
         })
 
 }
 
-addTitles();
 addGlobalHighScores();
