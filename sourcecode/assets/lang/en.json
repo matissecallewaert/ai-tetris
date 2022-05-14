@@ -34,7 +34,7 @@
   "btc-tet-title": "Tetris",
   "btc-tet-content": "",
   "btc-dg-title": "Data Gathering",
-  "btc-dg-content": "",
+  "btc-dg-content": "For the data gathering we started with doing a lot of research on data gathering and scraping. The team decided to gather data from a tetris leaderboard. Eventually we decided build this datascraper in Python, after some issues with permission to scrape we managed to succesfully code a datascraper that would get data from an online tetris leaderboard and convert it to a json file. However, Matisse found a website called tetr.io that had an API where people could fetch stats about the best tetris players on their website from. So we switched up our system and decided to fetch from this API using javascript and now the website uses tetr.io for its leaderboard.",
   "btc-web-title": "The Website",
   "btc-web-content": "The main goal was to clearly present the project and each of its components in an intuitive way. Bootstrap was used for easily constructing a proper layout, but this also brought along its own set of problems. The main feature that couldn't be added was a collapsable navigation bar. Lots of attempts and various methods were tried for this to work, from the built-in bootstrap feature to writing new code, but to no avail.",
   "lb-title": "Best Modern Tetris Players",
