@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="289fc030-45f1-43f2-8d89-afdd8a6b9419" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/comparison.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/comparison.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/modules/tetris.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/modules/tetris.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/webpage-data.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +112,8 @@
       <workItem from="1652284446147" duration="1487000" />
       <workItem from="1652286945689" duration="667000" />
       <workItem from="1652374761126" duration="306000" />
-      <workItem from="1652470677520" duration="1775000" />
+      <workItem from="1652470677520" duration="2516000" />
+      <workItem from="1652525659628" duration="44000" />
     </task>
     <servers />
   </component>

@@ -430,7 +430,7 @@ function print(tetris) {
     moves.textContent = tetris.movesTaken;
 
     blockctx.clearRect(0, 0, COLS, ROWS)
-    if (tetris.upcomingShape.shape !== null) {
+    if (tetris.upcomingShape !== undefined) {
         for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
             for (let x = 0; x < Object.values(tetris.upcomingShape.shape)[0][0].length; x++) {
                 let waarde = Object.values(tetris.upcomingShape.shape)[0][y][x];
