@@ -1,4 +1,6 @@
 let amountOfPlayers = 25;
+let jsonusercount = "N/A";
+let jsonrankedcount = "N/A";
 let table = document.getElementById("highscoreTable");
 table.hidden = true;
 let toAddGlobalPlayerData;
@@ -20,8 +22,6 @@ let language;
 learnMore.addEventListener("click", toggleExplanation);
 learnMoreText.hidden = true;
 learnMoreText2.hidden = true;
-learnMore.setAttribute("data-i18n-key", "lb-learnMore");
-learnMoreText.setAttribute("data-i18n-key", "lb-info");
 document.getElementById("dataError").hidden = true;
 document.getElementById("source").hidden = true;
 
@@ -29,44 +29,53 @@ document.getElementById("localeSwitcher").addEventListener("change", checkLangua
 
 function checkLanguage() {
     let select = document.getElementById("localeSwitcher");
-    let value = select.options[select.selectedIndex].value;
-    language = value;
+    language = select.options[select.selectedIndex].value;
     setUpExtraInfo();
 }
 
 function setUpExtraInfo() {
     let currentplayers = document.getElementById("currentplayers");
     let rankedplayers = document.getElementById("rankedplayers");
-    fetch("http://localhost:8010/proxy/api/general/stats")
-        .then(data => data.json())
-        .then(jsondata => {
-            if (language == "en") {
-                currentplayers.innerText = "There are currently " + jsondata.data.usercount + " players registered on the website.";
-                rankedplayers.innerText = jsondata.data.rankedcount + " of those play competitively.";
-            }
-            else {
-                currentplayers.innerText = "Er zijn momenteel " + jsondata.data.usercount + " spelers geregistreerd op de website.";
-                rankedplayers.innerText = jsondata.data.rankedcount + " van die spelers spelen competitief.";
-            }
-        })
-        .catch(() => {
-            document.getElementById("amountofplayers").hidden = true;
-        })
+    let amountOfWait = 0;
+
+    if (jsonrankedcount == "N/A" && jsonusercount == "N/A") {
+        amountOfWait = 2000;
+        fetch("http://localhost:8010/proxy/api/general/stats")
+            .then(data => data.json())
+            .then(jsondata => {
+                jsonusercount = jsondata.data.usercount;
+                jsonrankedcount = jsondata.data.rankedcount;
+            })
+            .catch(() => {
+                document.getElementById("amountofplayers").hidden = true;
+            })
+    }
+
     let topplayer = document.getElementById("topplayer");
     let trrating = document.getElementById("trrating");
     let pps = document.getElementById("pps");
     let topinfo = document.getElementById("topinfo");
 
     if (language == "en") {
-        topplayer.innerText = "The top player right now is " + topPlayerData[1];
-        trrating.innerText = " with a TR Rating of " + topPlayerData[2];
-        pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
+        setTimeout(() => {
+            currentplayers.innerText = "There are currently " + jsonusercount + " players registered on the website.";
+            rankedplayers.innerText = jsonrankedcount + " of those play competitively.\n\n";
+            topplayer.innerText = "The top player right now is " + topPlayerData[1];
+            trrating.innerText = " with a TR Rating of " + topPlayerData[2];
+            pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
+        }, amountOfWait);
+
     }
-    else {
-        topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
-        trrating.innerText = " met een TR Rating van " + topPlayerData[2];
-        pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
+    else if (language == "nl") {
+        setTimeout(() => {
+            currentplayers.innerText = "Er zijn momenteel " + jsonusercount + " spelers geregistreerd op de website.";
+            rankedplayers.innerText = jsonrankedcount + " van die spelers spelen competitief.\n\n";
+            topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
+            trrating.innerText = " met een TR Rating van " + topPlayerData[2];
+            pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
+        }, amountOfWait);
     }
+
     if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) {
         topinfo.hidden = true;
     }
@@ -123,11 +132,11 @@ function addGlobalHighScores() {
             }, 1500);
         })
         .catch(() => {
+            checkLanguage();
             setTimeout(function () {
                 document.getElementById("loading...").hidden = true;
                 document.getElementById("loadingGif").hidden = true;
                 document.getElementById("dataError").hidden = false;
-                checkLanguage();
             }, 1500);
         })
 
