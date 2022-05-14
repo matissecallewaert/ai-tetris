@@ -46,6 +46,7 @@ function translateElement(element) {
     if (translation[0] === '"') {
         translation = translation.substring(1, translation.length - 1);
     }
+    console.log(`${translation}`)
     element.innerText = translation;
 }
 

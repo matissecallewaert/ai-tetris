@@ -18,8 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <div class="navbar-nav w-100 justify-content-between nav-fill">
-                <button type="button" class="myButton btn btn-md" onclick="toggleLight()" id="toggleLight">Toggle
-                    Light</button>
+                <button type="button" class="myButton btn btn-md" onclick="toggleLight()" id="toggleLight"></button>
                 <div class="row w-100">
                     <div class="col-md-3 col-xs-12">
                         <a data-i18n-key="home" class="nav-item nav-link" href="index.html">Home</a>
@@ -63,23 +62,29 @@
         <div class="row m-3">
             <div class="col">
                 <p data-i18n-key="ga-gen-title" class="h4">What's the general process?</p>
-                <p data-i18n-key="ga-gen-content" class="text-break">
-                    GAs are heavily inspired by natural processes, so the terms are also based off of it. A GA starts
-                    with a population of a chosen amount of individuals with each having a set of randomly generated
-                    parameters, the first generation. After each individual has been evaluated on their parameters and
-                    received a fitness-score, breeding begins. The breeding process can vary from application to
-                    application, but in general the best fitting individuals are chosen to create children with each
-                    other. During the creation of a child, each parameter gets randomly selected from the parents, this
-                    is called crossover. After this process, each parameter has a chance to be slightly mutated, so that
-                    random variation can bring change. The breeding process is repeated until there is a new generation
-                    as big as the original one, and this process then keeps repeating itself. The more generations have
-                    passed, the more optimised the current generation and thus the solution is.</p>
+                <div class="row">
+                    <div class="col-2">
+                        <img src="assets/images/GA.png" alt="Process" class="rounded float-start me-3 img-fluid" >
+                    </div>
+                    <div class="col">
+                        <p data-i18n-key="ga-gen-content" class="text-break">
+                            GAs are heavily inspired by natural processes, so the terms are also based off of it. A GA starts
+                            with a population of a chosen amount of individuals with each having a set of randomly generated
+                            parameters, the first generation. After each individual has been evaluated on their parameters and
+                            received a fitness-score, breeding begins. The breeding process can vary from application to
+                            application, but in general the best fitting individuals are chosen to create children with each
+                            other. During the creation of a child, each parameter gets randomly selected from the parents, this
+                            is called crossover. After this process, each parameter has a chance to be slightly mutated, so that
+                            random variation can bring change. The breeding process is repeated until there is a new generation
+                            as big as the original one, and this process then keeps repeating itself. The more generations have
+                            passed, the more optimised the current generation and thus the solution is.</p>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row m-3">
             <div class="col">
                 <p data-i18n-key="ga-app-title" class="h4">Where and why is it used?</p>
-                <img src="assets/images/process.jpg" alt="Process" class="rounded float-start me-3" width="200" height="200">
                 <p data-i18n-key="ga-app-content" class="text-break">
                     GAs are used to optimise a process or to find the best possible solution to a problem. It has many
                     uses and applications in a wide variety of fields (if not every field), such as medicine and
