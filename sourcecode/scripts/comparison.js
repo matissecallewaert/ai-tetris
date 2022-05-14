@@ -56,25 +56,24 @@ function setUpExtraInfo() {
     let pps = document.getElementById("pps");
     let topinfo = document.getElementById("topinfo");
 
-    if (language == "en") {
-        setTimeout(() => {
+    setTimeout(() => {
+        if (language == "en") {
+
             currentplayers.innerText = "There are currently " + jsonusercount + " players registered on the website.";
             rankedplayers.innerText = jsonrankedcount + " of those play competitively.\n\n";
             topplayer.innerText = "The top player right now is " + topPlayerData[1];
             trrating.innerText = " with a TR Rating of " + topPlayerData[2];
             pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
-        }, amountOfWait);
 
-    }
-    else if (language == "nl") {
-        setTimeout(() => {
+        }
+        else if (language == "nl") {
             currentplayers.innerText = "Er zijn momenteel " + jsonusercount + " spelers geregistreerd op de website.";
             rankedplayers.innerText = jsonrankedcount + " van die spelers spelen competitief.\n\n";
             topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
             trrating.innerText = " met een TR Rating van " + topPlayerData[2];
             pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
-        }, amountOfWait);
-    }
+        }
+    }, amountOfWait);
 
     if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) {
         topinfo.hidden = true;
