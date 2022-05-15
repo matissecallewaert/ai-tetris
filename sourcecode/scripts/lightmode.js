@@ -26,6 +26,7 @@ function toggle() {
     nav.classList.toggle("light-mode");
     nav.classList.toggle("navbar-dark");
     nav.classList.toggle("navbar-light");
+    document.querySelector("select").classList.toggle("light-mode");
 }
 
 function init() {
