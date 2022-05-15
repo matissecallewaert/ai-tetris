@@ -110,10 +110,12 @@ let keyHandler = (k) => {
             tetris.speed = Math.max(1000 / 60, tetris.speed - 50);
             clearInterval(id2);
             id2 = setInterval(move, tetris.speed, tetris);
-        } else if (k.key === "d") {
-            tetris.speed = Math.max(1000 / 60, tetris.speed + 50);
-            clearInterval(id2)
-            id2 = setInterval(move, tetris.speed, tetris);
+        } if (tetris.ai_activated) {
+            if (k.key === "d") {
+                tetris.speed = Math.max(1000 / 60, tetris.speed + 50);
+                clearInterval(id2)
+                id2 = setInterval(move, tetris.speed, tetris);
+            }
         }
     }
 }
