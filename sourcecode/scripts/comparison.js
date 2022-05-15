@@ -7,8 +7,6 @@ let toAddGlobalPlayerData;
 let toAddTableTitles = ["Rank", "Player", "TR-Rating", "PPS"];
 let topPlayerData = [];
 
-let hscore = JSON.parse(localStorage.getItem("highScores")).Highscore;
-
 let td;
 let tr;
 let th;
@@ -38,7 +36,7 @@ function setUpExtraInfo() {
     let rankedplayers = document.getElementById("rankedplayers");
     let amountOfWait = 0;
 
-    if (jsonrankedcount == "N/A" && jsonusercount == "N/A") {
+    if (jsonrankedcount === "N/A" && jsonusercount === "N/A") {
         amountOfWait = 2000;
         fetch("http://localhost:8010/proxy/api/general/stats")
             .then(data => data.json())
@@ -57,7 +55,7 @@ function setUpExtraInfo() {
     let topinfo = document.getElementById("topinfo");
 
     setTimeout(() => {
-        if (language == "en") {
+        if (language === "en") {
 
             currentplayers.innerText = "There are currently " + jsonusercount + " players registered on the website.";
             rankedplayers.innerText = jsonrankedcount + " of those play competitively.\n\n";
@@ -66,7 +64,7 @@ function setUpExtraInfo() {
             pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
 
         }
-        else if (language == "nl") {
+        else if (language === "nl") {
             currentplayers.innerText = "Er zijn momenteel " + jsonusercount + " spelers geregistreerd op de website.";
             rankedplayers.innerText = jsonrankedcount + " van die spelers spelen competitief.\n\n";
             topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
@@ -75,7 +73,7 @@ function setUpExtraInfo() {
         }
     }, amountOfWait);
 
-    if (topPlayerData[1] == undefined || topPlayerData[2] == undefined || topPlayerData[3] == undefined) {
+    if (topPlayerData[1] === undefined || topPlayerData[2] === undefined || topPlayerData[3] === undefined) {
         topinfo.hidden = true;
     }
 
