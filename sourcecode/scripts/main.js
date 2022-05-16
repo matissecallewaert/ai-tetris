@@ -268,7 +268,7 @@ async function auto() {
 async function algorithm() {
     for (let i = ai.populationNumber; i < ai.maxGeneration; i++) {
         for (let j = index; j < ai.populationSize; j++) {
-            if (!tetris.ai_activated) {
+            if (!tetris.ai_activated || best_activated) {
                 return;
             }
             ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
