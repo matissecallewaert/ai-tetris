@@ -50,6 +50,9 @@ let highscore;
 
 let gameOverScreen;
 
+let bestGenes = [[-0.7093207469868553,0.2690808154948978,-0.023174489006871468,-0.1518467638234432,0.3979773753543753,-0.10236253760497782,-0.20600815813931472],[-0.3274278876986266,-0.007075121788763072,0.05270705704302858,-0.2183704769131798,-0.0004217920314675827,0.04944277614656406,-0.11269676747075646]]
+let best_activated = false;
+
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, Reset), Rotate, MoveLeft == MoveRight, GameOver, BackgroundMusic
@@ -102,6 +105,7 @@ let keyHandler = (k) => {
             buttonSound.play();
             if (tetris.ai_activated) {
                 tetris.ai_activated = false;
+                best_activated = false;
             } else {
                 tetris.ai_activated = true;
                 auto();
@@ -282,7 +286,27 @@ async function algorithm() {
         ai.populate();
     }
 }
-
+async function BestAI(){
+    let teller = 0;
+    while(best_activated){
+        gene = bestGenes[teller];
+        ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
+            "RelativeHeight: " + gene[1] + "\n" +
+            "MaxHeight: " + gene[2] + "\n" +
+            "ClearLines: " + gene[3] + "\n" +
+            "Holes: " + gene[4] + "\n" +
+            "Blockades: " + gene[6] + "\n" +
+            "Bumpiness: " + gene[5] + "\n";
+        makeMoves();
+        await waitUntil(() => done === true);
+        await waitUntil(() => printBuffer === true);
+        await waitUntil(() => tetris.tetrisReset === true);
+        printBuffer = false;
+        tetris.tetrisReset = false;
+        teller++;
+        teller%=2;
+    }
+}
 
 function getBestMove() {
     let moves = getAllMoves();
@@ -354,7 +378,7 @@ async function makeMoves() {
             }
         }
         await waitUntil(() => tetris.ground === true);
-        if (!tetris.ai_activated) {
+        if (!tetris.ai_activated || !best_activated) {
             tetris.ground = false;
             break;
         }
