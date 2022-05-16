@@ -360,8 +360,7 @@ async function makeMoves() {
         }
         tetris.UpdateScore();
         tetris.NextShape();
-        tetris.ground = false
-        console.log(tetris.ai_activated);
+        tetris.ground = false;
     }
     done = true;
 }
@@ -402,6 +401,15 @@ function print(tetris) {
             ai.reset();
             ai_level.innerText = 1;
         } else {
+            tetris.getData();
+            let jsonchrom = JSON.stringify({AggregateHeight: gene[0],
+                RelativeHeight: gene[1],
+                MaxHeight: gene[2],
+                ClearLines: gene[3],
+                Holes: gene[4],
+                Blockades: gene[6],
+                Bumpiness: gene[5]});
+            localStorage.setItem("BestChrom",jsonchrom);
             tetris.Reset();
         }
     }
