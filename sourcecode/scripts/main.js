@@ -53,6 +53,8 @@ let gameOverScreen;
 let bestGenes = [[-0.7093207469868553,0.2690808154948978,-0.023174489006871468,-0.1518467638234432,0.3979773753543753,-0.10236253760497782,-0.20600815813931472],[-0.3274278876986266,-0.007075121788763072,0.05270705704302858,-0.2183704769131798,-0.0004217920314675827,0.04944277614656406,-0.11269676747075646]]
 let best_activated = false;
 
+let bestAIButton;
+
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, Reset), Rotate, MoveLeft == MoveRight, GameOver, BackgroundMusic
@@ -106,8 +108,10 @@ let keyHandler = (k) => {
             if (tetris.ai_activated) {
                 tetris.ai_activated = false;
                 best_activated = false;
+                bestAIButton.style.visibility = "hidden";
             } else {
                 tetris.ai_activated = true;
+                bestAIButton.style.visibility = "visible";
                 auto();
             }
         } else if (k.key === "s") {
@@ -240,6 +244,13 @@ function pauseGame() {
         buttonSound.play();
     }
 }
+
+async function toggleBestAI(){
+    best_activated = !best_activated;
+    if(best_activated)
+        await BestAI()
+}
+
 //various functions for the movement of the game for user and AI
 function move(tetris) {
     if (tetris.ai_activated) {
@@ -642,6 +653,9 @@ function init() {
     document.getElementById("startButton").addEventListener("click", startGame);
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
     document.getElementById("resetButton").addEventListener("click", resetGame);
+    bestAIButton = document.getElementById("bestAI");
+    bestAIButton.addEventListener("click", toggleBestAI);
+
     document.addEventListener("longpressevent", function (event) {
         window.addEventListener("touchstart", touchstart, false);
         window.addEventListener("touchend", touchend, false);
@@ -649,6 +663,7 @@ function init() {
     document.addEventListener('touchcoordinates', getTouchCoordinates, false);
     document.addEventListener('touchcontrols', mobileControl, false);
     document.addEventListener("keydown", keyHandler);
+
 
     // Disable default keyhandler when playing (Stops the canvas from scrolling)
     window.addEventListener("keydown", arrow_keys_handler, false);

@@ -26,7 +26,7 @@ async function setLocale(newLocale) {
     localStorage.setItem("locale", newLocale);
     translations = newTranslations;
 
-    translatePage();
+    translate_page();
 }
 
 async function fetchTranslationsFor(newLocale) {
@@ -34,7 +34,7 @@ async function fetchTranslationsFor(newLocale) {
     return await response.json();
 }
 
-function translatePage() {
+function translate_page() {
     document
         .querySelectorAll("[data-i18n-key]")
         .forEach(translateElement);

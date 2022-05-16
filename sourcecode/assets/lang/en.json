@@ -19,6 +19,7 @@
   "play": "Play",
   "pause": "Pause",
   "reset": "Reset",
+  "bestAI": "Best gene",
   "on": "On",
   "off": "Off",
   "ga-title": "Genetic Algorithms Explained",
