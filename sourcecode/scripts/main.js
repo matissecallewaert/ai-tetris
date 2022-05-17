@@ -389,7 +389,7 @@ async function makeMoves() {
             }
         }
         await waitUntil(() => tetris.ground === true);
-        if (!tetris.ai_activated || !best_activated) {
+        if (!tetris.ai_activated || best_activated) {
             tetris.ground = false;
             break;
         }
