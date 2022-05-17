@@ -50,7 +50,16 @@ let highscore;
 
 let gameOverScreen;
 
-let bestGenes = [[-0.7093207469868553,0.2690808154948978,-0.023174489006871468,-0.1518467638234432,0.3979773753543753,-0.10236253760497782,-0.20600815813931472],[-0.3274278876986266,-0.007075121788763072,0.05270705704302858,-0.2183704769131798,-0.0004217920314675827,0.04944277614656406,-0.11269676747075646]]
+let bestGenes = [
+                [-0.3274278876986266,-0.007075121788763072,0.05270705704302858,-0.2183704769131798,-0.0004217920314675827,0.04944277614656406,-0.11269676747075646],
+                [-0.3844816998888039,-0.24725242374712542,0.28888351574170557,-0.4302544631974703,-0.15554115150324466,-0.5951115204831836,-0.20720235959084943],
+                [-0.4439956106238234,-0.11566159949412824,0.00891266544810354,-0.07481877528546887,-0.37936237231974923,-0.43438580331879606,-0.1631567931460367],
+                [-0.21400960098347788,0.023825587149766014,-0.04639033054744757,-0.35520437658154413,-0.22662625299064276,-0.4052965499192043,-0.11707341140536986],
+                [-0.4439956106238234,-0.11566159949412824,-0.04639033054744757,-0.35520437658154413,-0.37936237231974923,-0.43438580331879606,-0.1631567931460367],
+                [-0.2670130412144588,-0.15064933154009175,0.19208730009343522,-0.27346689053661155,-0.22973653193346233,-0.4056078257701441,-0.18592724488486645],
+                [-0.2670130412144588,-0.15064933154009175,0.19208730009343522,-0.27346689053661155,-0.22973653193346233,-0.4056078257701441,-0.18592724488486645],
+                [-0.21400960098347788, 0.023825587149766014,0.19208730009343522,-0.27346689053661155,-0.22662625299064276,-0.4052965499192043,-0.11707341140536986],
+                [-0.4439956106238234,-0.11566159949412824,0.00891266544810354,-0.07481877528546887,-0.37936237231974923,-0.43438580331879606,-0.1631567931460367]];
 let best_activated = false;
 
 let bestAIButton;
@@ -227,6 +236,7 @@ function resetGame() {
     index = 0;
     play = false;
     tetris.ai_activated = false;
+    best_activated = false;
     play_sound = true;
     buttonSound.play();
     vorigeScore = 0;
@@ -247,8 +257,10 @@ function pauseGame() {
 
 async function toggleBestAI(){
     best_activated = !best_activated;
-    if(best_activated)
+    if(best_activated) {
+        bestAIButton.style.visibility = "hidden";
         await BestAI()
+    }
 }
 
 //various functions for the movement of the game for user and AI
@@ -299,6 +311,8 @@ async function algorithm() {
 }
 async function BestAI(){
     let teller = 0;
+    ai_level.innerText = "Beste Genes";
+    ai_gene.innerText = "";
     while(best_activated){
         gene = bestGenes[teller];
         ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
@@ -315,7 +329,7 @@ async function BestAI(){
         printBuffer = false;
         tetris.tetrisReset = false;
         teller++;
-        teller%=2;
+        teller%=bestGenes.length;
     }
 }
 
@@ -389,7 +403,7 @@ async function makeMoves() {
             }
         }
         await waitUntil(() => tetris.ground === true);
-        if (!tetris.ai_activated || best_activated) {
+        if (!tetris.ai_activated) {
             tetris.ground = false;
             break;
         }
@@ -436,19 +450,14 @@ function print(tetris) {
             ai.reset();
             ai_level.innerText = 1;
         } else {
-            tetris.getData();
-            let jsonchrom = JSON.stringify({AggregateHeight: gene[0],
-                RelativeHeight: gene[1],
-                MaxHeight: gene[2],
-                ClearLines: gene[3],
-                Holes: gene[4],
-                Blockades: gene[6],
-                Bumpiness: gene[5]});
-            localStorage.setItem("BestChrom",jsonchrom);
             tetris.Reset();
         }
     }
     ctx.clearRect(0, 0, COLS, ROWS)
+
+    if(!tetris.ai_activated && !best_activated){
+        ai_chromosomes.innerText = "Player plays!";
+    }
 
     let shape = tetris.EndUp();
     for (let y = 0; y < Object.values(shape.shape)[0].length; y++) {
@@ -475,7 +484,7 @@ function print(tetris) {
     moves.textContent = tetris.movesTaken;
 
     blockctx.clearRect(0, 0, COLS, ROWS)
-    if (tetris.upcomingShape !== undefined) {
+    if (tetris.upcomingShape.shape !== undefined && tetris.upcomingShape.shape !== null) {
         for (let y = 0; y < Object.values(tetris.upcomingShape.shape)[0].length; y++) {
             for (let x = 0; x < Object.values(tetris.upcomingShape.shape)[0][0].length; x++) {
                 let waarde = Object.values(tetris.upcomingShape.shape)[0][y][x];
