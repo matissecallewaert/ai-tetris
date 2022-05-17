@@ -1,3 +1,3 @@
-demo video: https://drive.google.com/file/d/1vH5bG3Mjq1hYVYXWP0rddlhGC_MNLZ8Q/view?usp=sharing
+demo video: https://youtu.be/CahsXBO3Uyk
 
 website: https://singular-shortbread-7c56ff.netlify.app
