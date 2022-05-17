@@ -1,14 +1,4 @@
-//with this code "Toggle Dark" is very blurry, no idea why"
-
-/*
-
-let togLight = document.getElementById("toggleLight");
-if (togLight.innerText == "Toggle Light") togLight.innerText = "Toggle Dark";
-else togLight.innerText = "Toggle Light";
-*/
-
-//maybe add some kind of global variable bool isDark to initiate toggleLight() on every page once it's toggled on.
-
+//Main toggle function, saves the current mode
 function toggleLight() {
     toggle()
     if (getMode() === "dark") {
@@ -20,6 +10,7 @@ function toggleLight() {
     }
 }
 
+//Executes the toggling of HTML-tags
 function toggle() {
     document.body.classList.toggle("light-mode");
     let nav = document.querySelector("nav");
@@ -29,6 +20,7 @@ function toggle() {
     document.querySelector("select").classList.toggle("light-mode");
 }
 
+//Initialise the toggling functionality
 function init() {
     document.getElementById("toggleLight").innerText = "\u{1F31D}";
     if (localStorage.getItem("mode") === null) localStorage.setItem("mode", "dark")
@@ -38,6 +30,7 @@ function init() {
     }
 }
 
+//Get current toggle mode
 function getMode() {
     return localStorage.getItem("mode")
 }
