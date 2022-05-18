@@ -537,7 +537,7 @@ function UpdateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 4000) {
         clearInterval(id2)
         tetris.speed -= 50;
-        console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
+        //console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
         id2 = setInterval(move, tetris.speed, tetris);
         vorigeScore = tetris.score;
     }
