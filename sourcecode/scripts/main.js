@@ -118,6 +118,11 @@ let keyHandler = (k) => {
                 tetris.ai_activated = false;
                 best_activated = false;
                 bestAIButton.style.visibility = "hidden";
+                clearInterval(id2);
+                tetris.speed = 700;
+                tetris.speed -= Math.floor(tetris.score /4000) *50;
+                id2 = setInterval(move, tetris.speed, tetris);
+                console.log(tetris.speed);
             } else {
                 tetris.ai_activated = true;
                 bestAIButton.style.visibility = "visible";
@@ -129,7 +134,10 @@ let keyHandler = (k) => {
             id2 = setInterval(move, tetris.speed, tetris);
         } if (tetris.ai_activated) {
             if (k.key === "d") {
-                tetris.speed = Math.max(1000 / 60, tetris.speed + 50);
+                tetris.speed = tetris.speed + 50;
+                if(tetris.speed > 700){
+                    tetris.speed = 700;
+                }
                 clearInterval(id2)
                 id2 = setInterval(move, tetris.speed, tetris);
             }
@@ -330,6 +338,7 @@ async function BestAI(){
         tetris.tetrisReset = false;
         teller++;
         teller%=bestGenes.length;
+        console.log(teller);
     }
 }
 
@@ -528,7 +537,7 @@ function UpdateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 4000) {
         clearInterval(id2)
         tetris.speed -= 50;
-        //console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
+        console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
         id2 = setInterval(move, tetris.speed, tetris);
         vorigeScore = tetris.score;
     }
