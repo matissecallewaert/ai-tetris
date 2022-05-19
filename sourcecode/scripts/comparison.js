@@ -106,6 +106,9 @@ function addGlobalHighScores() {
                 while (pps.split(".")[1].length < 2) pps += "0";
 
                 let trRating = Number((jsondata.data.users[i].league.rating).toFixed(3)).toString();
+                if(!trRating.includes(".")){
+                    trRating+=".0";
+                }
                 while (trRating.split(".")[1].length < 3) trRating += "0";
 
                 toAddGlobalPlayerData = [i + 1, jsondata.data.users[i].username.trim(),
