@@ -100,6 +100,9 @@ function addGlobalHighScores() {
         .then(jsondata => {
             for (let i = 0; i < amountOfPlayers; i++) {
                 let pps = Number((jsondata.data.users[i].league.pps).toFixed(2)).toString();
+                if(pps.length == 1){
+                    pps+=".0";
+                }
                 while (pps.split(".")[1].length < 2) pps += "0";
 
                 let trRating = Number((jsondata.data.users[i].league.rating).toFixed(3)).toString();
