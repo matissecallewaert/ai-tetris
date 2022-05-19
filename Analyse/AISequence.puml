@@ -10,12 +10,12 @@ activate InitialGenomsPopulation
 Actor Gene
 Actor Child
 
-loop Keep looping until all the genes have had a chance to make a move
+loop Keep looping all the possible moves have been made
 Gene --> Tetris: Makes a move
-Tetris --> Gene: Get stats
-Tetris --> Gene: Rate the move made by a gene
+Tetris --> Gene: GetData
+Gene --> Gene: Rate the move made by the gene
 end
-
+Gene --> Tetris: GetBestMove
 loop Loop over InitialGenomsPopulation and sort the array in descending order
 InitialGenomsPopulation --> Gene: Copy the best genes to new array
 end

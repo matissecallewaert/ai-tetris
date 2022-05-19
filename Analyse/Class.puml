@@ -27,11 +27,7 @@ class Tetris{
     +UseHoldShape(): void
     +movesTaken: int
     +MoveDown(): void
-    +fakeMoveDown1(): void
-    +fakeMoveDown2(): void
     +Drop(): void
-    +fakeDrop1(): void
-    +fakeDrop2(): void
     +TouchesRightWall(): boolean
     +EndUp(): void
     +MoveLeft():void
@@ -44,21 +40,19 @@ class Tetris{
     +Height(): void
     +Blockades(): void
     +Reset(): void
-    -removeRow(y: int): void
-    -ApplyShape(): void
-    -RemoveShape(): void
-    -fakeRemoveShape(): void
-    -NextShape(): void
-    -fakeNextShape(): void
-    -GenerateBag(): void
-    -fakeGenerateBag(): void
-    -Collides(object: Shape): boolean
-    -Rotate(): void
-    -Transpone(): void
-    -UpdateScore(): void
-    -fakeUpdateScore1(): void
-    -fakeUpdateScore2(): void
-
+    +removeRow(y: int): void
+    +ApplyShape(): void
+    +RemoveShape(object: shape): void
+    +NextShape(): void
+    +GenerateBag(): void
+    +Collides(object: Shape): boolean
+    +Rotate(): void
+    +Transpone(): void
+    +UpdateScore(): void
+    +CopyCurrentShape(): void
+    +AIMoveDown(): void
+    +AIDrop(): void
+    +AIUpdateScore(): void
 }
 class AI{
     +populationNumber: int
@@ -94,12 +88,13 @@ class AI{
     +calcMaxHeight(height:int[],gene:int[]):int
     +calcClearLines(linesCleared:int[],gene:int[]):int
     +calcHoles(holes:int,gene:int[]):int
-    +calcHoles(holes:int,gene:int[]):int
-    +calcHoles(holes:int,gene:int[]):int
+    +calcBlockades(blockades:int,gene:int[]):int
+    +calcBumpiness(height:int,gene:int[]):int
     +calcRating(height:int[],linesCleared:int,holes:int,blockades:int,gene:int[]):int
 }
 class main{
     +KeyHandler(): void
+    +arrow_keys_handler(event: e): void
     +Init():void
     +Print(canvas: canvas):void
     +UpdateSpeed(): void
@@ -111,6 +106,8 @@ class main{
     +startGame():void
     +resetGame(): void
     +pausegame(): void
+    +toggleBestAI(): void
+    +BestAI(): void
     +move(tetris: Tetris): void
     +auto(): void
     +algorithm(): void
@@ -119,6 +116,9 @@ class main{
     +makeMoves(): void
     +waitUntil(): void
     +DrawGrid(canvas: Canvas): void
+    +refreshChart(): void
+    +handleRandomDataset(): void
+    
 }
 main ..> Tetris: gebruikt
 AI .> Tetris: gebruikt

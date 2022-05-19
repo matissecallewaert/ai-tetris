@@ -12,7 +12,7 @@ else
 partition AI {
     "AI" --> CreateInitialPopulation
     --> Play until loss or has done more than 500 moves
-    if "isGeneration25"
+    if "isGeneration50000"
     -left->[true] "Play until loss or has done more than 500 moves"
     else
     -down->[AI loses]"Game Over"
