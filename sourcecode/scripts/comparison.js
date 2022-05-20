@@ -1,13 +1,17 @@
-let amountOfPlayers = 25;
-let jsonusercount = "N/A";
-let jsonrankedcount = "N/A";
+/* 
+
+This page fixes the leaderboard on the website.
+
+ */
+let amountOfPlayers = 25; //amount of users to fetch from tetr.io api
+let jsonusercount = "N/A"; //amount of users on tetr.io
+let jsonrankedcount = "N/A"; //amount of users that play ranked on tetr.io
 let table = document.getElementById("highscoreTable");
-table.hidden = true;
+table.hidden = true; //hide table while getting data
 let toAddGlobalPlayerData;
-let toAddTableTitles = ["Rank", "Player", "TR-Rating", "PPS"];
 let topPlayerData = [];
 
-let td;
+let td; //define here so the js doesn't have to create these every time
 let tr;
 let th;
 
@@ -18,13 +22,14 @@ let learnMoreText2 = document.getElementById("learnMoreText2");
 let language;
 
 learnMore.addEventListener("click", toggleExplanation);
-learnMoreText.hidden = true;
+learnMoreText.hidden = true; //hide text while not sure if fetch is successful
 learnMoreText2.hidden = true;
-document.getElementById("dataError").hidden = true;
+document.getElementById("dataError").hidden = true; //hide these while loading/fetching data
 document.getElementById("source").hidden = true;
 
 document.getElementById("localeSwitcher").addEventListener("change", checkLanguage);
 
+//checks selected language and calls function to set up extra info in the correct language
 function checkLanguage() {
     let select = document.getElementById("localeSwitcher");
     language = select.options[select.selectedIndex].value;
@@ -34,18 +39,18 @@ function checkLanguage() {
 function setUpExtraInfo() {
     let currentplayers = document.getElementById("currentplayers");
     let rankedplayers = document.getElementById("rankedplayers");
-    let amountOfWait = 0;
-
-    if (jsonrankedcount === "N/A" && jsonusercount === "N/A") {
-        amountOfWait = 2000;
-        fetch("http://localhost:8010/proxy/api/general/stats")
+    let amountOfWait = 0; //0 when the fetch has been completed already 
+    //(this means the language is switched, but the page isn't refreshed)
+    if (jsonrankedcount === "N/A" && jsonusercount === "N/A") { //if fetch hasn't been done yet
+        amountOfWait = 2000; //wait time becomes 2 seconds, so the fetch definitely has enough time (not putting delay caused errors)
+        fetch("http://localhost:8010/proxy/api/general/stats") //fetching and updating (ranked) playercount
             .then(data => data.json())
             .then(jsondata => {
                 jsonusercount = jsondata.data.usercount;
                 jsonrankedcount = jsondata.data.rankedcount;
             })
             .catch(() => {
-                document.getElementById("amountofplayers").hidden = true;
+                document.getElementById("amountofplayers").hidden = true; //don't show if the fetch fails
             })
     }
 
@@ -54,7 +59,9 @@ function setUpExtraInfo() {
     let pps = document.getElementById("pps");
     let topinfo = document.getElementById("topinfo");
 
-    setTimeout(() => {
+    setTimeout(() => { //timeout of amountOfWait/1000 seconds to make sure there is enough time after the fetch
+        //fills in the extra info in the correct language 
+        //(doing this via assets/lang/*.json is unnecessarily complicated since this info isn't hardcoded)
         if (language === "en") {
 
             currentplayers.innerText = "There are currently " + jsonusercount + " players registered on the website.";
@@ -74,7 +81,7 @@ function setUpExtraInfo() {
     }, amountOfWait);
 
     if (topPlayerData[1] === undefined || topPlayerData[2] === undefined || topPlayerData[3] === undefined) {
-        topinfo.hidden = true;
+        topinfo.hidden = true; //if something went wrong, don't show this particular piece of info
     }
 
 
@@ -87,36 +94,37 @@ function scrollDown() {
 }
 
 function toggleExplanation() {
-    if (learnMoreText.hidden) scrollDown();
-    learnMoreText.setAttribute("data-i18n-key", "lb-info");
-    learnMoreText.hidden = !learnMoreText.hidden;
+    if (learnMoreText.hidden) scrollDown(); //if hidden, show info and scroll down
+    learnMoreText.hidden = !learnMoreText.hidden; //if hidden, show and the other way around
     learnMoreText2.hidden = !learnMoreText2.hidden;
 }
 
-
+//the fetching of the actual leaderboard
 function addGlobalHighScores() {
     fetch("http://localhost:8010/proxy/api/users/lists/league?limit=" + amountOfPlayers)
         .then(data => data.json())
         .then(jsondata => {
             for (let i = 0; i < amountOfPlayers; i++) {
+                //setting up stats to have the right format
                 let pps = Number((jsondata.data.users[i].league.pps).toFixed(2)).toString();
-                if(pps.length == 1){
-                    pps+=".0";
+                if (pps.length == 1) {
+                    pps += ".0";
                 }
                 while (pps.split(".")[1].length < 2) pps += "0";
 
                 let trRating = Number((jsondata.data.users[i].league.rating).toFixed(3)).toString();
-                if(!trRating.includes(".")){
-                    trRating+=".0";
+                if (!trRating.includes(".")) {
+                    trRating += ".0";
                 }
                 while (trRating.split(".")[1].length < 3) trRating += "0";
 
+                //initialising which data to add per player
                 toAddGlobalPlayerData = [i + 1, jsondata.data.users[i].username.trim(),
                     trRating, pps]
 
-                if (i === 0) topPlayerData = toAddGlobalPlayerData;
+                if (i === 0) topPlayerData = toAddGlobalPlayerData; //top player = first fetched player
 
-                tr = document.createElement("tr");
+                tr = document.createElement("tr"); //adding stats per player to the table
                 for (let playerData of toAddGlobalPlayerData) {
                     td = document.createElement("td");
                     td.innerText = playerData;
@@ -125,8 +133,10 @@ function addGlobalHighScores() {
                 table.appendChild(tr);
 
             }
-            checkLanguage();
+            checkLanguage(); //after fetch, set up info with correct language
             setTimeout(function () {
+                //stop showing loadscreen, show table and source 
+                //with delay to make sure loadscreen is shown for at least 1.5s
                 table.hidden = false;
                 document.getElementById("loading...").hidden = true;
                 document.getElementById("loadingGif").hidden = true;
@@ -137,6 +147,7 @@ function addGlobalHighScores() {
         .catch(() => {
             checkLanguage();
             setTimeout(function () {
+                //if something goes wrong, hide loadscreen and show error after +1.5s
                 document.getElementById("loading...").hidden = true;
                 document.getElementById("loadingGif").hidden = true;
                 document.getElementById("dataError").hidden = false;
@@ -145,4 +156,4 @@ function addGlobalHighScores() {
 
 }
 
-addGlobalHighScores();
+addGlobalHighScores(); //call main fetch function, functions call eachother so everything is called in the correct order
