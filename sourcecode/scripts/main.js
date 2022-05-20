@@ -87,7 +87,7 @@ let keyHandler = (k) => {
         resetGame();
     }
     if (play) {
-        if (!tetris.ai_activated) {
+        if (!tetris.aiActivated) {
             if (k.keyCode === 40) {
                 tetris.MoveDown();
             } else if (k.keyCode === 37) {
@@ -114,8 +114,8 @@ let keyHandler = (k) => {
         }
         if (k.key === "a") {
             buttonSound.play();
-            if (tetris.ai_activated) {
-                tetris.ai_activated = false;
+            if (tetris.aiActivated) {
+                tetris.aiActivated = false;
                 best_activated = false;
                 bestAIButton.style.visibility = "hidden";
                 clearInterval(id2);
@@ -124,7 +124,7 @@ let keyHandler = (k) => {
                 id2 = setInterval(move, tetris.speed, tetris);
                 console.log(tetris.speed);
             } else {
-                tetris.ai_activated = true;
+                tetris.aiActivated = true;
                 bestAIButton.style.visibility = "visible";
                 auto();
             }
@@ -132,7 +132,7 @@ let keyHandler = (k) => {
             tetris.speed = Math.max(1000 / 60, tetris.speed - 50);
             clearInterval(id2);
             id2 = setInterval(move, tetris.speed, tetris);
-        } if (tetris.ai_activated) {
+        } if (tetris.aiActivated) {
             if (k.key === "d") {
                 tetris.speed = tetris.speed + 50;
                 if(tetris.speed > 700){
@@ -148,7 +148,7 @@ let keyHandler = (k) => {
 /**
  * Function to disable scrolling on canvas when pressing the arrow keys
  */
-let arrow_keys_handler = function (e) {
+let arrowKeysHandler = function (e) {
     if (play) {
         switch (e.code) {
             case "ArrowUp":
@@ -243,7 +243,7 @@ function resetGame() {
     ai_gene.innerText = "1" + " / " + (ai.populationSize).toString();
     index = 0;
     play = false;
-    tetris.ai_activated = false;
+    tetris.aiActivated = false;
     best_activated = false;
     play_sound = true;
     buttonSound.play();
@@ -267,17 +267,17 @@ async function toggleBestAI(){
     best_activated = !best_activated;
     if(best_activated) {
         bestAIButton.style.visibility = "hidden";
-        await BestAI()
+        await bestAI()
     }
 }
 
 //various functions for the movement of the game for user and AI
 function move(tetris) {
-    if (tetris.ai_activated) {
+    if (tetris.aiActivated) {
         tetris.AIMoveDown();
     } else {
         tetris.MoveDown();
-        if (tetris.speed > 150) UpdateSpeed(tetris);
+        if (tetris.speed > 150) updateSpeed(tetris);
     }
 }
 
@@ -288,7 +288,7 @@ async function auto() {
 async function algorithm() {
     for (let i = ai.populationNumber; i < ai.maxGeneration; i++) {
         for (let j = index; j < ai.populationSize; j++) {
-            if (!tetris.ai_activated || best_activated) {
+            if (!tetris.aiActivated || best_activated) {
                 return;
             }
             ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
@@ -317,7 +317,7 @@ async function algorithm() {
         ai.populate();
     }
 }
-async function BestAI(){
+async function bestAI(){
     let teller = 0;
     ai_level.innerText = "Beste Genes";
     ai_gene.innerText = "";
@@ -412,7 +412,7 @@ async function makeMoves() {
             }
         }
         await waitUntil(() => tetris.ground === true);
-        if (!tetris.ai_activated) {
+        if (!tetris.aiActivated) {
             tetris.ground = false;
             break;
         }
@@ -452,7 +452,7 @@ function print(tetris) {
         }
         highscore = document.getElementById("highscore");
         highscore.textContent = data.Highscore;
-        if (!tetris.ai_activated) {
+        if (!tetris.aiActivated) {
             gameOverScreen.setAttribute("visibility", "visible");
             play_sound = false;
             pauseGame();
@@ -464,7 +464,7 @@ function print(tetris) {
     }
     ctx.clearRect(0, 0, COLS, ROWS)
 
-    if(!tetris.ai_activated && !best_activated){
+    if(!tetris.aiActivated && !best_activated){
         ai_chromosomes.innerText = "Player plays!";
     }
 
@@ -533,7 +533,7 @@ function drawGrid(ctx) {
     }
 }
 //function to change the speed of the game when a criteria is met
-function UpdateSpeed(tetris) {
+function updateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 4000) {
         clearInterval(id2)
         tetris.speed -= 50;
@@ -590,7 +590,7 @@ const refreshChart = () => {
 };
 
 const handleRandomDataset = () => {
-    if (tetris.ai_activated) {
+    if (tetris.aiActivated) {
 
         let bla = ai.moves.reduce(function (a, b) {
             return a + b;
@@ -684,7 +684,7 @@ function init() {
 
 
     // Disable default keyhandler when playing (Stops the canvas from scrolling)
-    window.addEventListener("keydown", arrow_keys_handler, false);
+    window.addEventListener("keydown", arrowKeysHandler, false);
 
     window.onload = function () {
         refreshChart();

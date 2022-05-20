@@ -76,7 +76,7 @@ export default class Tetris {
             linesCleared: 0,
             lost: false
         };
-        this.ai_activated = false;
+        this.aiActivated = false;
         this.movesTaken = 0;
         this.data = {
             height: [],

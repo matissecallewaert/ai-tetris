@@ -14,8 +14,8 @@ class Tetris{
     +bag: shape[]
     +bagIndex: int
     +score: int
-    +data: {height: [], holes: int, blockades: int, linescleared:int,movesIndex:int}
-    +ai_activated: boolean
+    +data: {height: int[], holes: int, blockades: int, linescleared:int,movesIndex:int}
+    +aiActivated: boolean
     +fakeShape: shape
     +ground: boolean
     +holding: boolean   
@@ -26,30 +26,30 @@ class Tetris{
     +HoldShape():void
     +UseHoldShape(): void
     +movesTaken: int
-    +MoveDown(): void
-    +Drop(): void
-    +TouchesRightWall(): boolean
-    +EndUp(): void
-    +MoveLeft():void
-    +MoveRight(): void
-    +RotateShape():void
-    +GetData(): state: {height: [], holes: int, blockades: int, linescleared:int,movesIndex:int}
-    +GetLinesCleared(): void
-    +GetMovesIndex(): void
-    +Holes(): void
-    +Height(): void
-    +Blockades(): void
-    +Reset(): void
+    +moveDown(): void
+    +drop(): void
+    +touchesRightWall(): boolean
+    +endUp(): void
+    +moveLeft():void
+    +moveRight(): void
+    +rotateShape():void
+    +getData(): state: {height: int[], holes: int, blockades: int, linescleared:int,movesIndex:int}
+    +getLinesCleared(): void
+    +getMovesIndex(): void
+    +holes(): void
+    +height(): void
+    +blockades(): void
+    +reset(): void
     +removeRow(y: int): void
-    +ApplyShape(): void
-    +RemoveShape(object: shape): void
-    +NextShape(): void
-    +GenerateBag(): void
-    +Collides(object: Shape): boolean
-    +Rotate(): void
-    +Transpone(): void
-    +UpdateScore(): void
-    +CopyCurrentShape(): void
+    +applyShape(): void
+    +removeShape(object: shape): void
+    +nextShape(): void
+    +generateBag(): void
+    +collides(object: Shape): boolean
+    +rotate(): void
+    +transpone(): void
+    +updateScore(): void
+    +copyCurrentShape(): void
     +AIMoveDown(): void
     +AIDrop(): void
     +AIUpdateScore(): void
@@ -67,7 +67,7 @@ class AI{
     +fitness:int
     +fittest:int[]
     +gene1:int[]
-    +gne2:int[]
+    +gene2:int[]
     +scores:int[]
     +moves:int[]
     +crossoverRate:int
@@ -93,32 +93,31 @@ class AI{
     +calcRating(height:int[],linesCleared:int,holes:int,blockades:int,gene:int[]):int
 }
 class main{
-    +KeyHandler(): void
-    +arrow_keys_handler(event: e): void
-    +Init():void
-    +Print(canvas: canvas):void
-    +UpdateSpeed(): void
-    +GetToucheCoordinates(event: Event): void
+    +keyHandler(): void
+    +arrowKeysHandler(event: e): void
+    +print(canvas: canvas):void
+    +updateSpeed(): void
+    +getToucheCoordinates(event: Event): void
     +mobileControl(event: Event): void
-    +TouchStart(event: Event): void
-    +TouchEnd(event: Event):void
-    +onlongTouch(): void
+    +touchStart(event: Event): void
+    +touchEnd(event: Event):void
+    +onLongTouch(): void
     +startGame():void
     +resetGame(): void
     +pausegame(): void
     +toggleBestAI(): void
-    +BestAI(): void
+    +bestAI(): void
     +move(tetris: Tetris): void
     +auto(): void
     +algorithm(): void
-    +GetBestMoves(): void
+    +getBestMoves(): void
     +getAllMoves(): void
     +makeMoves(): void
     +waitUntil(): void
-    +DrawGrid(canvas: Canvas): void
+    +drawGrid(canvas: Canvas): void
     +refreshChart(): void
     +handleRandomDataset(): void
-    
+    +init():void
 }
 
 class Sound{
