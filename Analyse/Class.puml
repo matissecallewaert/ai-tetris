@@ -120,6 +120,20 @@ class main{
     +handleRandomDataset(): void
     
 }
-main ..> Tetris: gebruikt
-AI .> Tetris: gebruikt
+
+class Sound{
+    +sounds: Array<HTMLAudioElement>
+    +parent: HTMLAudioElement
+    +muted: bool
+    +create(): HTMLAudioElement
+    +SoundSettings(): void
+    +MuteToggle(): void
+    +Pause(): void
+    +Play(): void
+}
+
+main .down.> Tetris: uses
+main .right.> Sound: uses
+main .left.> AI: uses
+/' AI .down.> Tetris: uses '/
 @enduml
