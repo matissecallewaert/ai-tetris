@@ -53,7 +53,7 @@ export default class Tetris {
         }
         this.colors = ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFA500", "#FFE600", "#FF007F", "#6A0DAD"];
         this.bag = [];
-        this.GenerateBag();
+        this.generateBag();
         this.score = 0;
         this.currentShape = {
             x: 3,
@@ -99,28 +99,28 @@ export default class Tetris {
         this.tetrisReset = false;
     }
 
-    HoldShape() {
-        this.RemoveShape(this.currentShape);
+    holdShape() {
+        this.removeShape(this.currentShape);
         this.holdShape = this.currentShape;
         this.holdShape.x = 3;
         this.holdShape.y = 0;
-        this.NextShape();
+        this.nextShape();
         this.holding = true;
     }
 
-    UseHoldShape() {
-        this.RemoveShape(this.currentShape);
+    useHoldShape() {
+        this.removeShape(this.currentShape);
         let hulp = this.holdShape;
         this.holdShape = this.currentShape;
         this.currentShape = hulp;
         this.holding = true;
         this.holdShape.x = 3;
         this.holdShape.y = 0;
-        this.ApplyShape();
+        this.applyShape();
     }
 
     //generates a set of shapes with a maximum of 500 shapes
-    GenerateBag() {
+    generateBag() {
         let random;
         let y = 0;
         for (let i = 0; i < 500; i++) {
@@ -137,12 +137,12 @@ export default class Tetris {
         }
     }
 
-    CopyCurrentShape() {
-        this.fakeShape = {...this.currentShape.shape};
+    copyCurrentShape() {
+        this.fakeShape = { ...this.currentShape.shape };
     }
 
     //het veranderen van de currentshape en upcomingshape.
-    NextShape() {
+    nextShape() {
         if (this.bagindex <= 499) {
             this.currentShape = {
                 x: 3,
@@ -158,10 +158,10 @@ export default class Tetris {
             };
             this.bagindex++;
             this.movesTaken++;
-            if (this.Collides(this.currentShape)) {
+            if (this.collides(this.currentShape)) {
                 this.died = true;
             } else {
-                this.ApplyShape();
+                this.applyShape();
             }
         } else {
             this.died = true;
@@ -177,14 +177,14 @@ export default class Tetris {
                 shape: this.fakeShape,
                 linesCleared: 0
             };
-            if (this.Collides(this.currentShape)) {
+            if (this.collides(this.currentShape)) {
                 this.fakeDied = true;
             }
-            this.ApplyShape();
+            this.applyShape();
         }
     }
 
-    ApplyShape() { //de shape in het grid steken op de juiste plaats.
+    applyShape() { //de shape in het grid steken op de juiste plaats.
         for (let y = this.currentShape.y; y < this.currentShape.y + Object.values(this.currentShape.shape)[0].length; y++) {
             for (let x = this.currentShape.x; x < this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length; x++) {
                 if (Object.values(this.currentShape.shape)[0][y - this.currentShape.y][x - this.currentShape.x] !== 0) {
@@ -194,105 +194,105 @@ export default class Tetris {
         }
     }
 
-    MoveDown() {
+    moveDown() {
         this.ground = false;
-        this.RemoveShape(this.currentShape);
+        this.removeShape(this.currentShape);
         this.currentShape.y++;
-        if (!this.Collides(this.currentShape)) {
-            this.ApplyShape();
+        if (!this.collides(this.currentShape)) {
+            this.applyShape();
         } else {
             this.ground = true;
             this.currentShape.y--;
-            this.ApplyShape();
-            this.UpdateScore();
-            this.NextShape();
+            this.applyShape();
+            this.updateScore();
+            this.nextShape();
         }
     }
 
     AIMoveDown() {
         this.ground = false;
-        this.RemoveShape(this.currentShape);
+        this.removeShape(this.currentShape);
         this.currentShape.y++;
-        if (!this.Collides(this.currentShape)) {
-            this.ApplyShape();
+        if (!this.collides(this.currentShape)) {
+            this.applyShape();
         } else {
             this.ground = true;
             this.currentShape.y--;
-            this.ApplyShape();
+            this.applyShape();
         }
     }
 
-    MoveLeft() {
-        this.RemoveShape(this.currentShape);
+    moveLeft() {
+        this.removeShape(this.currentShape);
         this.currentShape.x--;
-        if (!this.Collides(this.currentShape)) {
-            this.ApplyShape();
+        if (!this.collides(this.currentShape)) {
+            this.applyShape();
         } else {
             this.currentShape.x++;
-            this.ApplyShape();
+            this.applyShape();
         }
     }
 
-    MoveRight() {
-        this.RemoveShape(this.currentShape);
+    moveRight() {
+        this.removeShape(this.currentShape);
         this.currentShape.x++;
-        if (!this.Collides(this.currentShape)) {
-            this.ApplyShape();
+        if (!this.collides(this.currentShape)) {
+            this.applyShape();
         } else {
             this.currentShape.x--;
-            this.ApplyShape();
+            this.applyShape();
         }
     }
 
-    Drop() {
-        this.RemoveShape(this.currentShape);
+    drop() {
+        this.removeShape(this.currentShape);
         this.score += (20 - this.currentShape.y) * 2;
-        while (!this.Collides(this.currentShape)) {
+        while (!this.collides(this.currentShape)) {
             this.currentShape.y++;
         }
         this.currentShape.y--;
-        this.ApplyShape();
-        this.UpdateScore();
-        this.NextShape();
+        this.applyShape();
+        this.updateScore();
+        this.nextShape();
 
     }
 
     AIDrop() {
-        this.RemoveShape(this.currentShape);
-        while (!this.Collides(this.currentShape)) {
+        this.removeShape(this.currentShape);
+        while (!this.collides(this.currentShape)) {
             this.currentShape.y++;
         }
         this.currentShape.y--;
-        this.ApplyShape();
+        this.applyShape();
     }
 
-    Rotate() {
-        this.RemoveShape(this.currentShape);
-        this.Transpose();
+    rotate() {
+        this.removeShape(this.currentShape);
+        this.transpose();
         for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
             this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
         }
-        if (this.Collides(this.currentShape) && !this.TouchesRightWall()) {
+        if (this.collides(this.currentShape) && !this.touchesRightWall()) {
             for (let i = 0; i < 3; i++) {
-                this.Transpose();
+                this.transpose();
                 for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
                     this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
                 }
             }
         }
-        if (this.TouchesRightWall()) {
-            while (this.TouchesRightWall()) {
+        if (this.touchesRightWall()) {
+            while (this.touchesRightWall()) {
                 this.currentShape.x--;
             }
         }
-        this.ApplyShape();
+        this.applyShape();
     }
 
-    TouchesRightWall() {
+    touchesRightWall() {
         return this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length > this.grid[0].length;
     }
 
-    RemoveRow(y) {
+    removeRow(y) {
         this.grid[y] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         let it = y;
         it--;
@@ -305,7 +305,7 @@ export default class Tetris {
         }
     }
 
-    Collides(shape) {
+    collides(shape) {
         let overlap = false;
         for (let y = 0; y < Object.values(shape.shape)[0].length; y++) {
             for (let x = 0; x < Object.values(shape.shape)[0][0].length; x++) {
@@ -326,14 +326,14 @@ export default class Tetris {
     }
 
 
-    UpdateScore() {
+    updateScore() {
         let aantal = 0;
         let y;
-        let scoreDict = {0: 0, 1: 0, 2: 100, 3: 600, 4: 3100};
+        let scoreDict = { 0: 0, 1: 0, 2: 100, 3: 600, 4: 3100 };
         for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
                 aantal++;
-                this.RemoveRow(y);
+                this.removeRow(y);
                 this.currentShape.linesCleared++;
                 this.score += 100;
             }
@@ -346,13 +346,13 @@ export default class Tetris {
         this.fakeGrid = JSON.parse(JSON.stringify(this.grid));
         for (y = 0; y < 20; y++) {
             if (this.grid[y].every(item => item !== 0)) {
-                this.RemoveRow(y);
+                this.removeRow(y);
                 this.currentShape.linesCleared++;
             }
         }
     }
 
-    RemoveShape(shape) {
+    removeShape(shape) {
         for (let y = shape.y; y < shape.y + Object.values(shape.shape)[0].length; y++) {
             for (let x = shape.x; x < shape.x + Object.values(shape.shape)[0][0].length; x++) {
                 if (Object.values(shape.shape)[0][y - shape.y][x - shape.x] !== 0) {
@@ -362,7 +362,7 @@ export default class Tetris {
         }
     }
 
-    Transpose() {
+    transpose() {
         let nieuw = [];
         for (let i = 0; i < Object.values(this.currentShape.shape)[0][0].length; i++) {
             nieuw.push([])
@@ -373,21 +373,21 @@ export default class Tetris {
         this.currentShape.shape[Object.keys(this.currentShape.shape)[0]] = nieuw;
     }
 
-    EndUp() {
-        this.RemoveShape(this.currentShape);
+    endUp() {
+        this.removeShape(this.currentShape);
         let enupshape = {
             x: this.currentShape.x,
             y: this.currentShape.y,
             shape: this.currentShape.shape
         }
-        while (!this.Collides(enupshape)) {
+        while (!this.collides(enupshape)) {
             enupshape.y++;
         }
-        this.ApplyShape();
+        this.applyShape();
         return enupshape;
     }
 
-    Height() {
+    height() {
         let height = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         for (let x = 0; x < 10; x++) {
             for (let y = 0; y < 20; y++) {
@@ -400,7 +400,7 @@ export default class Tetris {
         this.data.height = height;
     }
 
-    Holes() {
+    holes() {
         let holes = 0;
         let y = 19;
         for (let x = 0; x < 10; x++) {
@@ -414,7 +414,7 @@ export default class Tetris {
         this.data.holes = holes;
     }
 
-    Blockades() {
+    blockades() {
         let holes = false;
         let counter = 10;
         let blockades = 0;
@@ -445,14 +445,14 @@ export default class Tetris {
     }
 
     getData() {
-        this.Height();
-        this.Holes();
-        this.Blockades();
+        this.height();
+        this.holes();
+        this.blockades();
         this.getLinesCleared();
         this.getMovesIndex();
     }
 
-    Reset() {
+    reset() {
         this.grid = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -476,7 +476,7 @@ export default class Tetris {
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
         this.bag = [];
-        this.GenerateBag();
+        this.generateBag();
         this.score = 0;
         this.currentShape = {
             x: 3,
@@ -489,7 +489,7 @@ export default class Tetris {
             shape: this.bag[1]
         };
         this.holdShape = undefined;
-        this.ApplyShape();
+        this.applyShape();
         this.bagindex = 1;
         this.movesTaken = 0;
         this.speed = 700;

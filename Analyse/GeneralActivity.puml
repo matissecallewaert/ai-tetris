@@ -28,7 +28,6 @@ partition AI {
 
 -up->[tetris.aiActivated = false] User
 
-
 "Game Over" --> (*)
 
 @enduml 

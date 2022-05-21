@@ -4,17 +4,17 @@ title ==Class Diagram==
 
 skinparam ClassAttributeIconSize 0
 class Tetris{
-    +shapes: Dictionary<vormletter:string, shape : int[][]>
+    +shapes: Dictionary<letter:string, shape: int[][]>
     +grid: int[][]
-    +currentShape: {x: int,y: int,shape,lost: bool,linescleared: int}
+    +currentShape: {x: int, y: int, shape: int[][], lost: bool, linesCleared: int}
     +colors: string[]
-    +upcomingShape: {x: int,y: int,shape, lost:bool, linescleared: int}
-    +holdingShape: {x: int,y: int,shape, lost:bool, linescleared: int}
-    +oldShape: {x: int,y: int,shape, lost:bool, linescleared: int}
+    +upcomingShape: {x: int, y: int, shape: int[][], lost: bool, linesCleared: int}
+    +holdingShape: {x: int, y: int, shape: int[][], lost: bool, linesCleared: int}
+    +oldShape: {x: int, y: int, shape: int[][], lost: bool, linesCleared: int}
     +bag: shape[]
     +bagIndex: int
     +score: int
-    +data: {height: int[], holes: int, blockades: int, linescleared:int,movesIndex:int}
+    +data: {height: int[], holes: int, blockades: int, linesCleared: int, movesIndex: int}
     +aiActivated: boolean
     +fakeShape: shape
     +ground: boolean
@@ -23,8 +23,8 @@ class Tetris{
     +died: boolean
     +fakeDied: boolean
     +fakeGrid: int[][]
-    +HoldShape():void
-    +UseHoldShape(): void
+    +holdShape():void
+    +useHoldShape(): void
     +movesTaken: int
     +moveDown(): void
     +drop(): void
@@ -33,19 +33,19 @@ class Tetris{
     +moveLeft():void
     +moveRight(): void
     +rotateShape():void
-    +getData(): state: {height: int[], holes: int, blockades: int, linescleared:int,movesIndex:int}
-    +getLinesCleared(): void
+    +getData():void
+    +getlinesCleared(): void
     +getMovesIndex(): void
     +holes(): void
     +height(): void
     +blockades(): void
     +reset(): void
-    +removeRow(y: int): void
+    +removeRow(y:int):void
     +applyShape(): void
-    +removeShape(object: shape): void
+    +removeShape(shape:int[][]):void
     +nextShape(): void
     +generateBag(): void
-    +collides(object: Shape): boolean
+    +collides(shape:int[][]):boolean
     +rotate(): void
     +transpone(): void
     +updateScore(): void
@@ -83,18 +83,18 @@ class AI{
     +mutation():void
     +populate():void
     +reset():void
-    +calcAggregateHeight(height:int[],gene:int[]):int
-    +calcRelativeHeight(height:int[],gene:int[]):int
-    +calcMaxHeight(height:int[],gene:int[]):int
-    +calcClearLines(linesCleared:int[],gene:int[]):int
-    +calcHoles(holes:int,gene:int[]):int
-    +calcBlockades(blockades:int,gene:int[]):int
-    +calcBumpiness(height:int,gene:int[]):int
-    +calcRating(height:int[],linesCleared:int,holes:int,blockades:int,gene:int[]):int
+    +calcAggregateHeight(height:int[], gene:int[]):int
+    +calcRelativeHeight(height:int[], gene:int[]):int
+    +calcMaxHeight(height:int[], gene:int[]):int
+    +calcClearLines(linesCleared:int[], gene:int[]):int
+    +calcHoles(holes:int, gene:int[]):int
+    +calcBlockades(blockades:int, gene:int[]):int
+    +calcBumpiness(height:int, gene:int[]):int
+    +calcRating(height:int[], linesCleared:int, holes:int, blockades:int, gene:int[]):int
 }
 class main{
     +keyHandler(): void
-    +arrowKeysHandler(event: e): void
+    +arrowKeysHandler(event: Event): void
     +print(canvas: canvas):void
     +updateSpeed(): void
     +getToucheCoordinates(event: Event): void
@@ -125,14 +125,13 @@ class Sound{
     +parent: HTMLAudioElement
     +muted: bool
     +create(): HTMLAudioElement
-    +SoundSettings(): void
-    +MuteToggle(): void
-    +Pause(): void
-    +Play(): void
+    +soundSettings(): void
+    +muteToggle(): void
+    +pause(): void
+    +play(): void
 }
 
 main .down.> Tetris: uses
 main .right.> Sound: uses
 main .left.> AI: uses
-/' AI .down.> Tetris: uses '/
 @enduml
