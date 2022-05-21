@@ -20,16 +20,16 @@ export default class Sound {
         return audio;
     }
 
-    SoundSettings() {
+    soundSettings() {
         let soundItems = document.getElementsByClassName("sound-item");
         for (let soundItem of soundItems) {
             soundItem.addEventListener("click", (e) => {
-                this.MuteToggle();
+                this.muteToggle();
             });
         }
     }
 
-    MuteToggle() {
+    muteToggle() {
         if (!this.muted) {
             for (let sound of this.sounds) {
                 sound.muted = true;
@@ -47,13 +47,13 @@ export default class Sound {
         }
     }
 
-    Pause() {
+    pause() {
         for (let sound of this.sounds) {
             sound.pause();
         }
     }
 
-    Play() {
+    play() {
         for (let sound of this.sounds) {
             sound.play();
         }

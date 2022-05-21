@@ -18,6 +18,7 @@ let th;
 let learnMore = document.getElementById("learnMore");
 let learnMoreText = document.getElementById("learnMoreText");
 let learnMoreText2 = document.getElementById("learnMoreText2");
+let amountofplayersinfo = document.getElementById("amountofplayersinfo");
 
 let language;
 
@@ -36,13 +37,11 @@ function checkLanguage() {
     setUpExtraInfo();
 }
 
-function setUpExtraInfo() {
+async function setUpExtraInfo() {
+    let noErrorInFetch = true;
     let currentplayers = document.getElementById("currentplayers");
     let rankedplayers = document.getElementById("rankedplayers");
-    let amountOfWait = 0; //0 when the fetch has been completed already 
-    //(this means the language is switched, but the page isn't refreshed)
     if (jsonrankedcount === "N/A" && jsonusercount === "N/A") { //if fetch hasn't been done yet
-        amountOfWait = 2000; //wait time becomes 2 seconds, so the fetch definitely has enough time (not putting delay caused errors)
         fetch("http://localhost:8010/proxy/api/general/stats") //fetching and updating (ranked) playercount
             .then(data => data.json())
             .then(jsondata => {
@@ -51,7 +50,9 @@ function setUpExtraInfo() {
             })
             .catch(() => {
                 document.getElementById("amountofplayers").hidden = true; //don't show if the fetch fails
+                noErrorInFetch = false;
             })
+        if (noErrorInFetch) await waitUntil(() => jsonrankedcount != "N/A" && jsonusercount != "N/A")
     }
 
     let topplayer = document.getElementById("topplayer");
@@ -59,31 +60,32 @@ function setUpExtraInfo() {
     let pps = document.getElementById("pps");
     let topinfo = document.getElementById("topinfo");
 
-    setTimeout(() => { //timeout of amountOfWait/1000 seconds to make sure there is enough time after the fetch
-        //fills in the extra info in the correct language 
-        //(doing this via assets/lang/*.json is unnecessarily complicated since this info isn't hardcoded)
-        if (language === "en") {
+    //fills in the extra info in the correct language 
+    //(doing this via assets/lang/*.json is unnecessarily complicated since this info isn't hardcoded)
+    if (language === "en") {
 
-            currentplayers.innerText = "There are currently " + jsonusercount + " players registered on the website.";
-            rankedplayers.innerText = jsonrankedcount + " of those play competitively.\n\n";
-            topplayer.innerText = "The top player right now is " + topPlayerData[1];
-            trrating.innerText = " with a TR Rating of " + topPlayerData[2];
-            pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
+        currentplayers.innerText = "There are currently " + jsonusercount + " players registered on the website.";
+        rankedplayers.innerText = jsonrankedcount + " of those play competitively.\n\n";
+        topplayer.innerText = "The top player right now is " + topPlayerData[1];
+        trrating.innerText = " with a TR Rating of " + topPlayerData[2];
+        pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
 
-        }
-        else if (language === "nl") {
-            currentplayers.innerText = "Er zijn momenteel " + jsonusercount + " spelers geregistreerd op de website.";
-            rankedplayers.innerText = jsonrankedcount + " van die spelers spelen competitief.\n\n";
-            topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
-            trrating.innerText = " met een TR Rating van " + topPlayerData[2];
-            pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
-        }
-    }, amountOfWait);
+    }
+    else if (language === "nl") {
+        currentplayers.innerText = "Er zijn momenteel " + jsonusercount + " spelers geregistreerd op de website.";
+        rankedplayers.innerText = jsonrankedcount + " van die spelers spelen competitief.\n\n";
+        topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
+        trrating.innerText = " met een TR Rating van " + topPlayerData[2];
+        pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
+    }
 
     if (topPlayerData[1] === undefined || topPlayerData[2] === undefined || topPlayerData[3] === undefined) {
         topinfo.hidden = true; //if something went wrong, don't show this particular piece of info
     }
 
+    if (jsonrankedcount == "N/A" || jsonusercount == "N/A") {
+        amountofplayersinfo.hidden = true; //if something went wrong, don't show this particular piece of info
+    }
 
 }
 
@@ -154,6 +156,19 @@ function addGlobalHighScores() {
             }, 1500);
         })
 
+}
+
+const waitUntil = (condition) => {
+    return new Promise((resolve) => {
+        let interval = setInterval(() => {
+            if (!condition()) {
+                return
+            }
+
+            clearInterval(interval)
+            resolve()
+        }, 100)
+    })
 }
 
 addGlobalHighScores(); //call main fetch function, functions call eachother so everything is called in the correct order
