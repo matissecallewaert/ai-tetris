@@ -274,7 +274,7 @@ async function toggleBestAI() {
 //various functions for the movement of the game for user and AI
 function move(tetris) {
     if (tetris.aiActivated) {
-        tetris.AImoveDown();
+        tetris.AIMoveDown();
     } else {
         tetris.moveDown();
         if (tetris.speed > 150) updateSpeed(tetris);
@@ -303,9 +303,9 @@ async function algorithm() {
             makeMoves();
             await waitUntil(() => done === true);
             await waitUntil(() => printBuffer === true);
-            await waitUntil(() => tetris.tetrisreset === true);
+            await waitUntil(() => tetris.tetrisReset === true);
             printBuffer = false;
-            tetris.tetrisreset = false;
+            tetris.tetrisReset = false;
         }
         console.log(ai.moves.reduce(function (a, b) {
             return Math.max(a, b);
@@ -333,9 +333,9 @@ async function bestAI() {
         makeMoves();
         await waitUntil(() => done === true);
         await waitUntil(() => printBuffer === true);
-        await waitUntil(() => tetris.tetrisreset === true);
+        await waitUntil(() => tetris.tetrisReset === true);
         printBuffer = false;
-        tetris.tetrisreset = false;
+        tetris.tetrisReset = false;
         teller++;
         teller %= bestGenes.length;
         console.log(teller);
@@ -373,7 +373,7 @@ function getAllMoves() {
                     tetris.moveRight();
                 }
             }
-            tetris.AIdrop();
+            tetris.AIDrop();
             tetris.AIUpdateScore();
             tetris.getData();
             tetris.grid = JSON.parse(JSON.stringify(tetris.fakeGrid));
@@ -439,6 +439,7 @@ const waitUntil = (condition) => {
 
 // Function to show the blocks on the canvas
 function print(tetris) {
+    console.log(tetris.tetrisReset)
     if (tetris.died) {
         ai.scores[index] = JSON.parse(JSON.stringify(tetris.score));
         ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
