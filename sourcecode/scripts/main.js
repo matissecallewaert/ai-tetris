@@ -105,7 +105,7 @@ let keyHandler = (k) => {
             } else if (k.keyCode === 16) {
                 if (tetris.holding === false) {
                     if (tetris.holdShape === undefined) {
-                        tetris.holdShape();
+                        tetris.setHoldShape();
                     } else {
                         tetris.useHoldShape();
                     }

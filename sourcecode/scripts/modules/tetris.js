@@ -99,7 +99,7 @@ export default class Tetris {
         this.tetrisReset = false;
     }
 
-    holdShape() {
+    setHoldShape() {
         this.removeShape(this.currentShape);
         this.holdShape = this.currentShape;
         this.holdShape.x = 3;
