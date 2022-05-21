@@ -11,7 +11,8 @@ p {
     padding: 5px;
 }
 
-body, .dropdown {
+body,
+.dropdown {
     background-color: #0F1123;
     color: white;
 }
@@ -70,12 +71,6 @@ tr {
     cursor: pointer;
     text-decoration: underline;
 }
-
-#learnMoreText,
-#learnMoreText2 {
-    margin: 50px;
-}
-
 
 .learnMore:hover {
     color: rgb(13, 85, 255);

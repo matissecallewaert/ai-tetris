@@ -9,6 +9,8 @@ if "Enable AI" then
 else
 -left->[false] "User plays"
 -->[User loses] "Game Over"
+endif
+
 partition AI {
     -up->"AI"
     if "best_activated"
@@ -20,13 +22,10 @@ partition AI {
     if "isGeneration50000"
     -left->[true] "Play until loss or has done more than 500 moves"
     else
-    -down->[AI loses]"Game Over"
-    else
     -left->[false] Evolve
     -up-> Play until loss or has done more than 500 moves
     endif
 }
-endif
 -up->[User asks to play] User
 
 

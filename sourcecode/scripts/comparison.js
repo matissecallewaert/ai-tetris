@@ -52,7 +52,7 @@ async function setUpExtraInfo() {
                 document.getElementById("amountofplayers").hidden = true; //don't show if the fetch fails
                 noErrorInFetch = false;
             })
-        if (noErrorInFetch) await waitUntil(() => jsonrankedcount != "N/A" && jsonusercount != "N/A")
+        if (noErrorInFetch) await waitUntil(() => jsonrankedcount != "N/A" && jsonusercount != "N/A") //wait for fetch to finish
     }
 
     let topplayer = document.getElementById("topplayer");
@@ -158,6 +158,7 @@ function addGlobalHighScores() {
 
 }
 
+//same function as in main, waits untill promise is fulfilled
 const waitUntil = (condition) => {
     return new Promise((resolve) => {
         let interval = setInterval(() => {
