@@ -4,21 +4,21 @@ title ==General Sequence Diagram==
 
 actor User
 
-==Initiate objects==
-create GUI
-User -> GUI: User visits the website
-activate GUI
+==Initiate scripts==
+create main
+User -> main: User visits the website
+activate main
 create Tetris
-GUI -> Tetris: Create Tetris
-activate Tetris
+main -> Tetris: new Tetris()
 create AI
-GUI -> AI: Create AI
+main -> AI: new AI()
 
 
 ==Game==
-User -> GUI: Start game
-GUI -> Tetris: Start game
-GUI -> User: Show game
+User -> main: Start game
+main -> Tetris: startGame()
+activate Tetris
+main -->> User: Continuously show game
 
 note left
 one of the two loops in the alt is always
@@ -27,44 +27,34 @@ end note
 
 alt User plays
     loop User plays Tetris
-        User -> GUI: Keyhandler
-        GUI -->> User: Display message "Player plays!"
-        GUI-> Tetris: Play game
+        User -> main: Press key
+        main -->> User: Display message "Player plays!"
+        main-> Tetris: keyHandler(k)
         else User loses
-            Tetris -> GUI: Game Over
-            GUI -->> User: Display message "Game Over"
+            Tetris -> main: tetris.died = true
+            main -->> User: Display message "Game Over"
         else User starts AI
-            User -> GUI: Start AI (end this loop, start loop below)
-            GUI -> AI: EventHandler request AI
+            User -> main: Start AI (end this loop, start loop below)
+            main -> Tetris: tetris.aiActivated = true
+            main -> AI
             Activate AI
-            AI -->> GUI: EventHandler received. AI activated
-            GUI -->> User: Display AI genes
+            main -> main: auto()
+            main -->> User: Display AI genes
     end
 
 else AI plays
     loop AI plays Tetris (500 moves per game)
-        AI -> Tetris: Play game
-        else AI loses
-            Tetris -> AI: New game
-            AI -> Tetris: Play game
-        else AI runs out of moves
-            AI -> Tetris: Out of moves
-            Tetris -> AI: New game
-            AI -> Tetris: Play game
+        main -> main: algorithm()
+        else AI loses or runs out of moves
+            main -> Tetris: tetrisReset
+            main -> AI: populate()
+            main -> main: algorithm()
         else User lets best AI play
-            AI -> Tetris: Play game
+            main -> main: bestAI()
         else User stops AI
-            User -> GUI: Stop AI (end this loop, restart loop above)
-            GUI -> AI: EventHandler request stop AI
-            AI -->> GUI: EventHandler received. AI stops playing
-            deactivate AI
+            User -> main: Stop AI (end this loop, restart loop above)
+            main -> Tetris: aiActivated = false
     end
 end
 
-
-GUI <- User: User leaves website or visits another page on the website
-
-GUI -> Tetris: Stop Tetris
-deactivate Tetris
-deactivate GUI
 @enduml

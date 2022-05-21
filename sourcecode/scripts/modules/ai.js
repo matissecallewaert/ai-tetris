@@ -8,7 +8,7 @@ export default class AI {
         this.genes = [];
         this.population = [];
         this.breeder = [];
-        this.parentRate = 0.1;
+        this.parentRate = 0.5;
         this.breederSize = Math.floor((this.populationSize * this.parentRate));
         this.fitness = this.chromosomes;
         this.fittest = null;
@@ -16,9 +16,9 @@ export default class AI {
         this.gene2 = null;
         this.scores = [];
         this.moves = [];
-        this.crossoverRate = 0.4;
-        this.mutationRate = 0.2;
-        this.mutationValue = 0.5;
+        this.crossoverRate = 0.5;
+        this.mutationRate = (1/this.chromosomes);
+        this.mutationValue = 0.4;
         this.geneInitValue = 0.5;
         this.random = 0;
         this.firstPopulation();
@@ -27,7 +27,7 @@ export default class AI {
     firstPopulation() {
         for (let i = 0; i < this.populationSize; i++) {
             for (let j = 0; j < this.chromosomes; j++) {
-                this.genes[j] = (Math.random() * this.geneInitValue);
+                this.genes[j] = (Math.random() - 0.5);
             }
             this.population[i] = JSON.parse(JSON.stringify(this.genes));
         }
