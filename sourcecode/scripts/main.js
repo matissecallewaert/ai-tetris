@@ -124,6 +124,7 @@ let keyHandler = (k) => {
                 id2 = setInterval(move, tetris.speed, tetris);
                 console.log(tetris.speed);
             } else {
+                ai_level.innerText = ai.populationNumber + 1;
                 tetris.aiActivated = true;
                 bestAIButton.style.visibility = "visible";
                 auto();

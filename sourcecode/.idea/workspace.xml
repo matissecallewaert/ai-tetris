@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="289fc030-45f1-43f2-8d89-afdd8a6b9419" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../Feedback team 10.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Verslag Tetris-AI.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../planning" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/main.js" afterDir="false" />
     </list>
@@ -124,7 +127,8 @@
       <workItem from="1652962349904" duration="362000" />
       <workItem from="1652982845873" duration="2077000" />
       <workItem from="1653155685595" duration="291000" />
-      <workItem from="1653157077445" duration="1804000" />
+      <workItem from="1653157077445" duration="3361000" />
+      <workItem from="1653309528055" duration="113000" />
     </task>
     <servers />
   </component>
