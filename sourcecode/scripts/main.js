@@ -47,6 +47,15 @@ let gene;
 let loadedData;
 let gameData;
 let highscore;
+let AIHighscore;
+
+let piecesPerSecondArray = localStorage.getItem("JSONpiecesPerSecondArray") !== null ? JSON.parse(localStorage.getItem("JSONpiecesPerSecondArray")) : [];
+let totalGameTime = 0;
+let gameTimer;
+let playerUsedHold = false;
+let averagePPS;
+let resetClickCounter = 0;
+let resetRecentlyClicked = false;
 
 let gameOverScreen;
 
@@ -103,6 +112,7 @@ let keyHandler = (k) => {
                 tetris.drop();
                 buttonSound.play();
             } else if (k.keyCode === 16) {
+                playerUsedHold = true;
                 if (tetris.holding === false) {
                     if (tetris.holdShape === undefined) {
                         tetris.setHoldShape();
@@ -135,9 +145,8 @@ let keyHandler = (k) => {
             id2 = setInterval(move, tetris.speed, tetris);
         } if (tetris.aiActivated) {
             if (k.key === "d") {
-                tetris.speed = tetris.speed + 50;
-                if (tetris.speed > 700) {
-                    tetris.speed = 700;
+                if (tetris.speed < 700) {
+                    tetris.speed = tetris.speed + 50;
                 }
                 clearInterval(id2)
                 id2 = setInterval(move, tetris.speed, tetris);
@@ -225,6 +234,7 @@ function onLongTouch() {
 
 // Various functions to Start, Pause and reset the game
 function startGame() {
+    gameTimer = setInterval(() => { totalGameTime += 0.1 }, 100);
     if (tetris.died) {
         resetGame();
     }
@@ -258,6 +268,7 @@ function resetGame() {
 
 function pauseGame() {
     clearInterval(id2);
+    clearInterval(gameTimer);
     play = false;
     if (play_sound) {
         buttonSound.play();
@@ -271,6 +282,64 @@ async function toggleBestAI() {
         await bestAI()
     }
 }
+
+//function to calculate pieces per second and add to storage
+function calculatePPS() {
+    console.log("calcing...");
+    let piecesPlaced;
+    clearInterval(gameTimer);
+    if (!tetris.aiActivated) {
+        piecesPlaced = playerUsedHold ? tetris.movesTaken - 1 : tetris.movesTaken;
+        let pps = (piecesPlaced / totalGameTime).toFixed(2);
+        piecesPerSecondArray.push(pps);
+        let JSONpiecesPerSecondArray = JSON.stringify(piecesPerSecondArray);
+        localStorage.setItem("piecesPerSecondArray", JSONpiecesPerSecondArray);
+        calculateAveragePPS();
+    }
+
+    piecesPlaced = playerUsedHold ? tetris.movesTaken - 1 : tetris.movesTaken;
+    let pps = (piecesPlaced / totalGameTime).toFixed(2);
+    console.log(pps);
+
+    totalGameTime = 0;
+    piecesPlaced = 0;
+}
+
+function calculateAveragePPS() {
+    let JSONallPps = localStorage.getItem("piecesPerSecondArray");
+    if (JSONallPps !== null) {
+        let totalPps = 0.0;
+        let allPps = JSON.parse(JSONallPps);
+        for (let i = 0; i < allPps.length; i++) {
+            totalPps += Number(allPps[i]);
+        }
+        averagePPS = (totalPps / allPps.length).toFixed(2);
+    }
+    localStorage.setItem("PPS", JSON.stringify(averagePPS));
+    document.getElementById("PPS").innerText = averagePPS;
+}
+
+function resetHSPPS() { //resets the highscores and pieces per second
+
+    console.log("resetting...");
+    localStorage.setItem("highscorePlayer", 0);
+    localStorage.setItem("highscoreAI", 0);
+    localStorage.setItem("PPS", 0);
+
+    document.getElementById("PPS").innerText = JSON.parse(localStorage.getItem("PPS"));
+    document.getElementById("highscoreAI").innerText = JSON.parse(localStorage.getItem("highscoreAI"));
+    document.getElementById("highscorePlayer").innerText = JSON.parse(localStorage.getItem("highscorePlayer"));
+
+}
+
+function tryToReset() { //click "tetris" 10 times (eventListener) within 3 seconds to call resetHSPPS
+    if (!resetRecentlyClicked) setTimeout(() => { resetClickCounter = 0; resetRecentlyClicked = false; }, 3000);
+    resetRecentlyClicked = true;
+    resetClickCounter++;
+    if (resetClickCounter == 10 && resetRecentlyClicked == true) resetHSPPS();
+}
+
+
 
 //various functions for the movement of the game for user and AI
 function move(tetris) {
@@ -339,7 +408,7 @@ async function bestAI() {
         tetris.tetrisReset = false;
         teller++;
         teller %= bestGenes.length;
-        console.log(teller);
+        //console.log(teller);
     }
 }
 
@@ -437,23 +506,31 @@ const waitUntil = (condition) => {
     })
 }
 
+function scoreUpdater(scoreType) {
+    loadedData = localStorage.getItem(scoreType);
+    let data = JSON.parse(loadedData);
+    if (data < tetris.score) {
+        data = tetris.score;
+        let gameDataJson = JSON.stringify(data);
+        localStorage.setItem(scoreType, gameDataJson);
+    }
+    let docEl = document.getElementById(scoreType);
+    docEl.innerText = data;
+
+
+}
 
 // Function to show the blocks on the canvas
 function print(tetris) {
-    console.log(tetris.tetrisReset)
+    //console.log(tetris.tetrisReset)
     if (tetris.died) {
+        if (totalGameTime != 0) calculatePPS();
         ai.scores[index] = JSON.parse(JSON.stringify(tetris.score));
         ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
         index++;
-        loadedData = localStorage.getItem("highScores");
-        let data = JSON.parse(loadedData);
-        if (data.Highscore < tetris.score) {
-            data.Highscore = tetris.score;
-            let gameDataJson = JSON.stringify(data);
-            localStorage.setItem("highScores", gameDataJson);
-        }
-        highscore = document.getElementById("highscore");
-        highscore.textContent = data.Highscore;
+        if (tetris.aiActivated) scoreUpdater("highscoreAI");
+        else scoreUpdater("highscorePlayer");
+
         if (!tetris.aiActivated) {
             gameOverScreen.setAttribute("visibility", "visible");
             play_sound = false;
@@ -606,6 +683,23 @@ const handleRandomDataset = () => {
 
 // End of graph
 
+// helpfunction to configure localStorage components
+function localStorageLoader(itemList) {
+    for (let i = 0; i < itemList.length; i++) {
+        let item = itemList[i];
+        loadedData = localStorage.getItem(item);
+        let docEl = document.getElementById(item);
+        if (loadedData !== null) {
+            let data = JSON.parse(loadedData);
+            docEl.textContent = data;
+        } else {
+            let data = 0;
+            let dataJson = JSON.stringify(data);
+            localStorage.setItem(item, dataJson);
+            docEl.textContent = data;
+        }
+    }
+}
 
 //Initializes the game
 function init() {
@@ -619,16 +713,21 @@ function init() {
     ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
     ai_chromosomes = document.getElementById("chromosomes");
     ai_chromosomes.innerText = "no data";
-    highscore = document.getElementById("highscore");
-    loadedData = localStorage.getItem("highScores");
+
+    localStorageLoader(["highscorePlayer", "highscoreAI", "PPS"])
+    /* loadedData = localStorage.getItem("highScores");
     if (loadedData !== null) {
         let data = JSON.parse(loadedData);
-        highscore.textContent = data.Highscore;
+        highscore.textContent = data["UserHighscore"];
     } else {
-        let data = { Highscore: 0 };
+        let data = { "UserHighscore": 0, "AIHighscore": 0 };
         let dataJson = JSON.stringify(data);
         localStorage.setItem("highScores", dataJson);
-    }
+        highscore.textContent = data["UserHighscore"];
+    } */
+
+
+
 
     gameOverScreen = document.getElementById("game_over");
 
@@ -673,6 +772,9 @@ function init() {
     document.getElementById("startButton").addEventListener("click", startGame);
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
     document.getElementById("resetButton").addEventListener("click", resetGame);
+
+    document.getElementById("tetris-title").addEventListener("click", tryToReset);
+
     bestAIButton = document.getElementById("bestAI");
     bestAIButton.addEventListener("click", toggleBestAI);
 

@@ -59,6 +59,8 @@ async function setUpExtraInfo() {
     let trrating = document.getElementById("trrating");
     let pps = document.getElementById("pps");
     let topinfo = document.getElementById("topinfo");
+    let PPS = localStorage.getItem("PPS").replace(/"/g, "");
+
 
     //fills in the extra info in the correct language 
     //(doing this via assets/lang/*.json is unnecessarily complicated since this info isn't hardcoded)
@@ -68,7 +70,8 @@ async function setUpExtraInfo() {
         rankedplayers.innerText = jsonrankedcount + " of those play competitively.\n\n";
         topplayer.innerText = "The top player right now is " + topPlayerData[1];
         trrating.innerText = " with a TR Rating of " + topPlayerData[2];
-        pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second.";
+        pps.innerText = " and an average of " + topPlayerData[3] + " pieces placed per second. Your average is " + PPS + ".";
+        + ".";
 
     }
     else if (language === "nl") {
@@ -76,7 +79,7 @@ async function setUpExtraInfo() {
         rankedplayers.innerText = jsonrankedcount + " van die spelers spelen competitief.\n\n";
         topplayer.innerText = "De beste speler momenteel is " + topPlayerData[1];
         trrating.innerText = " met een TR Rating van " + topPlayerData[2];
-        pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde.";
+        pps.innerText = " en een gemiddelde van " + topPlayerData[3] + " blokken geplaatst per seconde. Jouw gemiddelde is " + PPS + ".";
     }
 
     if (topPlayerData[1] === undefined || topPlayerData[2] === undefined || topPlayerData[3] === undefined) {
