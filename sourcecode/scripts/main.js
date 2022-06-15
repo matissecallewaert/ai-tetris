@@ -49,7 +49,7 @@ let gameData;
 let highscore;
 let AIHighscore;
 
-let piecesPerSecondArray = localStorage.getItem("JSONpiecesPerSecondArray") !== null ? JSON.parse(localStorage.getItem("JSONpiecesPerSecondArray")) : [];
+let piecesPerSecondArray = localStorage.getItem("piecesPerSecondArray") !== null ? JSON.parse(localStorage.getItem("piecesPerSecondArray")) : [];
 let totalGameTime = 0;
 let gameTimer;
 let playerUsedHold = false;
@@ -325,6 +325,7 @@ function resetHSPPS() { //resets the highscores and pieces per second
     localStorage.setItem("highscorePlayer", 0);
     localStorage.setItem("highscoreAI", 0);
     localStorage.setItem("PPS", 0);
+    localStorage.setItem("piecesPerSecondArray", []);
 
     document.getElementById("PPS").innerText = JSON.parse(localStorage.getItem("PPS"));
     document.getElementById("highscoreAI").innerText = JSON.parse(localStorage.getItem("highscoreAI"));
@@ -715,20 +716,6 @@ function init() {
     ai_chromosomes.innerText = "no data";
 
     localStorageLoader(["highscorePlayer", "highscoreAI", "PPS"])
-    /* loadedData = localStorage.getItem("highScores");
-    if (loadedData !== null) {
-        let data = JSON.parse(loadedData);
-        highscore.textContent = data["UserHighscore"];
-    } else {
-        let data = { "UserHighscore": 0, "AIHighscore": 0 };
-        let dataJson = JSON.stringify(data);
-        localStorage.setItem("highScores", dataJson);
-        highscore.textContent = data["UserHighscore"];
-    } */
-
-
-
-
     gameOverScreen = document.getElementById("game_over");
 
     //Time the player has to touch the screen to hard drop current tetromino
