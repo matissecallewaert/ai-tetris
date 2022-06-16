@@ -69,16 +69,17 @@
                 <div class="right-column">
                     <p class="h3" id="tetris-title">TETRIS</p>
                     <p>Score: <span id="scoreboard">0</span></p>
-                    <p>AI Level: <span id="lines">0</span></p>
-                    <p>Gene: <span id="gene">0</span></p>
-                    <p>Moves: <span id="level">0</span></p>
+                    <p hidden="true" id="AIlevel">AI Level: <span id="lines">0</span></p>
+                    <p hidden="true" id="AIgene">Gene: <span id="gene">0</span></p>
+                    <p hidden="true" id="AImoves">Moves: <span id="level">0</span></p>
                     <br>
                     <div class="col">
-                        <p>Highscores</p>
-                        <p>You: <span id="highscorePlayer"></span><br>AI: <span id="highscoreAI"></span></p>
+                        <p data-i18n-key="highscores"></p>
+                        <p>&emsp;<span data-i18n-key="you-highscore"></span><span
+                                id="highscorePlayer"></span><br>&emsp;<span data-i18n-key="AI-highscore"></span><span
+                                id="highscoreAI"></span></p>
                         <br>
-                        <p>Average PPS</p>
-                        <p id="PPS"></p>
+                        <p data-i18n-key="average-pps"><span id="PPS"></span></p>
                         <br>
                     </div>
                     <div class="row">
@@ -94,80 +95,79 @@
                         </div>
                     </div>
                     <div class="col">
-                        <p>chromosomes</p>
-                        <p id="chromosomes"></p>
+                        <p id="AIchromosomes" hidden="true">chromosomes<br><span id="chromosomes"></span></p>
                         <br>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Play
+                    <div class="col-7" data-i18n-key="instruc-play">
+
                     </div>
                     <div class="col">
                         p
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Pause
+                    <div class="col-7" data-i18n-key="instruc-pause">
+
                     </div>
                     <div class="col">
                         h
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Reset
+                    <div class="col-7" data-i18n-key="instruc-reset">
+
                     </div>
                     <div class="col">
                         r
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Rotate
+                    <div class="col-7" data-i18n-key="instruc-rotate">
+
                     </div>
-                    <div class="col">
-                        Arrow up
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7">
-                        Drop down
-                    </div>
-                    <div class="col">
-                        Spacebar
+                    <div class="col" data-i18n-key="instruc-rotate-key">
+
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Hold
+                    <div class="col-7" data-i18n-key="instruc-dropdown">
+
+                    </div>
+                    <div class="col" data-i18n-key="instruc-dropdown-key">
+
+                    </div>
+                </div>
+                <div class="row border-bottom">
+                    <div class="col-7" data-i18n-key="instruc-hold">
+
                     </div>
                     <div class="col">
                         Shift
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Activate AI
+                    <div class="col-7" data-i18n-key="instruc-activateAI">
+
                     </div>
                     <div class="col">
                         a
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Increase speed
+                    <div class="col-7" data-i18n-key="instruc-incrSpeed">
+
                     </div>
                     <div class="col">
                         s
                     </div>
                 </div>
                 <div class="row border-bottom">
-                    <div class="col-7">
-                        Decrease speed
+                    <div class="col-7" data-i18n-key="instruc-decrSpeed">
+
                     </div>
                     <div class="col">
                         d
@@ -177,17 +177,18 @@
                 <div class="row align-bottom">
                     <div class="col">
                         <button data-i18n-key="play" id="startButton" type="button"
-                            class="myButton btn btn-sm">Play</button>
+                            class="myButton btn btn-sm"></button>
                         <button data-i18n-key="pause" id="pauseButton" type="button"
-                            class="myButton btn btn-sm">Pause</button>
+                            class="myButton btn btn-sm"></button>
                         <button data-i18n-key="reset" id="resetButton" type="button"
-                            class="myButton btn btn-sm">Reset</button>
-                        <button data-i18n-key="bestAI" id="bestAI" type="button" style="visibility: hidden"
-                            class="myButton btn btn-sm">Best</button>
+                            class="myButton btn btn-sm"></button>
+                        <button data-i18n-key="bestAI" id="bestAI" type="button" hidden="true"
+                            class="myButton btn btn-sm"></button>
                         <div class="row align-bottom">
                             <div id="sound-div">
                                 <span class="sound-item" id="sound-speaker"></span>
-                                <span class="sound-item" id="sound-description"></span>
+                                <!--span class="sound-item" id="sound-description"
+                                    data-i18n-key="sound-description-on"></span-->
                             </div>
                         </div>
                     </div>

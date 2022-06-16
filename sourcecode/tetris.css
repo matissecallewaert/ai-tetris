@@ -98,6 +98,10 @@ tr {
     vertical-align: middle;
 }
 
+#bestAI {
+    margin: 5px;
+}
+
 /* #keyupIcon {
     height: 30px;
     width: 30px;

@@ -71,8 +71,6 @@ let bestGenes = [
     [-0.4439956106238234, -0.11566159949412824, 0.00891266544810354, -0.07481877528546887, -0.37936237231974923, -0.43438580331879606, -0.1631567931460367]];
 let best_activated = false;
 
-let bestAIButton;
-
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, reset), rotate, moveLeft == MoveRight, GameOver, BackgroundMusic
@@ -126,17 +124,19 @@ let keyHandler = (k) => {
             buttonSound.play();
             if (tetris.aiActivated) {
                 tetris.aiActivated = false;
+                toggleShowAIStats();
                 best_activated = false;
-                bestAIButton.style.visibility = "hidden";
+                document.getElementById("bestAI").hidden = true;
                 clearInterval(id2);
                 tetris.speed = 700;
                 tetris.speed -= Math.floor(tetris.score / 4000) * 50;
                 id2 = setInterval(move, tetris.speed, tetris);
                 console.log(tetris.speed);
             } else {
+                toggleShowAIStats();
                 ai_level.innerText = ai.populationNumber + 1;
                 tetris.aiActivated = true;
-                bestAIButton.style.visibility = "visible";
+                document.getElementById("bestAI").hidden = false;
                 auto();
             }
         } else if (k.key === "s") {
@@ -278,7 +278,7 @@ function pauseGame() {
 async function toggleBestAI() {
     best_activated = !best_activated;
     if (best_activated) {
-        bestAIButton.style.visibility = "hidden";
+        document.getElementById("bestAI").hidden = true;
         await bestAI()
     }
 }
@@ -340,6 +340,12 @@ function tryToReset() { //click "tetris" 10 times (eventListener) within 3 secon
     if (resetClickCounter == 10 && resetRecentlyClicked == true) resetHSPPS();
 }
 
+function toggleShowAIStats() {
+    document.getElementById("AIlevel").hidden = !document.getElementById("AIlevel").hidden;
+    document.getElementById("AIgene").hidden = !document.getElementById("AIgene").hidden;
+    document.getElementById("AImoves").hidden = !document.getElementById("AImoves").hidden;
+    document.getElementById("AIchromosomes").hidden = !document.getElementById("AIchromosomes").hidden;
+}
 
 
 //various functions for the movement of the game for user and AI
@@ -518,19 +524,20 @@ function scoreUpdater(scoreType) {
     let docEl = document.getElementById(scoreType);
     docEl.innerText = data;
 
-
 }
 
 // Function to show the blocks on the canvas
 function print(tetris) {
     //console.log(tetris.tetrisReset)
     if (tetris.died) {
-        if (totalGameTime != 0) calculatePPS();
+        if (totalGameTime != 0) {
+            calculatePPS();
+            if (tetris.aiActivated) scoreUpdater("highscoreAI");
+            else scoreUpdater("highscorePlayer");
+        }
         ai.scores[index] = JSON.parse(JSON.stringify(tetris.score));
         ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
         index++;
-        if (tetris.aiActivated) scoreUpdater("highscoreAI");
-        else scoreUpdater("highscorePlayer");
 
         if (!tetris.aiActivated) {
             gameOverScreen.setAttribute("visibility", "visible");
@@ -762,8 +769,7 @@ function init() {
 
     document.getElementById("tetris-title").addEventListener("click", tryToReset);
 
-    bestAIButton = document.getElementById("bestAI");
-    bestAIButton.addEventListener("click", toggleBestAI);
+    document.getElementById("bestAI").addEventListener("click", toggleBestAI);
 
     document.addEventListener("longpressevent", function (event) {
         window.addEventListener("touchStart", touchStart, false);
