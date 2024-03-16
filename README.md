@@ -1,4 +1,4 @@
-# team-4
+# AI Tetris
 
 This project will be a Tetris game playable by a user or AI (Artificial Intelligence) via a webbrowser.
 
