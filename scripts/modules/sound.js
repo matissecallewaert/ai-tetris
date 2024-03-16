@@ -35,14 +35,12 @@ export default class Sound {
                 sound.muted = true;
             }
             document.getElementById("sound-speaker").innerHTML = "\u{1F507}";
-            //document.getElementById("sound-description").setAttribute("data-i18n-key") = "sound-description-off";
             this.muted = true;
         } else {
             for (let sound of this.sounds) {
                 sound.muted = false;
             }
             document.getElementById("sound-speaker").innerHTML = "\u{1F509}";
-            //document.getElementById("sound-description").setAttribute("data-i18n-key") = "sound-description-on";
             this.muted = false;
         }
     }

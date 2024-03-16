@@ -44,6 +44,7 @@ export default class AI {
                 maxM = Math.max(maxM, this.moves[i]);
             }
         }
+        
         let index = this.moves.indexOf(maxM);
         this.fittest = JSON.parse(JSON.stringify(this.population[index]));
         this.fittest[this.fitness] = maxM;

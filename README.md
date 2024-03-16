@@ -7,9 +7,5 @@ various medical sectors as well) to teach itself to play the game. The more it p
 
 The user can make the AI stop any time and continue playing the game themselves.
 
-Data about high level tetris players is collected through a proxy.
-First you need to install the proxy by running this command in the cmd: npm install -g local-cors-proxy
-To set up this proxy, we use this command: lcp --proxyUrl https://ch.tetr.io
-
 Currently the website is deployed on: 
 https://singular-shortbread-7c56ff.netlify.app

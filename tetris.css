@@ -1,11 +1,3 @@
-/*
-#tetris{
-    font-size: 40px;
-}
-#infobord{
-    font-size: 50px;
-}
- */
 p {
     margin: 0px;
     padding: 5px;
@@ -33,9 +25,9 @@ tr {
     margin-right: auto;
 }
 
-
 * {
     font-family: 'Press Start 2P', cursive;
+    font-size: small;
 }
 
 #chromosomes {
@@ -63,19 +55,6 @@ tr {
     cursor: pointer;
 }
 
-.learnMore {
-    color: rgb(13, 110, 253);
-    font-size: 15px;
-    margin: 10px;
-    float: right;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.learnMore:hover {
-    color: rgb(13, 85, 255);
-}
-
 #sound-speaker {
     font-size: 30px;
 }
@@ -97,22 +76,3 @@ tr {
     font-size: 30px;
     vertical-align: middle;
 }
-
-#bestAI {
-    margin: 5px;
-}
-
-/* #keyupIcon {
-    height: 30px;
-    width: 30px;
-}
-
-#keyshiftIcon {
-    height: 60px;
-    width: 120px;
-}
-
-#keyspacebarIcon {
-    height: 30px;
-    width: 200px;
-} */

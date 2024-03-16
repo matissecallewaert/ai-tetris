@@ -45,9 +45,6 @@ let ai_gene;
 let ai_chromosomes;
 let gene;
 let loadedData;
-let gameData;
-let highscore;
-let AIHighscore;
 
 let piecesPerSecondArray = localStorage.getItem("piecesPerSecondArray") !== null ? JSON.parse(localStorage.getItem("piecesPerSecondArray")) : [];
 let totalGameTime = 0;
@@ -76,10 +73,7 @@ let sound = new Sound(document.getElementById("sound-div")),
     // Create 5 sound effects: Buttons (Play, Pause, reset), rotate, moveLeft == MoveRight, GameOver, BackgroundMusic
     buttonSound = sound.create("assets/sounds/block-rotate.mp3", "button_sound"),
     rotateSound = sound.create("assets/sounds/select.mp3", "rotate_sound"),
-    moveSound = sound.create("assets/sounds/whoosh.mp3", "move_sound"),
-    gameOverSound = sound.create("assets/sounds/gameover.mp3", "gameOver_sound"),
-    backgroundMusic = sound.create("assets/sounds/pause.mp3", "backgroundMusic");
-
+    moveSound = sound.create("assets/sounds/whoosh.mp3", "move_sound");
 
 // Function to handle various keypresses from keyboard
 let keyHandler = (k) => {
@@ -96,7 +90,7 @@ let keyHandler = (k) => {
     if (play) {
         if (!tetris.aiActivated) {
             if (k.keyCode === 40) {
-                tetris.moveDown();
+                tetris.moveDown(false);
             } else if (k.keyCode === 37) {
                 tetris.moveLeft();
                 moveSound.play();
@@ -107,7 +101,7 @@ let keyHandler = (k) => {
                 tetris.rotate();
                 rotateSound.play();
             } else if (k.key === " ") {
-                tetris.drop();
+                tetris.drop(false);
                 buttonSound.play();
             } else if (k.keyCode === 16) {
                 playerUsedHold = true;
@@ -125,22 +119,28 @@ let keyHandler = (k) => {
             if (tetris.aiActivated) {
                 tetris.aiActivated = false;
                 toggleShowAIStats();
+
                 best_activated = false;
                 document.getElementById("bestAI").hidden = true;
+
                 clearInterval(id2);
+
                 tetris.speed = 700;
                 tetris.speed -= Math.floor(tetris.score / 4000) * 50;
+
                 id2 = setInterval(move, tetris.speed, tetris);
-                console.log(tetris.speed);
             } else {
                 toggleShowAIStats();
+
                 ai_level.innerText = ai.populationNumber + 1;
                 tetris.aiActivated = true;
+
                 document.getElementById("bestAI").hidden = false;
                 auto();
             }
         } else if (k.key === "s") {
             tetris.speed = Math.max(1000 / 60, tetris.speed - 50);
+
             clearInterval(id2);
             id2 = setInterval(move, tetris.speed, tetris);
         } if (tetris.aiActivated) {
@@ -148,6 +148,7 @@ let keyHandler = (k) => {
                 if (tetris.speed < 700) {
                     tetris.speed = tetris.speed + 50;
                 }
+
                 clearInterval(id2)
                 id2 = setInterval(move, tetris.speed, tetris);
             }
@@ -186,89 +187,102 @@ let arrowKeysHandler = function (e) {
  - Long press for Hard-drop
  **/
 
-let getTouchCoordinates = (event) => {
-    x = event.touches[0].clientX;
-    y = event.touches[0].clientY;
-}
+// let getTouchCoordinates = (event) => {
+//     x = event.touches[0].clientX;
+//     y = event.touches[0].clientY;
+// }
 
-let mobileControl = (event) => {
-    let difX = event.changedTouches[0].clientX - x;
-    let difY = event.changedTouches[0].clientY - y;
-    if (Math.abs(difX) > Math.abs(difY)) {
-        if (difX > 0) {
-            tetris.moveRight();
-        } else {
-            tetris.moveLeft();
-        }
-    } else {
-        if (difY > 0) {
-            tetris.moveDown();
-        } else {
-            tetris.rotate();
-        }
-    }
-    x = null;
-    y = null;
-}
+// let mobileControl = (event) => {
+//     let difX = event.changedTouches[0].clientX - x;
+//     let difY = event.changedTouches[0].clientY - y;
+//     if (Math.abs(difX) > Math.abs(difY)) {
+//         if (difX > 0) {
+//             tetris.moveRight();
+//         } else {
+//             tetris.moveLeft();
+//         }
+//     } else {
+//         if (difY > 0) {
+//             tetris.moveDown();
+//         } else {
+//             tetris.rotate();
+//         }
+//     }
+//     x = null;
+//     y = null;
+// }
 
-// Functions for Hard-dropping the tetris block when long pressing the screen
-function touchStart(e) {
-    e.preventDefault();
-    if (!timer) {
-        timer = setTimeout(onLongTouch, touchduration);
-    }
-}
+// // Functions for Hard-dropping the tetris block when long pressing the screen
+// function touchStart(e) {
+//     e.preventDefault();
+//     if (!timer) {
+//         timer = setTimeout(onLongTouch, touchduration);
+//     }
+// }
 
-function touchEnd() {
-    //stops short touches from firing the event
-    if (timer) {
-        clearTimeout(timer);
-        timer = null;
-    }
-}
+// function touchEnd() {
+//     //stops short touches from firing the event
+//     if (timer) {
+//         clearTimeout(timer);
+//         timer = null;
+//     }
+// }
 
-function onLongTouch() {
-    timer = null;
-    tetris.drop();
-}
+// function onLongTouch() {
+//     timer = null;
+//     tetris.drop(false);
+// }
 
 // Various functions to Start, Pause and reset the game
 function startGame() {
     gameTimer = setInterval(() => { totalGameTime += 0.1 }, 100);
+
     if (tetris.died) {
         resetGame();
     }
+
     clearInterval(id2);
     id2 = setInterval(move, tetris.speed, tetris);
+
     play = true;
     play_sound = true;
+
     buttonSound.play();
     gameOverScreen.setAttribute("visibility", "hidden")
 }
 
 function resetGame() {
     clearInterval(id2);
+
     tetris.reset();
     ai.reset();
+
     ai_level.innerText = 1;
     ai_gene.innerText = "1" + " / " + (ai.populationSize).toString();
+
     index = 0;
     play = false;
+
     tetris.aiActivated = false;
     best_activated = false;
+
     play_sound = true;
     buttonSound.play();
+
     vorigeScore = 0;
+
     graphData.data.datasets[0].data = [];
     graphData.data.labels = [];
     chart.destroy();
     refreshChart();
+
     gameOverScreen.setAttribute("visibility", "hidden")
 }
 
 function pauseGame() {
     clearInterval(id2);
     clearInterval(gameTimer);
+
     play = false;
     if (play_sound) {
         buttonSound.play();
@@ -277,23 +291,27 @@ function pauseGame() {
 
 async function toggleBestAI() {
     best_activated = !best_activated;
+
     if (best_activated) {
         document.getElementById("bestAI").hidden = true;
+
         await bestAI()
     }
 }
 
 //function to calculate pieces per second and add to storage
 function calculatePPS() {
-    console.log("calcing...");
     let piecesPlaced;
     clearInterval(gameTimer);
+
     if (!tetris.aiActivated) {
         piecesPlaced = playerUsedHold ? tetris.movesTaken - 1 : tetris.movesTaken;
         let pps = (piecesPlaced / totalGameTime).toFixed(2);
         piecesPerSecondArray.push(pps);
+
         let JSONpiecesPerSecondArray = JSON.stringify(piecesPerSecondArray);
         localStorage.setItem("piecesPerSecondArray", JSONpiecesPerSecondArray);
+        
         calculateAveragePPS();
     }
 
@@ -307,14 +325,18 @@ function calculatePPS() {
 
 function calculateAveragePPS() {
     let JSONallPps = localStorage.getItem("piecesPerSecondArray");
+
     if (JSONallPps !== null) {
         let totalPps = 0.0;
         let allPps = JSON.parse(JSONallPps);
+
         for (let i = 0; i < allPps.length; i++) {
             totalPps += Number(allPps[i]);
         }
+
         averagePPS = (totalPps / allPps.length).toFixed(2);
     }
+
     localStorage.setItem("PPS", JSON.stringify(averagePPS));
     document.getElementById("PPS").innerText = averagePPS;
 }
@@ -351,9 +373,11 @@ function toggleShowAIStats() {
 //various functions for the movement of the game for user and AI
 function move(tetris) {
     if (tetris.aiActivated) {
-        tetris.AIMoveDown();
+
+        tetris.moveDown(true);
     } else {
-        tetris.moveDown();
+
+        tetris.moveDown(false);
         if (tetris.speed > 150) updateSpeed(tetris);
     }
 }
@@ -368,8 +392,10 @@ async function algorithm() {
             if (!tetris.aiActivated || best_activated) {
                 return;
             }
+
             ai_gene.innerText = (index + 1).toString() + " / " + (ai.populationSize).toString();
             gene = ai.population[j];
+
             ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
                 "RelativeHeight: " + gene[1] + "\n" +
                 "MaxHeight: " + gene[2] + "\n" +
@@ -377,19 +403,26 @@ async function algorithm() {
                 "Holes: " + gene[4] + "\n" +
                 "Blockades: " + gene[6] + "\n" +
                 "Bumpiness: " + gene[5] + "\n";
+
             makeMoves();
+
             await waitUntil(() => done === true);
             await waitUntil(() => printBuffer === true);
             await waitUntil(() => tetris.tetrisReset === true);
+
             printBuffer = false;
             tetris.tetrisReset = false;
         }
+
         console.log(ai.moves.reduce(function (a, b) {
             return Math.max(a, b);
         }) + " in generation " + (ai.populationNumber + 1));
+
         index = 0;
         ai.populationNumber++;
+
         handleRandomDataset();
+
         ai_level.innerText = ai.populationNumber + 1;
         ai.populate();
     }
@@ -398,6 +431,7 @@ async function bestAI() {
     let teller = 0;
     ai_level.innerText = "Beste Genes";
     ai_gene.innerText = "";
+
     while (best_activated) {
         gene = bestGenes[teller];
         ai_chromosomes.innerText = "AggregateHeight: " + gene[0] + "\n" +
@@ -407,26 +441,30 @@ async function bestAI() {
             "Holes: " + gene[4] + "\n" +
             "Blockades: " + gene[6] + "\n" +
             "Bumpiness: " + gene[5] + "\n";
+
         makeMoves();
+
         await waitUntil(() => done === true);
         await waitUntil(() => printBuffer === true);
         await waitUntil(() => tetris.tetrisReset === true);
+
         printBuffer = false;
         tetris.tetrisReset = false;
         teller++;
         teller %= bestGenes.length;
-        //console.log(teller);
     }
 }
 
 function getBestMove() {
     let moves = getAllMoves();
     let bestMove = moves[0];
+
     for (let i = 0; i < moves.length; i++) {
         if (bestMove.rating < moves[i].rating) {
             bestMove = JSON.parse(JSON.stringify(moves[i]));
         }
     }
+
     return bestMove;
 }
 
@@ -437,10 +475,13 @@ function getAllMoves() {
         sideMoves: 0,
         rotation: 0
     }]
+
     for (let rot = 0; rot < 4; rot++) {
         tetris.rotate();
+
         for (let x = -10; x < 10; x++) {
             tetris.copyCurrentShape();
+
             if (x < 0) {
                 for (let xl = 0; xl < Math.abs(x); xl++) {
                     tetris.moveLeft();
@@ -450,23 +491,30 @@ function getAllMoves() {
                     tetris.moveRight();
                 }
             }
-            tetris.AIDrop();
+
+            tetris.drop(true);
             tetris.AIUpdateScore();
             tetris.getData();
+
             tetris.grid = JSON.parse(JSON.stringify(tetris.fakeGrid));
+
             move.rating = ai.calcRating(tetris.data.height, tetris.data.linesCleared, tetris.data.holes, tetris.data.blockades, gene);
             move.sideMoves = x;
             move.rotation = rot + 1;
+
             tetris.oldShape = JSON.parse(JSON.stringify(tetris.currentShape));
             tetris.AINextShape();
+
             if (tetris.fakeDied) {
                 move.rating = move.rating - 1000;
             }
+
             allMoves.push({ ...move });
             tetris.fakeDied = false;
             tetris.removeShape(tetris.oldShape);
         }
     }
+
     return allMoves;
 }
 
@@ -476,9 +524,11 @@ async function makeMoves() {
 
     while (!tetris.died && tetris.movesTaken <= 499) {
         let move = getBestMove();
+
         for (let rot = 0; rot < move.rotation; rot++) {
             tetris.rotate();
         }
+
         if (move.sideMoves < 0) {
             for (let xl = 0; xl < Math.abs(move.sideMoves); xl++) {
                 tetris.moveLeft();
@@ -488,15 +538,18 @@ async function makeMoves() {
                 tetris.moveRight();
             }
         }
+
         await waitUntil(() => tetris.ground === true);
         if (!tetris.aiActivated) {
             tetris.ground = false;
             break;
         }
+
         tetris.updateScore();
         tetris.nextShape();
         tetris.ground = false;
     }
+
     done = true;
 }
 
@@ -516,25 +569,27 @@ const waitUntil = (condition) => {
 function scoreUpdater(scoreType) {
     loadedData = localStorage.getItem(scoreType);
     let data = JSON.parse(loadedData);
+
     if (data < tetris.score) {
         data = tetris.score;
         let gameDataJson = JSON.stringify(data);
         localStorage.setItem(scoreType, gameDataJson);
     }
+
     let docEl = document.getElementById(scoreType);
     docEl.innerText = data;
-
 }
 
 // Function to show the blocks on the canvas
 function print(tetris) {
-    //console.log(tetris.tetrisReset)
     if (tetris.died) {
         if (totalGameTime != 0) {
             calculatePPS();
+
             if (tetris.aiActivated) scoreUpdater("highscoreAI");
             else scoreUpdater("highscorePlayer");
         }
+
         ai.scores[index] = JSON.parse(JSON.stringify(tetris.score));
         ai.moves[index] = JSON.parse(JSON.stringify(tetris.movesTaken));
         index++;
@@ -542,13 +597,16 @@ function print(tetris) {
         if (!tetris.aiActivated) {
             gameOverScreen.setAttribute("visibility", "visible");
             play_sound = false;
+
             pauseGame();
             ai.reset();
+
             ai_level.innerText = 1;
         } else {
             tetris.reset();
         }
     }
+
     ctx.clearRect(0, 0, COLS, ROWS)
 
     if (!tetris.aiActivated && !best_activated) {
@@ -591,6 +649,7 @@ function print(tetris) {
             }
         }
     }
+
     holdingctx.clearRect(0, 0, COLS, ROWS)
     if (tetris.holdShape !== undefined) {
         for (let y = 0; y < Object.values(tetris.holdShape.shape)[0].length; y++) {
@@ -603,16 +662,19 @@ function print(tetris) {
             }
         }
     }
+
     printBuffer = true;
 }
 //function to draw the grid
 function drawGrid(ctx) {
     ctx.beginPath();
+
     for (let i = 1; i < 10; i++) {                                                                        //Draws vertical lines
         ctx.moveTo(i * BLOCK_SIZE, 0);
         ctx.lineTo(i * BLOCK_SIZE, ROWS * BLOCK_SIZE);
         ctx.stroke();
     }
+
     for (let i = 1; i < 20; i++) {                                                                        //Draws horizontal lines
         ctx.moveTo(0, i * BLOCK_SIZE);
         ctx.lineTo(COLS * BLOCK_SIZE, i * BLOCK_SIZE);
@@ -624,7 +686,7 @@ function updateSpeed(tetris) {
     if (tetris.score >= vorigeScore + 4000) {
         clearInterval(id2)
         tetris.speed -= 50;
-        //console.log("Je score is: " + tetris.score + ", dus je speed is: " + tetris.speed);
+
         id2 = setInterval(move, tetris.speed, tetris);
         vorigeScore = tetris.score;
     }
@@ -679,12 +741,14 @@ const refreshChart = () => {
 const handleRandomDataset = () => {
     if (tetris.aiActivated) {
 
-        let bla = ai.moves.reduce(function (a, b) {
+        let sum = ai.moves.reduce(function (a, b) {
             return a + b;
         })
-        graphData.data.datasets[0].data.push(bla / ai.populationSize);
+
+        graphData.data.datasets[0].data.push(sum / ai.populationSize);
         graphData.data.labels.push(ai.populationNumber);
     }
+
     chart.destroy();
     refreshChart();
 };
@@ -695,14 +759,17 @@ const handleRandomDataset = () => {
 function localStorageLoader(itemList) {
     for (let i = 0; i < itemList.length; i++) {
         let item = itemList[i];
+
         loadedData = localStorage.getItem(item);
         let docEl = document.getElementById(item);
+
         if (loadedData !== null) {
             let data = JSON.parse(loadedData);
             docEl.textContent = data;
         } else {
             let data = 0;
             let dataJson = JSON.stringify(data);
+
             localStorage.setItem(item, dataJson);
             docEl.textContent = data;
         }
@@ -713,8 +780,10 @@ function localStorageLoader(itemList) {
 function init() {
     tetris = new Tetris();
     ai = new AI();
+
     scorebord = document.getElementById("scoreboard");
     moves = document.getElementById("level");
+
     ai_level = document.getElementById("lines");
     ai_level.innerText = (ai.populationNumber + 1).toString();
     ai_gene = document.getElementById("gene");
@@ -757,6 +826,7 @@ function init() {
     gridctx.canvas.width = COLS * BLOCK_SIZE;
     gridctx.canvas.height = ROWS * BLOCK_SIZE;
     gridctx.strokeStyle = "#484848";
+
     drawGrid(gridctx);
 
     gameOverScreen.setAttribute("height", (ROWS * BLOCK_SIZE + 5).toString());
@@ -767,16 +837,16 @@ function init() {
     document.getElementById("pauseButton").addEventListener("click", pauseGame);
     document.getElementById("resetButton").addEventListener("click", resetGame);
 
-    document.getElementById("tetris-title").addEventListener("click", tryToReset);
+    document.getElementById("title").addEventListener("click", tryToReset);
 
     document.getElementById("bestAI").addEventListener("click", toggleBestAI);
 
-    document.addEventListener("longpressevent", function (event) {
-        window.addEventListener("touchStart", touchStart, false);
-        window.addEventListener("touchEnd", touchEnd, false);
-    });
-    document.addEventListener('touchcoordinates', getTouchCoordinates, false);
-    document.addEventListener('touchcontrols', mobileControl, false);
+    // document.addEventListener("longpressevent", function (event) {
+    //     window.addEventListener("touchStart", touchStart, false);
+    //     window.addEventListener("touchEnd", touchEnd, false);
+    // });
+    // document.addEventListener('touchcoordinates', getTouchCoordinates, false);
+    // document.addEventListener('touchcontrols', mobileControl, false);
     document.addEventListener("keydown", keyHandler);
 
 
