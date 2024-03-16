@@ -8,4 +8,4 @@ various medical sectors as well) to teach itself to play the game. The more it p
 The user can make the AI stop any time and continue playing the game themselves.
 
 Currently the website is deployed on: 
-https://singular-shortbread-7c56ff.netlify.app
+[https://singular-shortbread-7c56ff.netlify.app](https://matissecallewaert.github.io/ai-tetris/)https://matissecallewaert.github.io/ai-tetris/
