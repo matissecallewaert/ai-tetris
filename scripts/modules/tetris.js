@@ -93,7 +93,6 @@ export default class Tetris {
             movesIndex: 0
         };
 
-        this.fakeShape = null;
         this.ground = false;
 
         // Hold Shape begin
@@ -102,8 +101,6 @@ export default class Tetris {
         this.holding = false;
         this.speed = 700;
         this.died = false;
-        this.fakeDied = false;
-        this.fakeGrid = null;
         this.tetrisReset = false;
     }
 
@@ -125,8 +122,8 @@ export default class Tetris {
         this.holdShape = this.currentShape;
         this.currentShape = hulp;
         this.holding = true;
-        this.holdShape.x = 3;
-        this.holdShape.y = 0;
+        this.currentShape.x = this.holdShape.x;
+        this.currentShape.y = this.holdShape.y;
 
         this.applyShape();
     }
@@ -149,10 +146,6 @@ export default class Tetris {
                 y++;
             }
         }
-    }
-
-    copyCurrentShape() {
-        this.fakeShape = { ...this.currentShape.shape };
     }
 
     // updating currentshape and nextshape
@@ -181,27 +174,10 @@ export default class Tetris {
                 this.applyShape();
             }
         } else {
-            this.died = true;
+            this.generateBag();
         }
 
         this.holding = false;
-    }
-
-    AINextShape() {
-        if (this.bagindex <= 499) {
-            this.currentShape = {
-                x: 3,
-                y: 0,
-                shape: this.fakeShape,
-                linesCleared: 0
-            };
-
-            if (this.collides(this.currentShape)) {
-                this.fakeDied = true;
-            }
-
-            this.applyShape();
-        }
     }
 
     applyShape() { // place the shape at the correct place in the grid
@@ -214,7 +190,7 @@ export default class Tetris {
         }
     }
 
-    moveDown(ai) {
+    moveDown() {
         this.ground = false;
         this.removeShape(this.currentShape);
         this.currentShape.y++;
@@ -227,10 +203,8 @@ export default class Tetris {
 
             this.applyShape();
 
-            if(!ai){
-                this.updateScore();
-                this.nextShape();
-            }
+            this.updateScore();
+            this.nextShape();
         }
     }
 
@@ -260,11 +234,10 @@ export default class Tetris {
         }
     }
 
-    drop(ai) {
+    drop() {
         this.removeShape(this.currentShape);
 
-        if(!ai)
-            this.score += (20 - this.currentShape.y) * 2;
+        this.score += (20 - this.currentShape.y) * 2;
 
         while (!this.collides(this.currentShape)) {
             this.currentShape.y++;
@@ -273,10 +246,8 @@ export default class Tetris {
 
         this.applyShape();
 
-        if(!ai){
-            this.updateScore();
-            this.nextShape();
-        }
+        this.updateScore();
+        this.nextShape();
     }
 
     rotate() {
@@ -367,19 +338,6 @@ export default class Tetris {
         this.score += scoreDict[aantal];
     }
 
-    AIUpdateScore() {
-        let y;
-        this.fakeGrid = JSON.parse(JSON.stringify(this.grid));
-
-        for (y = 0; y < 20; y++) {
-            if (this.grid[y].every(item => item !== 0)) {
-                this.removeRow(y);
-
-                this.currentShape.linesCleared++;
-            }
-        }
-    }
-
     removeShape(shape) {
         for (let y = shape.y; y < shape.y + Object.values(shape.shape)[0].length; y++) {
             for (let x = shape.x; x < shape.x + Object.values(shape.shape)[0][0].length; x++) {
@@ -419,79 +377,6 @@ export default class Tetris {
 
         this.applyShape();
         return enupshape;
-    }
-
-    height() {
-        let height = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-        for (let x = 0; x < 10; x++) {
-            for (let y = 0; y < 20; y++) {
-                if (this.grid[y][x] !== 0) {
-                    height[x] = 20 - y;
-                    break;
-                }
-            }
-        }
-
-        this.data.height = height;
-    }
-
-    holes() {
-        let holes = 0;
-        let y = 19;
-
-        for (let x = 0; x < 10; x++) {
-            while (y > (20 - this.data.height[x])) {
-                if (this.grid[y][x] === 0) {
-                    holes++;
-                }
-                y--;
-            }
-        }
-        this.data.holes = holes;
-    }
-
-    blockades() {
-        let holes = false;
-        let counter = 10;
-        let blockades = 0;
-
-        for (let x = 0; x < 10; x++) {
-            let y = 19;
-
-            while (y > (20 - this.data.height[x])) {
-                if (this.grid[y][x] === 0) {
-                    holes = true;
-                }
-
-                if (holes) {
-                    if (this.grid[y - 1][x] !== 0) {
-                        blockades++;
-                    }
-                }
-
-                y--;
-                holes = false;
-            }
-        }
-
-        this.data.blockades = blockades + counter;
-    }
-
-    getLinesCleared() {
-        this.data.linesCleared = this.currentShape.linesCleared;
-    }
-
-    getMovesIndex() {
-        this.data.movesIndex = this.movesTaken;
-    }
-
-    getData() {
-        this.height();
-        this.holes();
-        this.blockades();
-        this.getLinesCleared();
-        this.getMovesIndex();
     }
 
     reset() {

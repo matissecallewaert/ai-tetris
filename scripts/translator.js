@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
         defaultLocale = "en";
     }
     setLocale(defaultLocale);
-    bindLocaleSwitcher(defaultLocale);
 });
 
 //Switch locale
@@ -45,14 +44,4 @@ function translateElement(element) {
     if (translation[0] === '"')
         translation = translation.substring(1, translation.length - 1);
     element.innerText = translation;
-}
-
-//Add functionality to the locale selector
-function bindLocaleSwitcher(initialValue) {
-    let switcher =
-        document.querySelector("[data-i18n-switcher]");
-    switcher.value = initialValue;
-    switcher.onchange = (e) => {
-        setLocale(e.target.value);
-    };
 }
