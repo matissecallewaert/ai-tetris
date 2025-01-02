@@ -1,46 +1,55 @@
+/* General styles */
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
     overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+    font-size: small;
+    background-color: #0F1123;
+    color: white;
 }
 
 p {
-    margin: 0px;
+    margin: 0;
     padding: 5px;
-}
-
-body,
-.dropdown {
-    background-color: #0F1123;
-    color: white;
 }
 
 span {
     padding: 0 2px;
 }
 
-th {
+th, tr {
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
 }
 
-tr {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+/* Game board styles */
+.game-board {
+    border: solid 2px;
 }
 
-* {
-    font-family: 'Press Start 2P', cursive;
-    font-size: small;
+/* Sound icon styles */
+#sound-speaker {
+    font-size: 30px;
 }
 
-#chromosomes {
-    color: rgb(13, 110, 253);
-    font-size: 10px;
+.sound-item {
+    cursor: pointer;
+    padding: 0 0;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #0F1123;
+}
+
+/* Right column styles */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .grid {
@@ -48,39 +57,6 @@ tr {
     grid-template-columns: 620px 500px;
 }
 
-.right-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.game-board {
-    border: solid 2px;
-}
-
-.myButton {
-    background-color: #4caf50;
-    cursor: pointer;
-}
-
-#sound-speaker {
-    font-size: 30px;
-}
-
-.sound-item {
-    cursor: pointer;
-}
-
-.navbar {
-    background-color: #0F1123;
-}
-
-.light-mode {
-    background-color: #e4e5f5;
-    color: #1a1a1a;
-}
-
-#toggleLight {
-    font-size: 30px;
-    vertical-align: middle;
+.btn {
+    height: fit-content !important;
 }

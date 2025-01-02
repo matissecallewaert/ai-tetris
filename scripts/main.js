@@ -30,26 +30,10 @@ let tetris;
 let scorebord;
 let loadedData;
 
-let piecesPerSecondArray = localStorage.getItem("piecesPerSecondArray") !== null ? JSON.parse(localStorage.getItem("piecesPerSecondArray")) : [];
 let totalGameTime = 0;
 let gameTimer;
-let playerUsedHold = false;
-let averagePPS;
-let resetClickCounter = 0;
-let resetRecentlyClicked = false;
 
 let gameOverScreen;
-
-let bestGenes = [
-    [-0.3274278876986266, -0.007075121788763072, 0.05270705704302858, -0.2183704769131798, -0.0004217920314675827, 0.04944277614656406, -0.11269676747075646],
-    [-0.3844816998888039, -0.24725242374712542, 0.28888351574170557, -0.4302544631974703, -0.15554115150324466, -0.5951115204831836, -0.20720235959084943],
-    [-0.4439956106238234, -0.11566159949412824, 0.00891266544810354, -0.07481877528546887, -0.37936237231974923, -0.43438580331879606, -0.1631567931460367],
-    [-0.21400960098347788, 0.023825587149766014, -0.04639033054744757, -0.35520437658154413, -0.22662625299064276, -0.4052965499192043, -0.11707341140536986],
-    [-0.4439956106238234, -0.11566159949412824, -0.04639033054744757, -0.35520437658154413, -0.37936237231974923, -0.43438580331879606, -0.1631567931460367],
-    [-0.2670130412144588, -0.15064933154009175, 0.19208730009343522, -0.27346689053661155, -0.22973653193346233, -0.4056078257701441, -0.18592724488486645],
-    [-0.2670130412144588, -0.15064933154009175, 0.19208730009343522, -0.27346689053661155, -0.22973653193346233, -0.4056078257701441, -0.18592724488486645],
-    [-0.21400960098347788, 0.023825587149766014, 0.19208730009343522, -0.27346689053661155, -0.22662625299064276, -0.4052965499192043, -0.11707341140536986],
-    [-0.4439956106238234, -0.11566159949412824, 0.00891266544810354, -0.07481877528546887, -0.37936237231974923, -0.43438580331879606, -0.1631567931460367]];
 
 // Start of sound effect settings
 let sound = new Sound(document.getElementById("sound-div")),
@@ -60,16 +44,6 @@ let sound = new Sound(document.getElementById("sound-div")),
 
 // Function to handle various keypresses from keyboard
 let keyHandler = (k) => {
-    if (k.key === "p") {
-        buttonSound.play();
-        startGame();
-    } else if (k.key === "h") {
-        buttonSound.play();
-        pauseGame();
-    } else if (k.key === "r") {
-        buttonSound.play();
-        resetGame();
-    }
     if (play) {
         if (k.keyCode === 40) {
             tetris.moveDown(false);
@@ -86,7 +60,6 @@ let keyHandler = (k) => {
             tetris.drop(false);
             buttonSound.play();
         } else if (k.keyCode === 16) {
-            playerUsedHold = true;
             if (tetris.holding === false) {
                 if (tetris.holdShape === undefined) {
                     tetris.setHoldShape();
@@ -167,62 +140,6 @@ function pauseGame() {
     }
 }
 
-//function to calculate pieces per second and add to storage
-function calculatePPS() {
-    let piecesPlaced;
-    clearInterval(gameTimer);
-    piecesPlaced = playerUsedHold ? tetris.movesTaken - 1 : tetris.movesTaken;
-    let pps = (piecesPlaced / totalGameTime).toFixed(2);
-    piecesPerSecondArray.push(pps);
-
-    let JSONpiecesPerSecondArray = JSON.stringify(piecesPerSecondArray);
-    localStorage.setItem("piecesPerSecondArray", JSONpiecesPerSecondArray);
-    
-    calculateAveragePPS();
-
-    piecesPlaced = playerUsedHold ? tetris.movesTaken - 1 : tetris.movesTaken;
-
-    totalGameTime = 0;
-    piecesPlaced = 0;
-}
-
-function calculateAveragePPS() {
-    let JSONallPps = localStorage.getItem("piecesPerSecondArray");
-
-    if (JSONallPps !== null) {
-        let totalPps = 0.0;
-        let allPps = JSON.parse(JSONallPps);
-
-        for (let i = 0; i < allPps.length; i++) {
-            totalPps += Number(allPps[i]);
-        }
-
-        averagePPS = (totalPps / allPps.length).toFixed(2);
-    }
-
-    localStorage.setItem("PPS", JSON.stringify(averagePPS));
-    document.getElementById("PPS").innerText = averagePPS;
-}
-
-function resetHSPPS() { //resets the highscores and pieces per second
-    console.log("resetting...");
-    localStorage.setItem("highscorePlayer", 0);
-    localStorage.setItem("PPS", 0);
-    localStorage.setItem("piecesPerSecondArray", []);
-
-    document.getElementById("PPS").innerText = JSON.parse(localStorage.getItem("PPS"));
-    document.getElementById("highscorePlayer").innerText = JSON.parse(localStorage.getItem("highscorePlayer"));
-
-}
-
-function tryToReset() { //click "tetris" 10 times (eventListener) within 3 seconds to call resetHSPPS
-    if (!resetRecentlyClicked) setTimeout(() => { resetClickCounter = 0; resetRecentlyClicked = false; }, 3000);
-    resetRecentlyClicked = true;
-    resetClickCounter++;
-    if (resetClickCounter == 10 && resetRecentlyClicked == true) resetHSPPS();
-}
-
-
 //various functions for the movement of the game for user and AI
 function move(tetris) {
     tetris.moveDown(false);
@@ -230,7 +147,7 @@ function move(tetris) {
 
 }
 
-function scoreUpdater(scoreType) {
+function scoreUpdater(scoreType, scoreElement) {
     loadedData = localStorage.getItem(scoreType);
     let data = JSON.parse(loadedData);
 
@@ -240,7 +157,7 @@ function scoreUpdater(scoreType) {
         localStorage.setItem(scoreType, gameDataJson);
     }
 
-    let docEl = document.getElementById(scoreType);
+    let docEl = document.getElementById(scoreElement);
     docEl.innerText = data;
 }
 
@@ -248,8 +165,7 @@ function scoreUpdater(scoreType) {
 function print(tetris) {
     if (tetris.died) {
         if (totalGameTime != 0) {
-            calculatePPS();
-            scoreUpdater("highscorePlayer");
+            scoreUpdater("highscorePlayer", "highscore-player");
         }
 
         index++;
@@ -339,11 +255,12 @@ function updateSpeed(tetris) {
 }
 
 // helpfunction to configure localStorage components
-function localStorageLoader(itemList) {
+function localStorageLoader(storageList, itemList) {
     for (let i = 0; i < itemList.length; i++) {
         let item = itemList[i];
+        let storageitem = storageList[i];
 
-        loadedData = localStorage.getItem(item);
+        loadedData = localStorage.getItem(storageitem);
         let docEl = document.getElementById(item);
 
         if (loadedData !== null) {
@@ -353,7 +270,7 @@ function localStorageLoader(itemList) {
             let data = 0;
             let dataJson = JSON.stringify(data);
 
-            localStorage.setItem(item, dataJson);
+            localStorage.setItem(storageitem, dataJson);
             docEl.textContent = data;
         }
     }
@@ -365,25 +282,25 @@ function init() {
 
     scorebord = document.getElementById("scoreboard");
 
-    localStorageLoader(["highscorePlayer", "PPS"])
-    gameOverScreen = document.getElementById("game_over");
+    localStorageLoader(["highscorePlayer"],["highscore-player"])
+    gameOverScreen = document.getElementById("game-over");
 
     //Initializes the main canvas
-    canvas = document.getElementById("board");
+    canvas = document.getElementById("game-board");
     ctx = canvas.getContext("2d");
     ctx.canvas.width = COLS * BLOCK_SIZE;
     ctx.canvas.height = ROWS * BLOCK_SIZE;
     ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
     //Initializes the canvas to display the upcoming tetromino
-    block_canvas = document.getElementById("upcomingShape");
+    block_canvas = document.getElementById("upcoming-shape");
     blockctx = block_canvas.getContext("2d");
     blockctx.canvas.width = 4 * BLOCK_SIZE;
     blockctx.canvas.height = 2 * BLOCK_SIZE;
     blockctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
     //Initializes the canvas to display the upcoming tetromino
-    holding_canvas = document.getElementById("holdingShape");
+    holding_canvas = document.getElementById("holding-shape");
     holdingctx = holding_canvas.getContext("2d");
     holdingctx.canvas.width = 4 * BLOCK_SIZE;
     holdingctx.canvas.height = 4 * BLOCK_SIZE;
@@ -401,11 +318,10 @@ function init() {
     gameOverScreen.setAttribute("width", (COLS * BLOCK_SIZE + 5).toString());
 
     //Sets all the button events, touch controls and keyboard controls
-    document.getElementById("startButton").addEventListener("click", startGame);
-    document.getElementById("pauseButton").addEventListener("click", pauseGame);
-    document.getElementById("resetButton").addEventListener("click", resetGame);
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("pause-button").addEventListener("click", pauseGame);
+    document.getElementById("reset-button").addEventListener("click", resetGame);
 
-    document.getElementById("title").addEventListener("click", tryToReset);
     document.addEventListener("keydown", keyHandler);
 
     // Disable default keyhandler when playing (Stops the canvas from scrolling)
