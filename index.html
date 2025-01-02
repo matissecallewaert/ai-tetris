@@ -1,185 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/3d26be0593.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="tetris.css">
-    <title>Tetris AI</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Play Tetris online for free. Enjoy a modern version of the classic Tetris game with high scores, holding pieces, and more. If you are tired of playing yourself, you can train an AI to play for you. Try it now!"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/3d26be0593.js"
+      crossorigin="anonymous"
+    ></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Game",
+        "name": "Tetris",
+        "description": "Play the classic Tetris game or train an AI to play for you.",
+        "author": {
+          "@type": "Person",
+          "name": "Matisse Callewaert"
+        },
+        "genre": "Puzzle"
+      }
+    </script>
+    <link rel="stylesheet" href="tetris.css" />
+    <title>Tetris</title>
     <script src="scripts/main.js" type="module"></script>
-    <link rel="icon" href="assets/images/favgif.gif" type="image/gif">
+    <link rel="icon" href="assets/images/favgif.gif" type="image/gif" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="scripts/lightmode.js" defer></script>
     <script src="scripts/translator.js" defer></script>
-</head>
-
-<body id="body">
+  </head>
+  <body id="body">
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <div class="navbar-nav w-100 justify-content-between nav-fill">
-                <div type="button" class="h2" onclick="toggleLight()" id="toggleLight"></div>
-                <div class="col text-center">
-                    <p data-i18n-key="title" id="title" class="h2">AI Tetris</p>
-                </div>
-                <div class="navbar-right">
-                    <select data-i18n-switcher class="locale-switcher form-select mb-3 dropdown" style="width: auto">
-                        <option value="en">English</option>
-                        <option value="nl">Nederlands</option>
-                    </select>
-                </div>
-            </div>
+      <div class="container-fluid">
+        <div class="navbar-nav w-100 justify-content-between nav-fill">
+          <div class="col text-center">
+            <p data-i18n-key="title" id="title" class="h2">Tetris</p>
+          </div>
         </div>
+      </div>
     </nav>
-    <div class="container">
-        <div class="row">
-            <!--    TETRIS WINDOW   -->
-            <div class="col justify-content-center">
-                <canvas id="grid" class="game-board position-absolute"></canvas>
-                <svg style="position:absolute;" visibility="hidden" id="game_over" width="200" height="400"
-                    viewBox="0 0 200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="200" height="400" fill="#888484" fill-opacity="0.20" />
-                    <path
-                        d="M28.6343 205.312H13.9546V202.5H11.0186V199.523H8.04135V190.591H10.8532V187.655H13.8305V184.719H28.6343V187.572H16.9732V190.508H13.9546V199.316H16.8492V202.335H22.7624V196.587H19.8678V193.568H28.6343V205.312ZM51.3695 205.312H45.5389V199.44H36.7725V205.312H30.7765V190.591H33.5884V187.655H36.5657V184.719H45.4562V187.531H48.4335V190.467H51.3695V205.312ZM45.4562 196.422V190.467H42.5203V187.655H39.5017V190.632H36.6898V196.422H45.4562ZM74.1047 205.312H68.2741V196.504H65.3795V199.399H62.4022V196.504H59.5076V205.312H53.5117V184.719H59.3422V187.531H62.3195V190.55H65.1728V187.655H68.1501V184.719H74.1047V205.312ZM97.212 205.147H76.3709V184.347H97.212V187.242H82.3668V193.155H91.2574V196.215H82.3668V202.128H97.212V205.147ZM124.865 202.335H122.053V205.312H107.249V202.5H104.272V187.655H107.084V184.719H121.929V187.531H124.865V202.335ZM118.952 202.335V187.655H110.185V202.335H118.952ZM147.6 196.422H144.788V199.399H141.852V202.335H138.875V205.312H135.898V202.5H132.92V199.523H129.985V196.587H127.007V184.719H132.838V193.403H135.815V196.463H138.668V193.568H141.646V184.719H147.6V196.422ZM170.708 205.147H149.866V184.347H170.708V187.242H155.862V193.155H164.753V196.215H155.862V202.128H170.708V205.147ZM193.071 196.422H187.24V199.316H190.135V202.294H193.071V205.312H184.304V202.5H181.368V199.44H178.474V205.312H172.478V184.719H190.135V187.531H193.071V196.422ZM187.157 193.486V187.655H178.391V196.422H184.345V193.486H187.157Z"
-                        fill="#4CAF50" />
-                </svg>
-                <canvas id="board" class="game-board"></canvas>
+    <div class="container-fluid d-flex justify-content-center mt-5">
+      <div class="row w-75 justify-content-between">
+        <!-- Commands and Buttons -->
+        <div
+          class="col-3 d-flex flex-column p-3 align-items-center justify-content-center"
+        >
+          <div class="d-flex flex-row justify-content-center">
+            <div
+              class="d-flex flex-column align-items-center justify-content-center"
+            >
+              <div data-i18n-key="instruc-rotate"></div>
+              <img src="assets/images/up-arrow.png" alt="Arrow Up" loading="lazy"/>
             </div>
-            <div class="col">
-                <div class="right-column">
-                    <p>Score: <span id="scoreboard">0</span></p>
-                    <p hidden="true" id="AIlevel">AI Level: <span id="lines">0</span></p>
-                    <p hidden="true" id="AIgene">Gene: <span id="gene">0</span></p>
-                    <p hidden="true" id="AImoves">Moves: <span id="level">0</span></p>
-                    <br>
-                    <p data-i18n-key="highscores"></p>
-                    <p>&emsp;<span data-i18n-key="you-highscore"></span><span
-                            id="highscorePlayer"></span><br>&emsp;<span data-i18n-key="AI-highscore"></span><span
-                            id="highscoreAI"></span></p>
-                    <br>
-                    <p data-i18n-key="average-pps"><span id="PPS"></span></p>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <p data-i18n-key="upcoming-shape">Upcoming shape</p>
-                            <br>
-                            <canvas id="upcomingShape"></canvas>
-                        </div>
-                        <div class="col">
-                            <p data-i18n-key="holding">Holding</p>
-                            <br>
-                            <canvas id="holdingShape"></canvas>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <p id="AIchromosomes" hidden="true">chromosomes<br><span id="chromosomes"></span></p>
-                        <br>
-                    </div>
-                </div>
+          </div>
+          <div class="d-flex flex-row justify-content-center">
+            <div
+              class="d-flex flex-column align-items-center justify-content-center"
+            >
+              <img src="assets/images/left-arrow.png" alt="Arrow Left" loading="lazy"/>
+              <div>Left</div>
             </div>
-            <div class="col">
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-play">
-
-                    </div>
-                    <div class="col">
-                        p
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-pause">
-
-                    </div>
-                    <div class="col">
-                        h
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-reset">
-
-                    </div>
-                    <div class="col">
-                        r
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-rotate">
-
-                    </div>
-                    <div class="col" data-i18n-key="instruc-rotate-key">
-
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-dropdown">
-
-                    </div>
-                    <div class="col" data-i18n-key="instruc-dropdown-key">
-
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-hold">
-
-                    </div>
-                    <div class="col">
-                        Shift
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-activateAI">
-
-                    </div>
-                    <div class="col">
-                        a
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-incrSpeed">
-
-                    </div>
-                    <div class="col">
-                        s
-                    </div>
-                </div>
-                <div class="row border-bottom">
-                    <div class="col-7" data-i18n-key="instruc-decrSpeed">
-
-                    </div>
-                    <div class="col">
-                        d
-                    </div>
-                </div>
-                <br>
-                <div class="row align-bottom">
-                    <div class="col">
-                        <button data-i18n-key="play" id="startButton" type="button"
-                            class="myButton btn btn-sm"></button>
-                        <button data-i18n-key="pause" id="pauseButton" type="button"
-                            class="myButton btn btn-sm"></button>
-                        <button data-i18n-key="reset" id="resetButton" type="button"
-                            class="myButton btn btn-sm"></button>
-                        <button data-i18n-key="bestAI" id="bestAI" type="button" hidden="true"
-                            class="myButton btn btn-sm"></button>
-                        <div class="row align-bottom">
-                            <div id="sound-div">
-                                <span class="sound-item" id="sound-speaker"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="row align-bottom">
-                    <div class="col">
-                        <!-- Chart canvas -->
-                        <canvas id="myChart" width="350" height="350"></canvas>
-                    </div>
-                </div>
+            <div
+              class="d-flex flex-column align-items-center justify-content-center"
+            >
+              <img src="assets/images/down-arrow.png" alt="Arrow Down" loading="lazy" />
+              <div>Down</div>
             </div>
+            <div
+              class="d-flex flex-column align-items-center justify-content-center"
+            >
+              <img src="assets/images/right-arrow.png" alt="Arrow Right" loading="lazy" />
+              <div>Right</div>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-center">
+            <div
+              class="d-flex flex-column align-items-center justify-content-center ms-2"
+            >
+              <img src="assets/images/space.png" alt="Space bar" loading="lazy" />
+              <div data-i18n-key="instruc-dropdown"></div>
+            </div>
+            <div
+              class="d-flex flex-column align-items-center justify-content-center ms-2"
+            >
+              <img src="assets/images/shift.png" alt="Shift" loading="lazy" />
+              <div data-i18n-key="instruc-hold"></div>
+            </div>
+          </div>
         </div>
+        <!-- Tetris Game -->
+        <div class="col-6 d-flex justify-content-center align-items-center p-3">
+          <canvas id="grid" class="game-board position-absolute"></canvas>
+          <svg
+            style="position: absolute"
+            visibility="hidden"
+            id="game-over"
+            width="200"
+            height="400"
+            viewBox="0 0 200 400"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="200" height="400" fill="#888484" fill-opacity="0.50" />
+            <path
+              d="M28.6343 205.312H13.9546V202.5H11.0186V199.523H8.04135V190.591H10.8532V187.655H13.8305V184.719H28.6343V187.572H16.9732V190.508H13.9546V199.316H16.8492V202.335H22.7624V196.587H19.8678V193.568H28.6343V205.312ZM51.3695 205.312H45.5389V199.44H36.7725V205.312H30.7765V190.591H33.5884V187.655H36.5657V184.719H45.4562V187.531H48.4335V190.467H51.3695V205.312ZM45.4562 196.422V190.467H42.5203V187.655H39.5017V190.632H36.6898V196.422H45.4562ZM74.1047 205.312H68.2741V196.504H65.3795V199.399H62.4022V196.504H59.5076V205.312H53.5117V184.719H59.3422V187.531H62.3195V190.55H65.1728V187.655H68.1501V184.719H74.1047V205.312ZM97.212 205.147H76.3709V184.347H97.212V187.242H82.3668V193.155H91.2574V196.215H82.3668V202.128H97.212V205.147ZM124.865 202.335H122.053V205.312H107.249V202.5H104.272V187.655H107.084V184.719H121.929V187.531H124.865V202.335ZM118.952 202.335V187.655H110.185V202.335H118.952ZM147.6 196.422H144.788V199.399H141.852V202.335H138.875V205.312H135.898V202.5H132.92V199.523H129.985V196.587H127.007V184.719H132.838V193.403H135.815V196.463H138.668V193.568H141.646V184.719H147.6V196.422ZM170.708 205.147H149.866V184.347H170.708V187.242H155.862V193.155H164.753V196.215H155.862V202.128H170.708V205.147ZM193.071 196.422H187.24V199.316H190.135V202.294H193.071V205.312H184.304V202.5H181.368V199.44H178.474V205.312H172.478V184.719H190.135V187.531H193.071V196.422ZM187.157 193.486V187.655H178.391V196.422H184.345V193.486H187.157Z"
+              fill="#4CAF50"
+            />
+          </svg>
+          <canvas id="game-board" class="game-board"></canvas>
+        </div>
+        <!-- Highscores and Text -->
+        <div class="col-3 d-flex flex-column align-items-start p-3">
+          <h3>Score: <span id="scoreboard">0</span></h3>
+          <p>High score: <span id="highscore-player"></span></p>
+          <div
+            class="d-flex flex-row justify-content-center align-items-center mt-4"
+          >
+            <button
+              data-i18n-key="play"
+              id="start-button"
+              type="button"
+              class="btn btn-primary btn-sm"
+            ></button>
+            <button
+              data-i18n-key="pause"
+              id="pause-button"
+              type="button"
+              class="btn btn-secondary btn-sm ms-2"
+            ></button>
+            <button
+              data-i18n-key="reset"
+              id="reset-button"
+              type="button"
+              class="btn btn-danger btn-sm ms-2"
+            ></button>
+            <div id="sound-div" class="ms-2 mb-2">
+              <span class="sound-item" id="sound-speaker"></span>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="col">
+              <p class="mb-4" data-i18n-key="upcoming-shape"></p>
+              <canvas id="upcoming-shape"></canvas>
+            </div>
+            <div class="col mt-5">
+              <p class="mb-4" data-i18n-key="holding"></p>
+              <canvas id="holding-shape"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
