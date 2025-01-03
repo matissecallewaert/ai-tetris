@@ -42,24 +42,56 @@ let sound = new Sound(document.getElementById("sound-div")),
     rotateSound = sound.create("assets/sounds/select.mp3", "rotate_sound"),
     moveSound = sound.create("assets/sounds/whoosh.mp3", "move_sound");
 
+// keys
+let arrowUp = document.getElementById("arrow-up"),
+    arrowDown = document.getElementById("arrow-down"),
+    arrowLeft = document.getElementById("arrow-left"),
+    arrowRight = document.getElementById("arrow-right"),
+    space = document.getElementById("space"),
+    shift = document.getElementById("shift");
+
 // Function to handle various keypresses from keyboard
 let keyHandler = (k) => {
     if (play) {
         if (k.keyCode === 40) {
             tetris.moveDown(false);
+            arrowDown.src = "assets/images/down-arrow-pressed.png";
+            setTimeout(() => {
+                arrowDown.src = "assets/images/down-arrow.png";
+            }, 250);
         } else if (k.keyCode === 37) {
             tetris.moveLeft();
+            arrowLeft.src = "assets/images/left-arrow-pressed.png";
+            setTimeout(() => {
+                arrowLeft.src = "assets/images/left-arrow.png";
+            }, 250);
             moveSound.play();
         } else if (k.keyCode === 39) {
             tetris.moveRight();
+            arrowRight.src = "assets/images/right-arrow-pressed.png";
+            setTimeout(() => {
+                arrowRight.src = "assets/images/right-arrow.png";
+            }, 250);
             moveSound.play();
         } else if (k.keyCode === 38) {
             tetris.rotate();
+            arrowUp.src = "assets/images/up-arrow-pressed.png";
+            setTimeout(() => {
+                arrowUp.src = "assets/images/up-arrow.png";
+            }, 250);
             rotateSound.play();
         } else if (k.key === " ") {
             tetris.drop(false);
+            space.src = "assets/images/space-pressed.png";
+            setTimeout(() => {
+                space.src = "assets/images/space.png";
+            }, 250);
             buttonSound.play();
         } else if (k.keyCode === 16) {
+            shift.src = "assets/images/shift-pressed.png";
+            setTimeout(() => {
+                shift.src = "assets/images/shift.png";
+            }, 250);
             if (tetris.holding === false) {
                 if (tetris.holdShape === undefined) {
                     tetris.setHoldShape();
