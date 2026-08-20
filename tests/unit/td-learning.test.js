@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { createSeededRng } from "../../scripts/modules/ai/seeded-rng.js";
 import { GENE_COUNT } from "../../scripts/modules/ai/genome.js";
-import { createRlStrategy, playEpisodeWithLearning, trainForRound } from "../../scripts/modules/ai/rl/td-learning.js";
+import {
+    accumulateTrace,
+    applyTracedUpdate,
+    createRlStrategy,
+    playEpisodeWithLearning,
+    trainForRound
+} from "../../scripts/modules/ai/rl/td-learning.js";
 
 function smallGenome(rng = createSeededRng(1)) {
     return { weights: Array.from({ length: GENE_COUNT }, () => (rng() * 2 - 1) * 0.05) };
@@ -105,4 +111,68 @@ test("createRlStrategy.nextGeneration gives every returned genome an independent
     const next = strategy.nextGeneration(evaluatedPopulation);
     next[0].weights[0] = 999;
     assert.notEqual(next[1].weights[0], 999);
+});
+
+test("accumulateTrace with traceDecay 0 collapses to the plain feature vector (exactly TD(0))", () => {
+    const trace = [5, 5, 5];
+    const features = [1, 2, 3];
+    assert.deepEqual(accumulateTrace(trace, features, 0.98, 0), features);
+});
+
+test("accumulateTrace decays the old trace by discountFactor * traceDecay and adds the new state", () => {
+    const trace = [1, 0];
+    const features = [0, 1];
+    const result = accumulateTrace(trace, features, 0.5, 0.5);
+    assert.ok(Math.abs(result[0] - 0.25) < 1e-12);
+    assert.ok(Math.abs(result[1] - 1) < 1e-12);
+});
+
+test("accumulateTrace keeps crediting older states, decreasingly, as moves go by", () => {
+    const features = [1, 0];
+    let trace = [0, 0];
+    trace = accumulateTrace(trace, features, 0.98, 0.9);
+    const afterOne = trace[0];
+    trace = accumulateTrace(trace, [0, 1], 0.98, 0.9);
+    const afterTwo = trace[0];
+    assert.ok(afterTwo > 0, "an older state must still carry some credit");
+    assert.ok(afterTwo < afterOne, "but strictly less than it did one move ago");
+});
+
+test("accumulateTrace does not mutate the trace it was given", () => {
+    const trace = [1, 2];
+    const before = [...trace];
+    accumulateTrace(trace, [1, 1], 0.98, 0.9);
+    assert.deepEqual(trace, before);
+});
+
+test("applyTracedUpdate moves every traced weight in proportion to its eligibility", () => {
+    const weights = [0, 0, 0];
+    const trace = [1, 0.5, 0];
+    const updated = applyTracedUpdate(weights, trace, 2, 0.1);
+    assert.ok(Math.abs(updated[0] - 0.2) < 1e-12);
+    assert.ok(Math.abs(updated[1] - 0.1) < 1e-12);
+    assert.equal(updated[2], 0);
+});
+
+test("applyTracedUpdate does not mutate the weights it was given", () => {
+    const weights = [1, 2];
+    const before = [...weights];
+    applyTracedUpdate(weights, [1, 1], 1, 0.5);
+    assert.deepEqual(weights, before);
+});
+
+test("playEpisodeWithLearning stays numerically stable with traces enabled", () => {
+    let genome = smallGenome(createSeededRng(21));
+    const rng = createSeededRng(22);
+    for (let i = 0; i < 30; i += 1) {
+        genome = playEpisodeWithLearning(genome, { traceDecay: 0.9 }, { rng, maxMoves: 100 }).genome;
+        assert.ok(genome.weights.every(Number.isFinite), `weights diverged at episode ${i}`);
+    }
+});
+
+test("traces change the learned weights relative to TD(0) on an identical seeded run", () => {
+    const genome = smallGenome(createSeededRng(31));
+    const td0 = playEpisodeWithLearning(genome, { traceDecay: 0 }, { rng: createSeededRng(32), maxMoves: 120 });
+    const tdLambda = playEpisodeWithLearning(genome, { traceDecay: 0.9 }, { rng: createSeededRng(32), maxMoves: 120 });
+    assert.notDeepEqual(tdLambda.genome.weights, td0.genome.weights);
 });

@@ -5,9 +5,15 @@ import { FEATURE_ORDER } from "../feature-schema.js";
 import { canSpawn, enumerateMoves } from "../move-search.js";
 import { DEFAULT_MAX_MOVES } from "../play-episode.js";
 
-export const DEFAULT_LEARNING_RATE = 0.01;
+export const DEFAULT_LEARNING_RATE = 0.004;
 export const DEFAULT_DISCOUNT_FACTOR = 0.98;
 export const DEFAULT_EXPLORATION_RATE = 0.1;
+
+// Eligibility-trace decay (the lambda of TD(lambda)). TD(0) - lambda 0 - can only push
+// credit back one move per update, but in Tetris the placement that kills you was often made
+// dozens of moves earlier. A trace keeps a decaying record of recently visited states so a
+// single surprise updates all of them at once, in proportion to how recently they occurred.
+export const DEFAULT_TRACE_DECAY = 0.9;
 
 // Unlike GA/CMA-ES/NEAT's wide random init (they select FOR diversity across a population),
 // TD learning fits one value function by gradient bootstrapping: starting from large random
@@ -59,6 +65,21 @@ function dotProduct(vectorA, vectorB) {
     return vectorA.reduce((sum, value, index) => sum + (value * vectorB[index]), 0);
 }
 
+/**
+ * Decay the existing eligibility trace and credit the state just visited:
+ * e <- (discountFactor * traceDecay) * e + featureVector.
+ * With traceDecay 0 this collapses to e = featureVector, i.e. plain TD(0).
+ */
+export function accumulateTrace(trace, featureVector, discountFactor, traceDecay) {
+    const decay = discountFactor * traceDecay;
+    return trace.map((value, index) => (decay * value) + featureVector[index]);
+}
+
+/** Apply one TD update along the whole trace: w <- w + learningRate * tdError * e. */
+export function applyTracedUpdate(weights, trace, tdError, learningRate) {
+    return weights.map((weight, index) => weight + (learningRate * tdError * trace[index]));
+}
+
 function pickMove(candidates, normalizedWeights, rng, explorationRate) {
     if (rng() < explorationRate) {
         return candidates[Math.floor(rng() * candidates.length)];
@@ -75,12 +96,6 @@ function pickMove(candidates, normalizedWeights, rng, explorationRate) {
     return best;
 }
 
-function applyTdUpdate(normalizedWeights, previousNormalizedFeatures, tdError, learningRate) {
-    return normalizedWeights.map(
-        (weight, index) => weight + (learningRate * tdError * previousNormalizedFeatures[index])
-    );
-}
-
 // Reward is +1 per move survived plus a lines-cleared bonus, not raw game score (see
 // FEATURE_SCALE comment). Being always-positive matters: it keeps the fitted value function
 // non-negative everywhere, so "terminal value = 0" is a real penalty relative to a healthy
@@ -91,11 +106,16 @@ function learningRewardFor(linesCleared) {
     return 1 + linesCleared;
 }
 
-function updateTowardTransition(normalizedWeights, previousFeatures, nextValue, reward, discountFactor, learningRate) {
+/**
+ * One TD(lambda) step. `learner` carries both the weights and the eligibility trace, since
+ * the trace has to survive across moves within an episode (and only within an episode).
+ */
+function learnFromTransition(learner, previousFeatures, nextValue, reward, config) {
     const previousVector = normalizedFeatureVector(previousFeatures);
-    const previousValue = dotProduct(previousVector, normalizedWeights);
-    const tdError = reward + (discountFactor * nextValue) - previousValue;
-    return applyTdUpdate(normalizedWeights, previousVector, tdError, learningRate);
+    const previousValue = dotProduct(previousVector, learner.weights);
+    const tdError = reward + (config.discountFactor * nextValue) - previousValue;
+    const trace = accumulateTrace(learner.trace, previousVector, config.discountFactor, config.traceDecay);
+    return { weights: applyTracedUpdate(learner.weights, trace, tdError, config.learningRate), trace };
 }
 
 function chooseNextMove(grid, pieceKey, normalizedWeights, rng, explorationRate) {
@@ -106,21 +126,28 @@ function chooseNextMove(grid, pieceKey, normalizedWeights, rng, explorationRate)
     return candidates.length === 0 ? null : pickMove(candidates, normalizedWeights, rng, explorationRate);
 }
 
-function applyTerminalPenalty(normalizedWeights, previousFeatures, isDeath, discountFactor, learningRate) {
+function applyTerminalPenalty(learner, previousFeatures, isDeath, config) {
     if (!previousFeatures || !isDeath) {
-        return normalizedWeights;
+        return learner;
     }
-    return updateTowardTransition(normalizedWeights, previousFeatures, 0, 0, discountFactor, learningRate);
+    return learnFromTransition(learner, previousFeatures, 0, 0, config);
 }
 
 export function playEpisodeWithLearning(
     genome,
-    { learningRate = DEFAULT_LEARNING_RATE, discountFactor = DEFAULT_DISCOUNT_FACTOR, explorationRate = DEFAULT_EXPLORATION_RATE } = {},
+    {
+        learningRate = DEFAULT_LEARNING_RATE,
+        discountFactor = DEFAULT_DISCOUNT_FACTOR,
+        explorationRate = DEFAULT_EXPLORATION_RATE,
+        traceDecay = DEFAULT_TRACE_DECAY
+    } = {},
     { rng = Math.random, maxMoves = DEFAULT_MAX_MOVES } = {}
 ) {
+    const config = { learningRate, discountFactor, traceDecay };
     const bag = createSevenBagRandomizer(rng);
     let grid = emptyGrid();
-    let normalizedWeights = toNormalizedWeights(genome.weights);
+    // The trace starts empty every episode: credit must never leak across games.
+    let learner = { weights: toNormalizedWeights(genome.weights), trace: new Array(GENE_COUNT).fill(0) };
     let score = 0;
     let linesCleared = 0;
     let movesTaken = 0;
@@ -129,16 +156,16 @@ export function playEpisodeWithLearning(
 
     while (movesTaken < maxMoves) {
         const pieceKey = bag.next();
-        const chosen = chooseNextMove(grid, pieceKey, normalizedWeights, rng, explorationRate);
+        const chosen = chooseNextMove(grid, pieceKey, learner.weights, rng, explorationRate);
         if (!chosen) {
             terminationReason = "death";
             break;
         }
 
         if (previousFeatures) {
-            const nextValue = dotProduct(normalizedFeatureVector(chosen.features), normalizedWeights);
-            normalizedWeights = updateTowardTransition(
-                normalizedWeights, previousFeatures, nextValue, learningRewardFor(chosen.linesCleared), discountFactor, learningRate
+            const nextValue = dotProduct(normalizedFeatureVector(chosen.features), learner.weights);
+            learner = learnFromTransition(
+                learner, previousFeatures, nextValue, learningRewardFor(chosen.linesCleared), config
             );
         }
 
@@ -149,11 +176,15 @@ export function playEpisodeWithLearning(
         movesTaken += 1;
     }
 
-    normalizedWeights = applyTerminalPenalty(
-        normalizedWeights, previousFeatures, terminationReason === "death", discountFactor, learningRate
-    );
+    learner = applyTerminalPenalty(learner, previousFeatures, terminationReason === "death", config);
 
-    return { score, movesTaken, linesCleared, terminationReason, genome: { weights: toRawWeights(normalizedWeights) } };
+    return {
+        score,
+        movesTaken,
+        linesCleared,
+        terminationReason,
+        genome: { weights: toRawWeights(learner.weights) }
+    };
 }
 
 export const DEFAULT_EPISODES_PER_ROUND = 20;

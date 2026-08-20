@@ -121,20 +121,61 @@
         </div>
         <div class="step-arrow">&rarr;</div>
         <div class="step-card">
+          <span class="step-symbol">&#9201;</span>
+          <span class="step-name">Remember</span>
+          <p>Keep a fading record of recent moves, so a surprise can blame them too.</p>
+        </div>
+        <div class="step-arrow">&rarr;</div>
+        <div class="step-card">
           <span class="step-symbol">&#9998;</span>
           <span class="step-name">Adjust</span>
-          <p>Nudge every weight a little toward what would have predicted correctly.</p>
+          <p>Nudge every remembered move toward what would have predicted correctly.</p>
         </div>
       </div>
 
-      <h2>Why this one struggles more</h2>
       <p>
-        Watch it train and you'll notice it plateaus far below the other three. That's not a
-        bug &mdash; it's a well-known, genuinely hard property of this exact problem: one piece
-        placed badly can cause a death dozens of moves later, and a single move's correction
-        can only look one step ahead. GA, CMA-ES, and NEAT sidestep this entirely by judging a
-        whole finished game at once. It's a real trade-off, not a fixed one: real research adds
-        machinery like eligibility traces to spread credit back over many moves.
+        That fourth step is the <strong>eligibility trace</strong>. Without it, a nasty
+        surprise only corrects the single move right before it &mdash; but the placement that
+        actually doomed you was often made much earlier. The trace keeps every recent move
+        partially "on the hook", fading with age, so one surprise corrects all of them at
+        once. On the classic random-walk benchmark it cuts prediction error by about 20%.
+      </p>
+
+      <h2>Why it still lags behind</h2>
+      <p>
+        Even with traces it plateaus well below the other three, and the reason is more
+        interesting than "needs more training". Look at the weights it actually settles on:
+      </p>
+      <table class="feature-table">
+        <tr><th>Feature</th><th>What a strong player wants</th><th>What RL actually learned</th></tr>
+        <tr>
+          <td>Holes</td>
+          <td><span class="sign-indicator"><span class="sign-track negative"></span> avoid strongly</span></td>
+          <td><span class="sign-indicator">barely cares (&asymp;&nbsp;0)</span></td>
+        </tr>
+        <tr>
+          <td>Max height</td>
+          <td><span class="sign-indicator"><span class="sign-track negative"></span> avoid</span></td>
+          <td><span class="sign-indicator"><span class="sign-track positive"></span> seeks it</span></td>
+        </tr>
+        <tr>
+          <td>Relative height</td>
+          <td><span class="sign-indicator"><span class="sign-track negative"></span> avoid</span></td>
+          <td><span class="sign-indicator"><span class="sign-track positive"></span> seeks it, strongly</span></td>
+        </tr>
+      </table>
+      <p>
+        It concluded that <em>taller and more uneven is better</em> &mdash; and by its own
+        objective, it isn't wrong. It gets rewarded for surviving, so it is trained to
+        predict how much reward is still coming, and a tall board genuinely does mean "I have
+        already survived a while". The correlation is real.
+      </p>
+      <p>
+        But a rule that <strong>predicts</strong> well is not the same as a rule that
+        <strong>plays</strong> well &mdash; and this agent picks its moves with the predictor.
+        That gap is the whole difficulty. GA, CMA-ES and NEAT never face it: they're scored
+        directly on the thing you actually care about, the final game score, so nothing ever
+        rewards them for merely correlating with survival.
       </p>
 
       <h2>All four, side by side</h2>
@@ -142,7 +183,7 @@
         <tr><th></th><th>GA / CMA-ES / NEAT</th><th>Reinforcement Learning</th></tr>
         <tr><td>Learns from</td><td>A finished game's total score</td><td>Every single move, immediately</td></tr>
         <tr><td>Needs a population?</td><td>Yes</td><td>No &mdash; one agent (a few, averaged)</td></tr>
-        <tr><td>Credit assignment</td><td>Whole-game fitness</td><td>One step of bootstrapped guessing</td></tr>
+        <tr><td>Credit assignment</td><td>Whole-game fitness</td><td>A fading trace over recent moves</td></tr>
         <tr><td>Best suited for</td><td>Judging outcomes cheaply, in bulk</td><td>Environments with fast, frequent feedback</td></tr>
       </table>
 
