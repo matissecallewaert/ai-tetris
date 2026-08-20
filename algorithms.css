@@ -1,0 +1,279 @@
+html {
+    overflow-y: auto;
+    height: auto;
+}
+
+body.algorithms-body {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100%;
+}
+
+.article-container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 4rem;
+    line-height: 1.7;
+}
+
+.article-container h1 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-title {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.article-container h2 {
+    font-size: 1rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: #FFE600;
+}
+
+.article-container p {
+    font-size: 0.75rem;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.article-container li {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.lede {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    border-left: 3px solid #FFE600;
+    padding-left: 1rem;
+}
+
+.diagram-card {
+    background-color: #171a33;
+    border: solid 1px #2c3060;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+.diagram-card svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.diagram-caption {
+    text-align: center;
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+
+.example-box {
+    background-color: #0F1123;
+    border: dashed 1px #484848;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.example-box p:last-child {
+    margin-bottom: 0;
+}
+
+.feature-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.68rem;
+    margin: 1rem 0;
+}
+
+.feature-table th, .feature-table td {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid #2c3060;
+}
+
+.feature-table th {
+    color: #FFE600;
+    font-weight: normal;
+}
+
+.algo-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.algo-card {
+    background-color: #171a33;
+    border: solid 1px #2c3060;
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: white;
+    display: block;
+    transition: border-color 0.15s ease;
+}
+
+.algo-card:hover {
+    border-color: #FFE600;
+}
+
+.algo-card h3 {
+    font-size: 0.85rem;
+    color: #FFE600;
+    margin-bottom: 0.5rem;
+}
+
+.algo-card p {
+    font-size: 0.68rem;
+    opacity: 0.85;
+    margin-bottom: 0;
+}
+
+.algo-card.coming-soon {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    font-size: 0.75rem;
+}
+
+.sign-positive {
+    color: #00FF00;
+}
+
+.sign-negative {
+    color: #FF0000;
+}
+
+.sign-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+}
+
+.sign-track {
+    position: relative;
+    width: 60px;
+    height: 6px;
+    background: #0F1123;
+    border-radius: 3px;
+}
+
+.sign-track::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    border-radius: 3px;
+}
+
+.sign-track.negative::after {
+    right: 50%;
+    background: #FF0000;
+}
+
+.sign-track.positive::after {
+    left: 50%;
+    background: #00FF00;
+}
+
+.genome-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 1rem;
+    height: 160px;
+    margin: 1.5rem 0 0.5rem;
+    padding: 0 1rem;
+}
+
+.genome-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    flex: 1;
+}
+
+.genome-bar {
+    width: 100%;
+    max-width: 60px;
+    border-radius: 4px 4px 0 0;
+}
+
+.genome-bar-label {
+    margin-top: 0.5rem;
+    font-size: 0.68rem;
+    text-align: center;
+}
+
+.genome-bar-score {
+    font-size: 0.62rem;
+    opacity: 0.75;
+}
+
+.step-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.step-card {
+    flex: 1;
+    min-width: 130px;
+    background-color: #0F1123;
+    border: 1px solid #2c3060;
+    border-radius: 8px;
+    padding: 0.85rem;
+    text-align: center;
+}
+
+.step-card .step-symbol {
+    font-size: 1.4rem;
+    color: #FFE600;
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.step-card .step-name {
+    font-weight: bold;
+    font-size: 0.7rem;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.step-card p {
+    font-size: 0.62rem;
+    margin-bottom: 0;
+    opacity: 0.85;
+}
+
+.step-arrow {
+    display: flex;
+    align-items: center;
+    color: #484848;
+    font-size: 1.2rem;
+}
+
+/* Keyboard focus must be visible on a dark theme; :focus-visible keeps it off mouse clicks. */
+:focus-visible {
+    outline: 2px solid #FFE600;
+    outline-offset: 2px;
+}

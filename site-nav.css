@@ -1,0 +1,23 @@
+.site-nav .navbar-brand {
+    font-size: 1.1rem;
+    color: white;
+}
+
+.site-nav .nav-link {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.9rem;
+}
+
+.site-nav .navbar-toggler {
+    border-color: #FFE600;
+}
+
+.site-nav .navbar-toggler-icon {
+    filter: invert(85%) sepia(60%) saturate(900%) hue-rotate(2deg);
+}
+
+@media (min-width: 768px) {
+    .site-nav .navbar-nav {
+        align-items: center;
+    }
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How NEAT evolves the shape of a small neural network to play Tetris, explained visually."
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="tetris.css" />
+    <link rel="stylesheet" href="algorithms.css" />
+    <link rel="stylesheet" href="site-nav.css" />
+    <title>NEAT — how it works</title>
+    <link rel="icon" href="assets/images/favgif.gif" type="image/gif" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" defer></script>
+  </head>
+  <body class="algorithms-body">
+    <nav class="navbar navbar-expand-md navbar-dark site-nav">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Tetris</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#siteNavLinks"
+          aria-controls="siteNavLinks"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="siteNavLinks">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Play</a></li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Train AI</a></li>
+            <li class="nav-item"><a class="nav-link" href="contest.html">My AIs &amp; Contests</a></li>
+            <li class="nav-item"><a class="nav-link active" href="algorithms.html">How it works</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="article-container">
+      <p class="back-link mt-0"><a href="algorithms.html">&larr; All algorithms</a></p>
+      <h1 class="page-title">NEAT</h1>
+      <p class="lede">
+        Instead of tuning 11 fixed weights, evolve the network's shape itself &mdash; starting
+        tiny and growing new connections and nodes only when they earn their keep.
+      </p>
+
+      <h2>Same 11 inputs, a network instead of a dot product</h2>
+      <p>
+        <a href="algorithm-genetic.html">GA</a> and <a href="algorithm-cma-es.html">CMA-ES</a> both
+        score a board as one fixed weighted sum. NEAT scores it by running the same 11 features
+        through a small evolved neural network &mdash; so it can learn combinations a straight
+        weighted sum never could.
+      </p>
+
+      <h2>Growing the network</h2>
+      <div class="diagram-card">
+        <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A minimal network with direct input to output connections, next to the same network after add-node and add-connection mutations">
+          <defs>
+            <marker id="arrow3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#FFE600" />
+            </marker>
+          </defs>
+          <style>
+            .node-circle { r: 14; fill: #0F1123; stroke: #FFE600; stroke-width: 2; }
+            .node-circle.hidden-node { stroke: #00FF00; }
+            .node-label { fill: #ffffff; font-family: sans-serif; font-size: 11px; text-anchor: middle; }
+            .wire { stroke: #b7b7c9; stroke-width: 1.5; }
+            .wire.new-wire { stroke: #00FF00; stroke-dasharray: 4 3; }
+            .caption { fill: #b7b7c9; font-family: sans-serif; font-size: 12px; text-anchor: middle; }
+            .bigflow { fill: none; stroke: #FFE600; stroke-width: 2; marker-end: url(#arrow3); }
+            .flowlabel { fill: #ffffff; font-family: sans-serif; font-size: 12px; text-anchor: middle; }
+          </style>
+
+          <!-- Left: minimal genome -->
+          <line class="wire" x1="70" y1="60" x2="220" y2="150" />
+          <line class="wire" x1="70" y1="150" x2="220" y2="150" />
+          <line class="wire" x1="70" y1="240" x2="220" y2="150" />
+          <circle class="node-circle" cx="70" cy="60" />
+          <circle class="node-circle" cx="70" cy="150" />
+          <circle class="node-circle" cx="70" cy="240" />
+          <circle class="node-circle" cx="220" cy="150" />
+          <text class="node-label" x="70" y="20">inputs (11 total)</text>
+          <text class="node-label" x="220" y="185">output</text>
+          <text class="caption" x="145" y="290">Minimal genome: every input wired</text>
+          <text class="caption" x="145" y="306">straight to the output, no hidden layer</text>
+
+          <path class="bigflow" d="M280,150 L420,150" />
+          <text class="flowlabel" x="350" y="130">structural mutation</text>
+
+          <!-- Right: mutated genome -->
+          <line class="wire" x1="480" y1="60" x2="620" y2="100" />
+          <line class="wire" x1="480" y1="150" x2="620" y2="180" />
+          <line class="wire" x1="480" y1="240" x2="620" y2="180" />
+          <line class="wire new-wire" x1="480" y1="60" x2="620" y2="180" />
+          <line class="wire new-wire" x1="620" y1="100" x2="620" y2="180" />
+          <circle class="node-circle" cx="480" cy="60" />
+          <circle class="node-circle" cx="480" cy="150" />
+          <circle class="node-circle" cx="480" cy="240" />
+          <circle class="node-circle hidden-node" cx="620" cy="100" />
+          <circle class="node-circle" cx="620" cy="180" />
+          <text class="node-label" x="620" y="70">new hidden node</text>
+          <text class="node-label" x="620" y="215">output</text>
+          <text class="caption" x="550" y="290">Add-node split one connection in two;</text>
+          <text class="caption" x="550" y="306">add-connection (dashed) wired a fresh path</text>
+        </svg>
+      </div>
+
+      <h2>The same generation, worked out</h2>
+      <p>Same four genomes, same scores &mdash; now each score comes from a network, not a dot product:</p>
+      <div class="genome-bars">
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 86px; background: #6a6a80;"></div>
+          <span class="genome-bar-label">A<br /><span class="genome-bar-score">8,400</span></span>
+        </div>
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 12px; background: #FFA500;"></div>
+          <span class="genome-bar-label">B<br /><span class="genome-bar-score">1,200</span></span>
+        </div>
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 160px; background: #00FF00;"></div>
+          <span class="genome-bar-label">C<br /><span class="genome-bar-score">15,600</span></span>
+        </div>
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 6px; background: #FF0000;"></div>
+          <span class="genome-bar-label">D<br /><span class="genome-bar-score">300</span></span>
+        </div>
+      </div>
+      <p class="diagram-caption">C's network happened to combine "holes" and "bumpiness" in a way a straight weighted sum can't.</p>
+
+      <div class="step-strip">
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#8226;</span>
+          <span class="step-name">Minimal start</span>
+          <p>Every genome begins as inputs wired straight to the output &mdash; no hidden layer yet.</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#10022;</span>
+          <span class="step-name">Mutate</span>
+          <p>Tweak weights, or occasionally add a connection or split one into a new node.</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#8962;</span>
+          <span class="step-name">Speciate</span>
+          <p>Group similar network shapes together so brand-new structures aren't judged too soon.</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#9878;</span>
+          <span class="step-name">Reproduce</span>
+          <p>Each species breeds in proportion to how well it did &mdash; protecting young ideas from being wiped out early.</p>
+        </div>
+      </div>
+      <p>"Historical markings" track which connection is which across generations, so two networks that grew differently can still be crossed over correctly.</p>
+
+      <h2>All three, side by side</h2>
+      <table class="feature-table">
+        <tr><th></th><th>Genetic Algorithm</th><th>CMA-ES</th><th>NEAT</th></tr>
+        <tr><td>A genome is</td><td>11 fixed weights</td><td>11 fixed weights</td><td>A growable network</td></tr>
+        <tr><td>Scores a board via</td><td>Weighted sum</td><td>Weighted sum</td><td>Network forward pass</td></tr>
+        <tr><td>Structure</td><td>Fixed</td><td>Fixed</td><td>Evolves (nodes + connections)</td></tr>
+        <tr><td>Best suited for</td><td>Rugged search spaces</td><td>Smooth, continuous weights</td><td>Problems a straight line can't fit</td></tr>
+      </table>
+
+      <p class="back-link"><a href="dashboard.html">Train it yourself &rarr;</a></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="How the genetic algorithm evolves Tetris-playing strategies, explained visually with a schematic and a worked example."
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="tetris.css" />
+    <link rel="stylesheet" href="algorithms.css" />
+    <link rel="stylesheet" href="site-nav.css" />
+    <title>Genetic Algorithm — how it works</title>
+    <link rel="icon" href="assets/images/favgif.gif" type="image/gif" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" defer></script>
+  </head>
+  <body class="algorithms-body">
+    <nav class="navbar navbar-expand-md navbar-dark site-nav">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Tetris</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#siteNavLinks"
+          aria-controls="siteNavLinks"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="siteNavLinks">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Play</a></li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Train AI</a></li>
+            <li class="nav-item"><a class="nav-link" href="contest.html">My AIs &amp; Contests</a></li>
+            <li class="nav-item"><a class="nav-link active" href="algorithms.html">How it works</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="article-container">
+      <p class="back-link mt-0"><a href="algorithms.html">&larr; All algorithms</a></p>
+      <h1 class="page-title">Genetic Algorithm</h1>
+      <p class="lede">
+        Keep a population of guesses, let the best ones breed, repeat &mdash; survival of the fittest.
+      </p>
+
+      <h2>The loop</h2>
+      <div class="diagram-card">
+        <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Genetic algorithm loop: population, evaluate, breed, repeat">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#FFE600" />
+            </marker>
+          </defs>
+          <style>
+            .box { fill: #0F1123; stroke: #FFE600; stroke-width: 2; }
+            .label { fill: #ffffff; font-family: sans-serif; font-size: 15px; text-anchor: middle; }
+            .sublabel { fill: #b7b7c9; font-family: sans-serif; font-size: 12px; text-anchor: middle; }
+            .flow { fill: none; stroke: #FFE600; stroke-width: 2; marker-end: url(#arrow); }
+          </style>
+          <rect class="box" x="30" y="40" width="240" height="100" rx="8" />
+          <text class="label" x="150" y="80">Population</text>
+          <text class="sublabel" x="150" y="102">N genomes,</text>
+          <text class="sublabel" x="150" y="118">each 11 weights</text>
+          <rect class="box" x="330" y="40" width="240" height="100" rx="8" />
+          <text class="label" x="450" y="80">Evaluate</text>
+          <text class="sublabel" x="450" y="102">each genome plays a</text>
+          <text class="sublabel" x="450" y="118">full game &rarr; fitness</text>
+          <rect class="box" x="630" y="40" width="240" height="100" rx="8" />
+          <text class="label" x="750" y="72">Breed next</text>
+          <text class="label" x="750" y="92">generation</text>
+          <text class="sublabel" x="750" y="114">elitism + selection +</text>
+          <text class="sublabel" x="750" y="130">crossover + mutation</text>
+          <path class="flow" d="M270,90 L330,90" />
+          <path class="flow" d="M570,90 L630,90" />
+          <path class="flow" d="M750,140 C 750,230 150,230 150,140" />
+          <text class="sublabel" x="450" y="250">next generation</text>
+        </svg>
+      </div>
+
+      <h2>The genome</h2>
+      <p>11 weights, one per board feature. The bot drops each piece wherever the weighted sum scores highest.</p>
+      <table class="feature-table">
+        <tr><th>Feature</th><th>Learned direction</th></tr>
+        <tr>
+          <td>Holes</td>
+          <td><span class="sign-indicator"><span class="sign-track negative" aria-hidden="true"></span> avoid</span></td>
+        </tr>
+        <tr>
+          <td>Aggregate height</td>
+          <td><span class="sign-indicator"><span class="sign-track negative" aria-hidden="true"></span> avoid</span></td>
+        </tr>
+        <tr>
+          <td>Row / column transitions</td>
+          <td><span class="sign-indicator"><span class="sign-track negative" aria-hidden="true"></span> avoid</span></td>
+        </tr>
+        <tr>
+          <td>Lines cleared</td>
+          <td><span class="sign-indicator"><span class="sign-track positive" aria-hidden="true"></span> seek</span></td>
+        </tr>
+        <tr>
+          <td>Eroded cells</td>
+          <td><span class="sign-indicator"><span class="sign-track positive" aria-hidden="true"></span> seek</span></td>
+        </tr>
+      </table>
+      <p><a href="dashboard.html">See all 11 live on the dashboard &rarr;</a></p>
+
+      <h2>One generation, worked out</h2>
+      <p>Four genomes play a game. Taller bar = higher score:</p>
+      <div class="genome-bars">
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 86px; background: #6a6a80;"></div>
+          <span class="genome-bar-label">A<br /><span class="genome-bar-score">8,400</span></span>
+        </div>
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 12px; background: #FFA500;"></div>
+          <span class="genome-bar-label">B<br /><span class="genome-bar-score">1,200</span></span>
+        </div>
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 160px; background: #00FF00;"></div>
+          <span class="genome-bar-label">C<br /><span class="genome-bar-score">15,600</span></span>
+        </div>
+        <div class="genome-bar-wrap">
+          <div class="genome-bar" style="height: 6px; background: #FF0000;"></div>
+          <span class="genome-bar-label">D<br /><span class="genome-bar-score">300</span></span>
+        </div>
+      </div>
+      <p class="diagram-caption">C avoided holes and cleared lines. D actively liked holes and died almost instantly.</p>
+
+      <div class="step-strip">
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#9819;</span>
+          <span class="step-name">Elitism</span>
+          <p>C is copied through unchanged. The best result can never be lost.</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#9878;</span>
+          <span class="step-name">Selection</span>
+          <p>Random mini-tournaments. Fitter genomes win more often, but never guaranteed.</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#10530;</span>
+          <span class="step-name">Crossover</span>
+          <p>Pair A + C: each weight taken from a random parent.</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card">
+          <span class="step-symbol" aria-hidden="true">&#9861;</span>
+          <span class="step-name">Mutation</span>
+          <p>Small chance one weight drifts randomly &mdash; the only source of new values.</p>
+        </div>
+      </div>
+      <p>Repeat for hundreds of generations and the weights drift toward whatever wins &mdash; nobody told it holes are bad.</p>
+
+      <h2>On the real dashboard</h2>
+      <p>
+        Watch "Best genes" while training: within a few generations, holes and height
+        weights slam to their limit because anything less dies before it can reproduce.
+      </p>
+
+      <p class="back-link"><a href="dashboard.html">Train it yourself &rarr;</a></p>
+    </div>
+  </body>
+</html>
