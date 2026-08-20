@@ -1,0 +1,123 @@
+html {
+    overflow-y: auto;
+    height: auto;
+}
+
+body#dashboard-body {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100%;
+}
+
+.dashboard-container {
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-card {
+    background-color: #171a33;
+    border: solid 1px #2c3060;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-card h3 {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 0.5rem;
+    column-gap: 1rem;
+    font-size: 0.7rem;
+}
+
+.dashboard-stats dt {
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+.dashboard-stats dd {
+    margin: 0;
+    text-align: right;
+}
+
+.dashboard-status {
+    font-size: 0.65rem;
+    opacity: 0.85;
+    min-height: 1.5em;
+}
+
+.gene-positive {
+    color: #00FF00;
+}
+
+.gene-negative {
+    color: #FF0000;
+}
+
+.replay-board {
+    width: 100%;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.form-label {
+    font-size: 0.7rem;
+}
+
+.algo-chip.active {
+    background-color: #FFE600;
+    color: #0F1123;
+    border-color: #FFE600;
+}
+
+.roster-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #2c3060;
+    font-size: 0.68rem;
+}
+
+.roster-item:last-child {
+    border-bottom: none;
+}
+
+.roster-item-name {
+    font-weight: bold;
+    min-width: 120px;
+}
+
+.roster-item-meta {
+    opacity: 0.75;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.68rem;
+}
+
+.results-table th, .results-table td {
+    text-align: left;
+    padding: 0.4rem;
+    border-bottom: 1px solid #2c3060;
+}
+
+.results-table th {
+    color: #FFE600;
+    font-weight: normal;
+}
