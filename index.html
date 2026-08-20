@@ -35,19 +35,35 @@
       }
     </script>
     <link rel="stylesheet" href="tetris.css" />
+    <link rel="stylesheet" href="site-nav.css" />
     <title>Tetris</title>
     <script src="scripts/main.js" type="module"></script>
     <link rel="icon" href="assets/images/favgif.gif" type="image/gif" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts/translator.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" defer></script>
   </head>
   <body id="body">
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-md navbar-dark site-nav">
       <div class="container-fluid">
-        <div class="navbar-nav w-100 justify-content-between nav-fill">
-          <div class="col text-center">
-            <p data-i18n-key="title" id="title" class="h2">Tetris</p>
-          </div>
+        <a class="navbar-brand" href="index.html" data-i18n-key="title">Tetris</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#siteNavLinks"
+          aria-controls="siteNavLinks"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="siteNavLinks">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Play</a></li>
+            <li class="nav-item"><a class="nav-link" href="dashboard.html">Train AI</a></li>
+            <li class="nav-item"><a class="nav-link" href="contest.html">My AIs &amp; Contests</a></li>
+            <li class="nav-item"><a class="nav-link" href="algorithms.html">How it works</a></li>
+          </ul>
         </div>
       </div>
     </nav>

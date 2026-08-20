@@ -1,69 +1,155 @@
-export default class Tetris {
-    constructor() {
-        this.grid = Array.from({ length: 20 }, () => Array(10).fill(0));
-        
-        this.shapes = {
-            "L": [
-                [0, 0, 1],
-                [1, 1, 1]
-            ],
-            "J": [
-                [2, 0, 0],
-                [2, 2, 2]
-            ],
-            "I": [
-                [3, 3, 3, 3]
-            ],
-            "O": [
-                [4, 4],
-                [4, 4]
-            ],
-            "S": [
-                [0, 5, 5],
-                [5, 5, 0]
-            ],
-            "T": [
-                [0, 6, 0],
-                [6, 6, 6]
-            ],
-            "Z": [
-                [7, 7, 0],
-                [0, 7, 7]
-            ]
+import {
+    COLORS,
+    COLS,
+    DROP_SCORE_MULTIPLIER,
+    LINE_CLEAR_SCORE,
+    ROTATION_ROLLBACK_TURNS,
+    ROWS,
+    SCORE_TABLE,
+    SHAPES,
+    SPAWN_X,
+    START_SPEED
+} from "./constants.js";
+function cloneMatrix(matrix) {
+    return matrix.map((row) => [...row]);
+}
+function getMatrix(shape) {
+    return Array.isArray(shape) ? shape : Object.values(shape)[0];
+}
+function getPieceKey(shape) {
+    return Array.isArray(shape) ? undefined : Object.keys(shape)[0];
+}
+function clonePiece(pieceKey) {
+    return { [pieceKey]: cloneMatrix(SHAPES[pieceKey]) };
+}
+function createShapeState(pieceKey) {
+    return {
+        x: SPAWN_X,
+        y: 0,
+        shape: clonePiece(pieceKey),
+        linesCleared: 0,
+        lost: false
+    };
+}
+function shuffledPieceKeys(rng) {
+    const keys = Object.keys(SHAPES);
+    for (let index = keys.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(rng() * (index + 1));
+        [keys[index], keys[swapIndex]] = [keys[swapIndex], keys[index]];
+    }
+    return keys;
+}
+export function createSevenBagRandomizer(rng = Math.random) {
+    let bag = [];
+    let index = 0;
+    function ensureBag() {
+        if (index >= bag.length) {
+            bag = shuffledPieceKeys(rng);
+            index = 0;
         }
-
-        this.colors = ["#FFFFFF", "#FF0000", "#00FF00", "#0000FF", "#FFA500", "#FFE600", "#FF007F", "#6A0DAD"];
+    }
+    return {
+        next() {
+            ensureBag();
+            const pieceKey = bag[index];
+            index += 1;
+            return pieceKey;
+        },
+        peek() {
+            ensureBag();
+            return bag[index];
+        }
+    };
+}
+export default class Tetris {
+    static cloneGrid(grid) {
+        return grid.map((row) => [...row]);
+    }
+    static collides(grid, shapeState) {
+        const matrix = getMatrix(shapeState.shape);
+        const width = matrix[0].length;
+        const height = matrix.length;
+        if (
+            shapeState.x < 0 ||
+            shapeState.x + width > grid[0].length ||
+            shapeState.y < 0 ||
+            shapeState.y + height > grid.length
+        ) {
+            return true;
+        }
+        for (let y = 0; y < height; y += 1) {
+            for (let x = 0; x < width; x += 1) {
+                if (
+                    matrix[y][x] !== 0 &&
+                    grid[shapeState.y + y][shapeState.x + x] !== 0
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    static placeShape(grid, shapeState) {
+        const placedGrid = Tetris.cloneGrid(grid);
+        const matrix = getMatrix(shapeState.shape);
+        for (let y = 0; y < matrix.length; y += 1) {
+            for (let x = 0; x < matrix[y].length; x += 1) {
+                if (matrix[y][x] !== 0) {
+                    placedGrid[shapeState.y + y][shapeState.x + x] = matrix[y][x];
+                }
+            }
+        }
+        return placedGrid;
+    }
+    static clearFullRows(grid) {
+        const remainingRows = grid
+            .filter((row) => row.some((cell) => cell === 0))
+            .map((row) => [...row]);
+        const linesCleared = grid.length - remainingRows.length;
+        const width = grid[0]?.length ?? COLS;
+        const emptyRows = Array.from(
+            { length: linesCleared },
+            () => Array(width).fill(0)
+        );
+        return { grid: [...emptyRows, ...remainingRows], linesCleared };
+    }
+    static rotateMatrix(matrix) {
+        return matrix[0].map((_, x) => (
+            matrix.map((row) => row[x]).reverse()
+        ));
+    }
+    static getOrientations(pieceKey) {
+        if (!SHAPES[pieceKey]) {
+            throw new RangeError(`Unknown piece: ${pieceKey}`);
+        }
+        const orientations = [];
+        let orientation = cloneMatrix(SHAPES[pieceKey]);
+        while (!orientations.some((item) => (
+            JSON.stringify(item) === JSON.stringify(orientation)
+        ))) {
+            orientations.push(cloneMatrix(orientation));
+            orientation = Tetris.rotateMatrix(orientation);
+        }
+        return orientations.map(cloneMatrix);
+    }
+    constructor(rng = Math.random) {
+        this.rng = rng;
+        this.grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+        this.shapes = Object.fromEntries(
+            Object.entries(SHAPES).map(([key, matrix]) => [key, cloneMatrix(matrix)])
+        );
+        this.colors = [...COLORS];
         this.bag = [];
+        this.bagindex = 0;
+        this.nextBag = undefined;
         this.generateBag();
         this.score = 0;
-
-        this.currentShape = {
-            x: 3,
-            y: 0,
-            shape: this.bag[0],
-            linesCleared: 0,
-            lost: false
-        };
-
-        this.upcomingShape = {
-            x: 3,
-            y: 0,
-            shape: this.bag[1],
-            linesCleared: 0,
-            lost: false
-        };
-
-        this.oldShape = {
-            x: 3,
-            y: 0,
-            shape: this.bag[0],
-            linesCleared: 0,
-            lost: false
-        };
-
+        const currentKey = this.consumePieceKey();
+        this.currentShape = createShapeState(currentKey);
+        this.upcomingShape = createShapeState(this.previewPieceKey());
+        this.oldShape = createShapeState(currentKey);
         this.aiActivated = false;
         this.movesTaken = 0;
-
         this.data = {
             height: [],
             holes: 0,
@@ -71,320 +157,228 @@ export default class Tetris {
             linesCleared: 0,
             movesIndex: 0
         };
-
         this.ground = false;
-
-        // Hold Shape begin
         this.holdShape = undefined;
-        this.bagindex = 1;
         this.holding = false;
-        this.speed = 700;
+        this.speed = START_SPEED;
         this.died = false;
         this.tetrisReset = false;
     }
-
+    generateBag() {
+        this.bag = shuffledPieceKeys(this.rng).map(clonePiece);
+        this.bagindex = 0;
+        this.nextBag = undefined;
+        return this.bag;
+    }
+    ensureNextBag() {
+        if (!this.nextBag) {
+            this.nextBag = shuffledPieceKeys(this.rng).map(clonePiece);
+        }
+        return this.nextBag;
+    }
+    consumePieceKey() {
+        if (this.bagindex >= this.bag.length) {
+            this.bag = this.ensureNextBag();
+            this.nextBag = undefined;
+            this.bagindex = 0;
+        }
+        const pieceKey = getPieceKey(this.bag[this.bagindex]);
+        this.bagindex += 1;
+        return pieceKey;
+    }
+    previewPieceKey() {
+        const piece = this.bagindex < this.bag.length
+            ? this.bag[this.bagindex]
+            : this.ensureNextBag()[0];
+        return getPieceKey(piece);
+    }
+    nextShape() {
+        this.currentShape = createShapeState(this.consumePieceKey());
+        this.upcomingShape = createShapeState(this.previewPieceKey());
+        this.movesTaken += 1;
+        if (this.collides(this.currentShape)) {
+            this.died = true;
+        } else {
+            this.applyShape();
+        }
+        this.holding = false;
+    }
     setHoldShape() {
+        if (this.holding) {
+            return;
+        }
         this.removeShape(this.currentShape);
-
         this.holdShape = this.currentShape;
-        this.holdShape.x = 3;
+        this.holdShape.x = SPAWN_X;
         this.holdShape.y = 0;
-
         this.nextShape();
         this.holding = true;
     }
-
     useHoldShape() {
+        if (this.holding || !this.holdShape) {
+            return;
+        }
         this.removeShape(this.currentShape);
-
-        let hulp = this.holdShape;
+        const heldShape = this.holdShape;
         this.holdShape = this.currentShape;
-        this.currentShape = hulp;
+        this.currentShape = heldShape;
         this.holding = true;
         this.currentShape.x = this.holdShape.x;
         this.currentShape.y = this.holdShape.y;
-
-        this.currentShape.x = Math.max(0, Math.min(this.currentShape.x, 10 - Object.values(this.currentShape.shape)[0][0].length));
-        this.currentShape.y = Math.max(0, Math.min(this.currentShape.y, 20 - Object.values(this.currentShape.shape)[0].length));
-
+        const matrix = getMatrix(this.currentShape.shape);
+        this.currentShape.x = Math.max(
+            0,
+            Math.min(this.currentShape.x, COLS - matrix[0].length)
+        );
+        this.currentShape.y = Math.max(
+            0,
+            Math.min(this.currentShape.y, ROWS - matrix.length)
+        );
         this.applyShape();
     }
-
-    //generates a set of shapes with a maximum of 500 shapes
-    generateBag() {
-        let random;
-        let y = 0;
-
-        for (let i = 0; i < 500; i++) {
-            random = Math.floor(Math.random() * 7);
-
-            y = 0;
-            for (const [key, value] of Object.entries(this.shapes)) {
-                if (y === random) {
-                    this.bag.push({
-                        [key]: value
-                    });
-                }
-                y++;
-            }
-        }
-    }
-
-    // updating currentshape and nextshape
-    nextShape() {
-        if (this.bagindex <= 499) {
-            this.currentShape = {
-                x: 3,
-                y: 0,
-                shape: this.bag[this.bagindex],
-                linesCleared: 0
-            };
-
-            this.upcomingShape = {
-                x: 3,
-                y: 0,
-                shape: this.bag[this.bagindex + 1],
-                linesCleared: 0
-            };
-
-            this.bagindex++;
-            this.movesTaken++;
-
-            if (this.collides(this.currentShape)) {
-                this.died = true;
-            } else {
-                this.applyShape();
-            }
-        } else {
-            this.generateBag();
-        }
-
-        this.holding = false;
-    }
-
-    applyShape() { // place the shape at the correct place in the grid
-        for (let y = this.currentShape.y; y < this.currentShape.y + Object.values(this.currentShape.shape)[0].length; y++) {
-            for (let x = this.currentShape.x; x < this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length; x++) {
-                if (Object.values(this.currentShape.shape)[0][y - this.currentShape.y][x - this.currentShape.x] !== 0) {
-                    this.grid[y][x] = Object.values(this.currentShape.shape)[0][y - this.currentShape.y][x - this.currentShape.x];
+    applyShape() {
+        const matrix = getMatrix(this.currentShape.shape);
+        for (let y = 0; y < matrix.length; y += 1) {
+            for (let x = 0; x < matrix[y].length; x += 1) {
+                if (matrix[y][x] !== 0) {
+                    this.grid[this.currentShape.y + y][this.currentShape.x + x]
+                        = matrix[y][x];
                 }
             }
         }
     }
-
     moveDown() {
         this.ground = false;
         this.removeShape(this.currentShape);
-        this.currentShape.y++;
-
+        this.currentShape.y += 1;
         if (!this.collides(this.currentShape)) {
             this.applyShape();
-        } else {
-            this.ground = true;
-            this.currentShape.y--;
-
-            this.applyShape();
-
-            this.updateScore();
-            this.nextShape();
+            return;
         }
-    }
-
-    moveLeft() {
-        this.removeShape(this.currentShape);
-        this.currentShape.x--;
-
-        if (!this.collides(this.currentShape)) {
-            this.applyShape();
-        } else {
-            this.currentShape.x++;
-
-            this.applyShape();
-        }
-    }
-
-    moveRight() {
-        this.removeShape(this.currentShape);
-        this.currentShape.x++;
-
-        if (!this.collides(this.currentShape)) {
-            this.applyShape();
-        } else {
-            this.currentShape.x--;
-
-            this.applyShape();
-        }
-    }
-
-    drop() {
-        this.removeShape(this.currentShape);
-
-        this.score += (20 - this.currentShape.y) * 2;
-
-        while (!this.collides(this.currentShape)) {
-            this.currentShape.y++;
-        }
-        this.currentShape.y--;
-
+        this.ground = true;
+        this.currentShape.y -= 1;
         this.applyShape();
-
         this.updateScore();
         this.nextShape();
     }
-
-    rotate() {
+    moveLeft() {
+        this.moveHorizontally(-1);
+    }
+    moveRight() {
+        this.moveHorizontally(1);
+    }
+    moveHorizontally(offset) {
         this.removeShape(this.currentShape);
-        this.transpose();
-
-        for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
-            this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
+        this.currentShape.x += offset;
+        if (this.collides(this.currentShape)) {
+            this.currentShape.x -= offset;
         }
-
-        if (this.collides(this.currentShape) && !this.touchesRightWall()) {
-            for (let i = 0; i < 3; i++) {
-                this.transpose();
-                for (let y = 0; y < Object.values(this.currentShape.shape)[0].length; y++) {
-                    this.currentShape.shape[Object.keys(this.currentShape.shape)[0]][y].reverse();
-                }
-            }
-        }
-
-        if (this.touchesRightWall()) {
-            while (this.touchesRightWall()) {
-                this.currentShape.x--;
-            }
-        }
-
         this.applyShape();
     }
-
+    drop() {
+        this.removeShape(this.currentShape);
+        this.score += (
+            ROWS - this.currentShape.y
+        ) * DROP_SCORE_MULTIPLIER;
+        while (!this.collides(this.currentShape)) {
+            this.currentShape.y += 1;
+        }
+        this.currentShape.y -= 1;
+        this.applyShape();
+        this.updateScore();
+        this.nextShape();
+    }
+    rotate() {
+        this.removeShape(this.currentShape);
+        const pieceKey = getPieceKey(this.currentShape.shape);
+        let matrix = Tetris.rotateMatrix(getMatrix(this.currentShape.shape));
+        this.currentShape.shape = { [pieceKey]: matrix };
+        if (this.collides(this.currentShape) && !this.touchesRightWall()) {
+            for (let turn = 0; turn < ROTATION_ROLLBACK_TURNS; turn += 1) {
+                matrix = Tetris.rotateMatrix(matrix);
+            }
+            this.currentShape.shape = { [pieceKey]: matrix };
+        }
+        while (this.touchesRightWall()) {
+            this.currentShape.x -= 1;
+        }
+        this.applyShape();
+    }
     touchesRightWall() {
-        return this.currentShape.x + Object.values(this.currentShape.shape)[0][0].length > this.grid[0].length;
+        return (
+            this.currentShape.x + getMatrix(this.currentShape.shape)[0].length
+            > this.grid[0].length
+        );
     }
-
     removeRow(y) {
-        this.grid[y] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-        let it = y;
-        it--;
-        while (this.grid[it] !== null && this.grid[it] !== undefined && JSON.stringify(this.grid[it]) !== JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])) {
-            for (let x = 0; x < 10; x++) {
-                this.grid[it + 1][x] = this.grid[it][x];
-                this.grid[it][x] = 0;
+        this.grid[y] = Array(COLS).fill(0);
+        let rowIndex = y - 1;
+        while (this.grid[rowIndex]?.some((cell) => cell !== 0)) {
+            for (let x = 0; x < COLS; x += 1) {
+                this.grid[rowIndex + 1][x] = this.grid[rowIndex][x];
+                this.grid[rowIndex][x] = 0;
             }
-            it--;
+            rowIndex -= 1;
         }
     }
-
     collides(shape) {
-        let overlap = false;
-
-        for (let y = 0; y < Object.values(shape.shape)[0].length; y++) {
-            for (let x = 0; x < Object.values(shape.shape)[0][0].length; x++) {
-                if (shape.x < 0 || shape.x + Object.values(shape.shape)[0][0].length > 10 || shape.y + Object.values(shape.shape)[0].length > 20) {
-                    overlap = true;
-                    break;
-                }
-
-                if (this.grid[y + shape.y][x + shape.x] !== 0 && Object.values(shape.shape)[0][y][x] !== 0) {
-                    overlap = true;
-                    break;
-                }
-            }
-
-            if (overlap) {
-                break;
-            }
-        }
-
-        return overlap;
+        return Tetris.collides(this.grid, shape);
     }
-
     updateScore() {
-        let aantal = 0;
-        let y;
-        let scoreDict = { 0: 0, 1: 0, 2: 100, 3: 600, 4: 3100 };
-
-        for (y = 0; y < 20; y++) {
-            if (this.grid[y].every(item => item !== 0)) {
-
-                aantal++;
-
+        let linesCleared = 0;
+        for (let y = 0; y < ROWS; y += 1) {
+            if (this.grid[y].every((item) => item !== 0)) {
+                linesCleared += 1;
                 this.removeRow(y);
-                this.currentShape.linesCleared++;
-
-                this.score += 100;
+                this.currentShape.linesCleared += 1;
+                this.score += LINE_CLEAR_SCORE;
             }
         }
-
-        this.score += scoreDict[aantal];
+        this.score += SCORE_TABLE[linesCleared];
     }
-
     removeShape(shape) {
-        for (let y = shape.y; y < shape.y + Object.values(shape.shape)[0].length; y++) {
-            for (let x = shape.x; x < shape.x + Object.values(shape.shape)[0][0].length; x++) {
-                if (Object.values(shape.shape)[0][y - shape.y][x - shape.x] !== 0) {
-                    this.grid[y][x] = 0;
+        const matrix = getMatrix(shape.shape);
+        for (let y = 0; y < matrix.length; y += 1) {
+            for (let x = 0; x < matrix[y].length; x += 1) {
+                if (matrix[y][x] !== 0) {
+                    this.grid[shape.y + y][shape.x + x] = 0;
                 }
             }
         }
     }
-
     transpose() {
-        let nieuw = [];
-
-        for (let i = 0; i < Object.values(this.currentShape.shape)[0][0].length; i++) {
-            nieuw.push([])
-
-            for (let j = 0; j < Object.values(this.currentShape.shape)[0].length; j++) {
-                nieuw[i].push(Object.values(this.currentShape.shape)[0][j][i]);
-            }
-        }
-
-        this.currentShape.shape[Object.keys(this.currentShape.shape)[0]] = nieuw;
+        const pieceKey = getPieceKey(this.currentShape.shape);
+        const matrix = getMatrix(this.currentShape.shape);
+        const transposed = matrix[0].map((_, x) => (
+            matrix.map((row) => row[x])
+        ));
+        this.currentShape.shape = { [pieceKey]: transposed };
     }
-
     endUp() {
         this.removeShape(this.currentShape);
-
-        let enupshape = {
+        const endShape = {
             x: this.currentShape.x,
             y: this.currentShape.y,
             shape: this.currentShape.shape
+        };
+        while (!this.collides(endShape)) {
+            endShape.y += 1;
         }
-
-        while (!this.collides(enupshape)) {
-            enupshape.y++;
-        }
-
         this.applyShape();
-        return enupshape;
+        return endShape;
     }
-
     reset() {
-        this.grid = Array.from({ length: 20 }, () => Array(10).fill(0));
-
-        this.bag = [];
+        this.grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
         this.generateBag();
         this.score = 0;
-
-        this.currentShape = {
-            x: 3,
-            y: 0,
-            shape: this.bag[0]
-        };
-
-        this.upcomingShape = {
-            x: 3,
-            y: 0,
-            shape: this.bag[1]
-        };
-
+        const currentKey = this.consumePieceKey();
+        this.currentShape = createShapeState(currentKey);
+        this.upcomingShape = createShapeState(this.previewPieceKey());
+        this.oldShape = createShapeState(currentKey);
         this.holdShape = undefined;
         this.applyShape();
-        this.bagindex = 1;
         this.movesTaken = 0;
-        this.speed = 700;
+        this.speed = START_SPEED;
         this.died = false;
         this.holding = false;
         this.ground = false;
