@@ -92,6 +92,8 @@ function renderRoster() {
         checkbox.className = "form-check-input";
         checkbox.dataset.entryId = entry.id;
         checkbox.checked = true;
+        checkbox.id = `roster-select-${entry.id}`;
+        checkbox.setAttribute("aria-label", `Include ${entry.name} in the contest`);
 
         const name = document.createElement("span");
         name.className = "roster-item-name";
@@ -105,18 +107,21 @@ function renderRoster() {
         watchButton.type = "button";
         watchButton.className = "btn btn-outline-light btn-sm";
         watchButton.textContent = "Watch";
+        watchButton.setAttribute("aria-label", `Watch ${entry.name} play`);
         watchButton.addEventListener("click", () => watchGenome(entry.genome, entry.name));
 
         const downloadEntryButton = document.createElement("button");
         downloadEntryButton.type = "button";
         downloadEntryButton.className = "btn btn-outline-light btn-sm";
         downloadEntryButton.textContent = "Download";
+        downloadEntryButton.setAttribute("aria-label", `Download ${entry.name} as JSON`);
         downloadEntryButton.addEventListener("click", () => downloadEntry(entry));
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
         deleteButton.className = "btn btn-outline-danger btn-sm";
         deleteButton.textContent = "Delete";
+        deleteButton.setAttribute("aria-label", `Delete ${entry.name}`);
         deleteButton.addEventListener("click", () => deleteEntry(entry.id));
 
         row.append(checkbox, name, meta, watchButton, downloadEntryButton, deleteButton);

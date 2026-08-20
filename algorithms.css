@@ -271,3 +271,9 @@ body.algorithms-body {
     color: #484848;
     font-size: 1.2rem;
 }
+
+/* Keyboard focus must be visible on a dark theme; :focus-visible keeps it off mouse clicks. */
+:focus-visible {
+    outline: 2px solid #FFE600;
+    outline-offset: 2px;
+}

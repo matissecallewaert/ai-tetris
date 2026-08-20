@@ -66,8 +66,9 @@
 
           <div class="dashboard-card">
             <h3>Watch a replay</h3>
-            <canvas id="contest-replay-board" class="game-board replay-board"></canvas>
-            <p id="contest-replay-status" class="dashboard-status mt-2"></p>
+            <canvas id="contest-replay-board" class="game-board replay-board" role="img"
+              aria-label="Replay of the selected saved AI playing Tetris"></canvas>
+            <p id="contest-replay-status" class="dashboard-status mt-2" role="status" aria-live="polite"></p>
           </div>
         </div>
 
@@ -102,13 +103,14 @@
               />
             </div>
             <button id="run-contest" type="button" class="btn btn-primary btn-sm">Run contest</button>
-            <p id="contest-status" class="dashboard-status mt-2"></p>
+            <p id="contest-status" class="dashboard-status mt-2" role="status" aria-live="polite"></p>
           </div>
 
           <div class="dashboard-card">
             <h3>Results</h3>
-            <canvas id="contest-chart"></canvas>
-            <div id="contest-results-table" class="mt-3"></div>
+            <canvas id="contest-chart" role="img"
+              aria-label="Bar chart: average score of each AI in the contest"></canvas>
+            <div id="contest-results-table" class="mt-3 table-scroll"></div>
           </div>
         </div>
       </div>

@@ -433,7 +433,11 @@ function readFileAsText(file) {
 
 function updateAlgorithmPickerVisuals() {
     for (const chip of algorithmPicker.querySelectorAll(".algo-chip")) {
-        chip.classList.toggle("active", compareSelection.has(chip.dataset.algorithm));
+        const isSelected = compareSelection.has(chip.dataset.algorithm);
+        chip.classList.toggle("active", isSelected);
+        // The .active class is purely visual; aria-pressed is what tells assistive
+        // technology this button is a toggle and whether it is currently on.
+        chip.setAttribute("aria-pressed", String(isSelected));
     }
     clearCompareSelectionButton.style.display = compareSelection.size > 0 ? "inline-block" : "none";
 }
